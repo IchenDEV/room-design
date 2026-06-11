@@ -1,0 +1,81 @@
+import type { Editor2D } from '../editor';
+import type { Pt } from '../../core/types';
+import { wallNormal } from '../../core/geometry/vec';
+import { fmtLen } from '../../core/store/actions';
+
+export function pill(ed: Editor2D, x: number, y: number, text: string) {
+  const { ctx, pal } = ed;
+  ctx.font = '11px "PingFang SC", sans-serif';
+  const w = ctx.measureText(text).width + 14;
+  ctx.fillStyle = pal.dimPill;
+  ctx.beginPath();
+  ctx.roundRect(x - w / 2, y - 10, w, 19, 9);
+  ctx.fill();
+  ctx.fillStyle = pal.dimText;
+  ctx.textAlign = 'center';
+  ctx.fillText(text, x, y + 3.5);
+}
+
+function dimSeg(ed: Editor2D, a: Pt, b: Pt, color?: string) {
+  const { ctx, pal } = ed;
+  const sa = ed.w2s(a), sb = ed.w2s(b);
+  ctx.strokeStyle = color ?? pal.sel;
+  ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(sa.x, sa.y); ctx.lineTo(sb.x, sb.y); ctx.stroke();
+  pill(ed, (sa.x + sb.x) / 2, (sa.y + sb.y) / 2 - 13, fmtLen(Math.hypot(b.x - a.x, b.y - a.y)));
+}
+
+export function drawOverlays(ed: Editor2D) {
+  const { ctx, store, pal, st } = ed;
+
+  // 吸附参考线
+  ctx.setLineDash([5, 5]);
+  ctx.strokeStyle = pal.guide;
+  ctx.lineWidth = 1;
+  for (const g of st.guides) {
+    const a = ed.w2s(g.a), b = ed.w2s(g.b);
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  if (st.snapped) {
+    const s = ed.w2s(st.snapped);
+    ctx.strokeStyle = pal.guide;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(s.x, s.y, 7, 0, Math.PI * 2); ctx.stroke();
+  }
+
+  // 画墙链预览
+  const tool = store.ui.tool.type;
+  if (tool === 'wall' && st.chain.length && st.chainCur) {
+    const last = st.chain[st.chain.length - 1];
+    const a = ed.w2s(last), b = ed.w2s(st.chainCur);
+    const th = store.project.settings.wallThickness * ed.view.s;
+    ctx.strokeStyle = pal.hover;
+    ctx.lineWidth = Math.max(2, th);
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    dimSeg(ed, last, st.chainCur);
+  }
+
+  // 矩形房间预览
+  if (tool === 'rect' && st.rectA && st.rectB) {
+    const a = ed.w2s(st.rectA), b = ed.w2s(st.rectB);
+    ctx.strokeStyle = pal.sel;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([7, 5]);
+    ctx.strokeRect(Math.min(a.x, b.x), Math.min(a.y, b.y), Math.abs(b.x - a.x), Math.abs(b.y - a.y));
+    ctx.setLineDash([]);
+    pill(ed, (a.x + b.x) / 2, Math.min(a.y, b.y) - 14,
+      `${fmtLen(Math.abs(st.rectB.x - st.rectA.x))} × ${fmtLen(Math.abs(st.rectB.y - st.rectA.y))}`);
+  }
+
+  // 选中墙体的尺寸标注
+  if (store.sel?.kind === 'wall') {
+    const selId = store.sel.id;
+    const w = store.project.walls.find((x) => x.id === selId);
+    if (w) {
+      const n = wallNormal(w);
+      const off = w.thickness / 2 + 26 / ed.view.s;
+      dimSeg(ed, { x: w.a.x + n.x * off, y: w.a.y + n.y * off }, { x: w.b.x + n.x * off, y: w.b.y + n.y * off });
+    }
+  }
+}

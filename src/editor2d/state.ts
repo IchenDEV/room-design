@@ -1,0 +1,29 @@
+import type { Pt } from '../core/types';
+
+export interface Guide { a: Pt; b: Pt }
+
+export type Drag =
+  | { kind: 'pan'; sx: number; sy: number; ox: number; oy: number }
+  | { kind: 'item'; id: string; off: Pt; moved: boolean }
+  | { kind: 'wall'; id: string; last: Pt; moved: boolean }
+  | { kind: 'node'; ends: { wallId: string; end: 'a' | 'b' }[]; moved: boolean }
+  | { kind: 'opening'; id: string; moved: boolean };
+
+export interface GhostOpening { wallId: string; t: number; valid: boolean }
+
+export interface EditorState {
+  hoverPt: Pt | null;          // 鼠标世界坐标
+  chain: Pt[];                 // 画墙锚点链
+  chainCur: Pt | null;         // 链当前预览点
+  rectA: Pt | null;            // 矩形起点
+  rectB: Pt | null;
+  ghostOpen: GhostOpening | null;
+  drag: Drag | null;
+  guides: Guide[];
+  snapped: Pt | null;          // 当前吸附点（高亮）
+}
+
+export const initialState = (): EditorState => ({
+  hoverPt: null, chain: [], chainCur: null, rectA: null, rectB: null,
+  ghostOpen: null, drag: null, guides: [], snapped: null,
+});

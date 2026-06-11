@@ -1,0 +1,32 @@
+import * as THREE from 'three';
+
+export const mat = (color: string | number, rough = 0.85, metal = 0) =>
+  new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: metal });
+
+function prepMesh(m: THREE.Mesh, x: number, y: number, z: number): THREE.Mesh {
+  m.position.set(x, y, z);
+  m.castShadow = true;
+  m.receiveShadow = true;
+  return m;
+}
+
+export const box = (w: number, h: number, d: number, m: THREE.Material, x = 0, y = 0, z = 0) =>
+  prepMesh(new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m), x, y, z);
+
+export const cyl = (rt: number, rb: number, h: number, m: THREE.Material, x = 0, y = 0, z = 0, seg = 20) =>
+  prepMesh(new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), m), x, y, z);
+
+export const sph = (r: number, m: THREE.Material, x = 0, y = 0, z = 0) =>
+  prepMesh(new THREE.Mesh(new THREE.SphereGeometry(r, 18, 14), m), x, y, z);
+
+/** 四条腿 */
+export function legs4(g: THREE.Group, w: number, d: number, h: number, r: number, m: THREE.Material) {
+  const ox = w / 2 - r * 1.6, oz = d / 2 - r * 1.6;
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) g.add(cyl(r, r, h, m, sx * ox, h / 2, sz * oz));
+}
+
+export const grp = (...objs: THREE.Object3D[]): THREE.Group => {
+  const g = new THREE.Group();
+  objs.forEach((o) => g.add(o));
+  return g;
+};

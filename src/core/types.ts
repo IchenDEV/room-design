@@ -1,56 +1,49 @@
-/** 所有长度单位均为厘米 (cm)，平面坐标系 y 轴朝上（北） */
-
+// 核心数据模型：单位统一为厘米(cm)，平面坐标 y 轴朝北(屏幕上方)
 export interface Pt { x: number; y: number }
+
+export type WallMaterial = 'solid' | 'glass';
 
 export interface Wall {
   id: string;
-  ax: number; ay: number;
-  bx: number; by: number;
-  thickness: number;
-  height: number;
+  a: Pt;
+  b: Pt;
+  thickness: number;   // cm
+  height: number;      // cm
+  color: string;       // 3D 墙面色（实体墙）
+  material?: WallMaterial;
 }
 
 export type OpeningKind = 'door' | 'window';
+export type DoorStyle = 'wood' | 'glass';
 
 export interface Opening {
   id: string;
   wallId: string;
   kind: OpeningKind;
-  /** 中心点在墙体 A->B 上的参数位置 0..1 */
-  t: number;
+  t: number;           // 在墙上的中心位置 0..1
   width: number;
   height: number;
-  /** 离地高度（门为 0） */
-  sill: number;
+  sill: number;        // 窗台高（窗有效）
+  flip: boolean;       // 门开向
+  style?: DoorStyle;   // 门：木门/玻璃门
 }
 
 export interface Item {
   id: string;
   defId: string;
   x: number; y: number;
-  /** 平面逆时针旋转角（度） */
-  rot: number;
+  rot: number;         // 度
   w: number; d: number; h: number;
   color?: string;
 }
 
-export interface RoomMeta {
-  id: string;
-  /** 锚点：位于房间多边形内部，用于在墙体编辑后重新匹配房间 */
-  anchor: Pt;
-  name?: string;
-  floor?: string;
-}
+export interface RoomMeta { id: string; anchor: Pt; name: string; floor: string }
 
-export interface Settings {
-  wallHeight: number;
-  wallThickness: number;
-  wallColor: string;
-  showCeiling: boolean;
-}
+export interface Settings { wallHeight: number; wallThickness: number; showCeiling: boolean }
 
 export interface Project {
   version: 1;
+  name: string;
   walls: Wall[];
   openings: Opening[];
   items: Item[];
@@ -58,14 +51,7 @@ export interface Project {
   settings: Settings;
 }
 
-/** 由墙体推导出的房间多边形 */
-export interface RoomPoly {
-  poly: Pt[];
-  /** 面积 cm² */
-  area: number;
-  centroid: Pt;
-  metaId: string | null;
-}
+export interface RoomPoly { poly: Pt[]; area: number; centroid: Pt; metaId?: string }
 
 export type Selection =
   | { kind: 'wall'; id: string }
@@ -81,12 +67,17 @@ export type Tool =
   | { type: 'window' }
   | { type: 'place'; defId: string };
 
-export const uid = () => Math.random().toString(36).slice(2, 10);
+export interface CtxMenu { x: number; y: number; sel: Selection }
 
-export function defaultSettings(): Settings {
-  return { wallHeight: 280, wallThickness: 24, wallColor: '#f5f2ec', showCeiling: false };
-}
+export type ViewMode = '2d' | '3d';
+export type Theme = 'dark' | 'light';
 
-export function emptyProject(): Project {
-  return { version: 1, walls: [], openings: [], items: [], roomMetas: [], settings: defaultSettings() };
-}
+let seq = 0;
+export const uid = (p: string) =>
+  `${p}_${(++seq).toString(36)}${Date.now().toString(36).slice(-4)}${Math.random().toString(36).slice(2, 6)}`;
+
+export const defaultSettings = (): Settings => ({ wallHeight: 280, wallThickness: 20, showCeiling: false });
+
+export const emptyProject = (name = '未命名方案'): Project => ({
+  version: 1, name, walls: [], openings: [], items: [], roomMetas: [], settings: defaultSettings(),
+});
