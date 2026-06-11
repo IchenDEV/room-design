@@ -2,7 +2,7 @@
 
 一个运行在浏览器中的专业室内设计工具（类酷家乐）：2D 户型编辑 + 3D 实时渲染，纯前端实现。
 
-线上地址：https://ichendev.github.io/room-design/
+线上地址：http://blogs.idevlab.dev/room-design/
 
 ## 运行
 
