@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 8.5 8 2.5l6 6' stroke='%234f8cff' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M4 7.8V13.5h8V7.8' stroke='%234f8cff' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <title>栖居设计 · 室内设计工作台</title>
+</head>
+<body>
+  <div id="app">
+    <!-- 顶部工具栏 -->
+    <header id="topbar">
+      <div class="brand">
+        <svg viewBox="0 0 16 16" width="20" height="20"><path d="M2 8.5 8 2.5l6 6" stroke="#4f8cff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7.8V13.5h8V7.8" stroke="#4f8cff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="brand-name">栖居设计</span>
+        <span class="brand-sub">Interior Studio</span>
+      </div>
+
+      <div class="tb-group" id="toolButtons">
+        <button class="tb" data-tool="select" title="选择 / 移动 (V)">
+          <svg viewBox="0 0 16 16"><path d="M3.5 2 13 8.2l-4.4 1L11 14l-2 .9-2.3-4.8-3.2 3.2z" fill="currentColor" stroke="none"/></svg>
+          <span>选择</span>
+        </button>
+        <button class="tb" data-tool="wall" title="绘制墙体 (W)：连续单击放置端点，Enter/Esc 结束">
+          <svg viewBox="0 0 16 16"><path d="M3.2 12.8 12.8 3.2" stroke-linecap="round"/><circle cx="3.2" cy="12.8" r="1.7" fill="currentColor" stroke="none"/><circle cx="12.8" cy="3.2" r="1.7" fill="currentColor" stroke="none"/></svg>
+          <span>画墙</span>
+        </button>
+        <button class="tb" data-tool="rect" title="矩形房间 (B)：拖拽绘制四面墙">
+          <svg viewBox="0 0 16 16"><rect x="2.6" y="3.6" width="10.8" height="8.8" rx="0.5"/></svg>
+          <span>房间</span>
+        </button>
+        <button class="tb" data-tool="door" title="放置门 (D)：移动到墙上单击">
+          <svg viewBox="0 0 16 16"><path d="M4 14V2.5M4 2.5a10 10 0 0 1 9.5 9.5" stroke-linecap="round"/><path d="M4 14h9.5" stroke-linecap="round" opacity="0.55"/></svg>
+          <span>门</span>
+        </button>
+        <button class="tb" data-tool="window" title="放置窗 (N)：移动到墙上单击">
+          <svg viewBox="0 0 16 16"><rect x="2" y="4.5" width="12" height="7"/><path d="M8 4.5v7M2 8h12"/></svg>
+          <span>窗</span>
+        </button>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="tb-group">
+        <button class="tb" id="btnUndo" title="撤销 (⌘Z)">
+          <svg viewBox="0 0 16 16"><path d="M3.5 6.5H10a3.5 3.5 0 1 1 0 7H6.5" stroke-linecap="round"/><path d="M6.2 3.8 3.5 6.5l2.7 2.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>撤销</span>
+        </button>
+        <button class="tb" id="btnRedo" title="重做 (⇧⌘Z)">
+          <svg viewBox="0 0 16 16"><path d="M12.5 6.5H6a3.5 3.5 0 1 0 0 7h3.5" stroke-linecap="round"/><path d="M9.8 3.8l2.7 2.7-2.7 2.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>重做</span>
+        </button>
+        <button class="tb" id="btnDelete" title="删除所选 (Del)">
+          <svg viewBox="0 0 16 16"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.7 9h5.6l.7-9" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.7 7v4.5M9.3 7v4.5" stroke-linecap="round"/></svg>
+          <span>删除</span>
+        </button>
+      </div>
+
+      <div class="sep"></div>
+
+      <div class="seg" id="viewSeg">
+        <button class="seg-btn active" data-mode="2d">平面 2D</button>
+        <button class="seg-btn" data-mode="3d">三维 3D</button>
+      </div>
+
+      <button class="tb" id="btnWalk" title="第一人称漫游（仅 3D）" disabled>
+        <svg viewBox="0 0 16 16"><circle cx="8" cy="3.2" r="1.6"/><path d="M8 5v4.2M8 9.2 5.8 13.6M8 9.2l2.2 4.4M5.6 7.2 8 6.2l2.4 1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>漫游</span>
+      </button>
+
+      <div class="spacer"></div>
+
+      <div class="tb-group">
+        <button class="tb" id="btnShot" title="导出当前视图为 PNG">
+          <svg viewBox="0 0 16 16"><rect x="2" y="4.4" width="12" height="9" rx="1.4"/><circle cx="8" cy="9" r="2.4"/><path d="M5.4 4.4 6.5 2.6h3l1.1 1.8"/></svg>
+          <span>截图</span>
+        </button>
+        <button class="tb" id="btnSample" title="载入示例两居室方案">
+          <svg viewBox="0 0 16 16"><path d="M2 8.5 8 2.5l6 6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7.8V13.5h8V7.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>示例</span>
+        </button>
+        <button class="tb" id="btnClear" title="清空当前方案">
+          <svg viewBox="0 0 16 16"><rect x="3" y="2.5" width="10" height="11" rx="1"/><path d="M6 5.5h4M6 8h4M6 10.5h2.4"/></svg>
+          <span>新建</span>
+        </button>
+        <button class="tb" id="btnHelp" title="快捷键帮助 (?)">
+          <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M6.3 6.4c0-1 .8-1.7 1.7-1.7s1.7.6 1.7 1.5c0 1.4-1.7 1.4-1.7 2.6" stroke-linecap="round"/><circle cx="8" cy="11.2" r="0.8" fill="currentColor" stroke="none"/></svg>
+          <span>帮助</span>
+        </button>
+      </div>
+    </header>
+
+    <div id="main">
+      <!-- 左侧：家具目录 -->
+      <aside id="leftPanel">
+        <div class="panel-title">素材库</div>
+        <nav id="catTabs"></nav>
+        <div id="catGrid"></div>
+      </aside>
+
+      <!-- 中间画布区 -->
+      <div id="stage">
+        <canvas id="canvas2d"></canvas>
+        <div id="wrap3d" hidden>
+          <canvas id="canvas3d"></canvas>
+          <div id="walkHint" hidden>W A S D 移动 · 按住拖拽转动视角 · Shift 加速 · Esc 退出漫游</div>
+        </div>
+      </div>
+
+      <!-- 右侧：属性面板 -->
+      <aside id="rightPanel">
+        <div class="panel-title" id="propsTitle">工程设置</div>
+        <div id="props"></div>
+      </aside>
+    </div>
+
+    <!-- 底部状态栏 -->
+    <footer id="statusbar">
+      <span id="hint">单击选择 · 拖拽移动 · 空格+拖拽平移画布 · 滚轮缩放</span>
+      <span class="status-right">
+        <span id="coords">0, 0 cm</span>
+        <span class="dot">·</span>
+        <span id="zoomLabel">100%</span>
+        <span class="dot">·</span>
+        <span id="stats"></span>
+        <span class="dot">·</span>
+        <span id="saveState">未保存</span>
+      </span>
+    </footer>
+  </div>
+
+  <!-- 快捷键帮助弹层 -->
+  <div id="modal" hidden>
+    <div class="modal-card">
+      <div class="modal-head">快捷键<button id="modalClose">×</button></div>
+      <table class="keys">
+        <tr><td><kbd>V</kbd></td><td>选择 / 移动</td><td><kbd>W</kbd></td><td>绘制墙体</td></tr>
+        <tr><td><kbd>B</kbd></td><td>矩形房间</td><td><kbd>D</kbd> / <kbd>N</kbd></td><td>放置门 / 窗</td></tr>
+        <tr><td><kbd>R</kbd></td><td>旋转所选家具 90°</td><td><kbd>方向键</kbd></td><td>微调位置（Shift ×10）</td></tr>
+        <tr><td><kbd>⌘Z</kbd> / <kbd>⇧⌘Z</kbd></td><td>撤销 / 重做</td><td><kbd>Del</kbd></td><td>删除所选</td></tr>
+        <tr><td><kbd>Enter</kbd> / <kbd>Esc</kbd></td><td>结束画墙 / 取消</td><td><kbd>空格</kbd>+拖拽</td><td>平移画布</td></tr>
+        <tr><td><kbd>2</kbd> / <kbd>3</kbd></td><td>切换 2D / 3D 视图</td><td><kbd>滚轮</kbd></td><td>缩放画布</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
