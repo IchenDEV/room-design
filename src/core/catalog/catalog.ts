@@ -1,9 +1,9 @@
-import { HOME_DEFS, EXTRA_DEFS } from './defs';
+import { EXTRA_DEFS, HOME_DEFS, OFFICE_DEFS } from './defs';
 import type { CatId, FurnDef } from './defs';
 
 export type { CatId, FurnDef, FurnKind } from './defs';
 
-export const CATALOG: FurnDef[] = [...HOME_DEFS, ...EXTRA_DEFS];
+export const CATALOG: FurnDef[] = [...HOME_DEFS, ...EXTRA_DEFS, ...OFFICE_DEFS];
 
 export const CATS: { id: CatId; name: string }[] = [
   { id: 'living', name: '客厅' },

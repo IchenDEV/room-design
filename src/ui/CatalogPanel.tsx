@@ -16,19 +16,23 @@ function Thumb({ def }: { def: FurnDef }) {
 export function CatalogPanel() {
   useTick();
   const [cat, setCat] = useState<CatId>('living');
+  const [q, setQ] = useState('');
   const tool = store.ui.tool;
-  const items = CATALOG.filter((d) => d.cat === cat);
+  const query = q.trim().toLowerCase();
+  const items = CATALOG.filter((d) => d.cat === cat && (!query || `${d.name} ${d.id}`.toLowerCase().includes(query)));
 
   return (
     <aside className="catalog">
       <div className="panel-title">素材库</div>
       <div className="cat-tabs">
         {CATS.map((c) => (
-          <button key={c.id} className={`cat-tab ${cat === c.id ? 'on' : ''}`} onClick={() => setCat(c.id)}>
+          <button key={c.id} className={`cat-tab ${cat === c.id ? 'on' : ''}`} onClick={() => { setCat(c.id); setQ(''); }}>
             {c.name}
           </button>
         ))}
       </div>
+      <input className="cat-search" value={q} placeholder="搜索家具"
+        onChange={(e) => setQ(e.target.value)} />
       <div className="cat-grid">
         {items.map((d) => {
           const active = tool.type === 'place' && tool.defId === d.id;

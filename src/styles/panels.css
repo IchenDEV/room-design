@@ -32,6 +32,17 @@
 }
 .cat-tab.on { background: var(--accent); border-color: var(--accent); color: #fff; }
 
+.cat-search {
+  width: calc(100% - 20px);
+  margin: 0 10px 8px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 7px 9px;
+  outline: none;
+}
+.cat-search:focus { border-color: var(--accent); }
+
 .cat-grid {
   flex: 1;
   overflow-y: auto;
