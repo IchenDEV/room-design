@@ -1,5 +1,6 @@
 // 核心数据模型：单位统一为厘米(cm)，平面坐标 y 轴朝北(屏幕上方)
 export interface Pt { x: number; y: number }
+export interface Guide { a: Pt; b: Pt; label?: string }
 
 export type WallMaterial = 'solid' | 'glass';
 

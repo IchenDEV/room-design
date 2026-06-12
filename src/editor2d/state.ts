@@ -1,10 +1,9 @@
-import type { Pt } from '../core/types';
-
-export interface Guide { a: Pt; b: Pt }
+import type { Guide, Pt } from '../core/types';
 
 export type Drag =
   | { kind: 'pan'; sx: number; sy: number; ox: number; oy: number }
   | { kind: 'item'; id: string; off: Pt; moved: boolean }
+  | { kind: 'item-rotate'; id: string; moved: boolean }
   | { kind: 'wall'; id: string; last: Pt; moved: boolean }
   | { kind: 'node'; ends: { wallId: string; end: 'a' | 'b' }[]; moved: boolean }
   | { kind: 'opening'; id: string; moved: boolean };
@@ -21,9 +20,10 @@ export interface EditorState {
   drag: Drag | null;
   guides: Guide[];
   snapped: Pt | null;          // 当前吸附点（高亮）
+  snapLabel: string | null;    // 当前吸附说明
 }
 
 export const initialState = (): EditorState => ({
   hoverPt: null, chain: [], chainCur: null, rectA: null, rectB: null,
-  ghostOpen: null, drag: null, guides: [], snapped: null,
+  ghostOpen: null, drag: null, guides: [], snapped: null, snapLabel: null,
 });

@@ -1,10 +1,12 @@
 import type { Editor2D } from './editor';
 import { onDown, syncToolState, updateGhostOpen } from './input-down';
-import { snapWallPoint, snapItemPos, nearestWall, endGroup } from './snap';
+import { snapWallPoint, nearestWall, endGroup } from './snap';
 import { hitAny } from './hit';
 import { commitRect, endChain, ghostValid } from './commands';
 import { openCtxMenu, closeCtxMenu } from '../core/store/actions';
 import { projT } from '../core/geometry/vec';
+import { moveDraggedItem, rotateDraggedItem, updatePlaceSnap } from './input-item';
+import { hitItemRotateHandle } from './item-handles';
 
 function onMove(ed: Editor2D, e: PointerEvent) {
   const s = ed.evPos(e);
@@ -18,15 +20,10 @@ function onMove(ed: Editor2D, e: PointerEvent) {
     ed.view.oy = d.oy + (s.y - d.sy);
   } else if (d?.kind === 'item') {
     d.moved = true;
-    const it = ed.store.project.items.find((i) => i.id === d.id);
-    if (it) {
-      const snap = snapItemPos(ed, { x: p.x - d.off.x, y: p.y - d.off.y }, it.d);
-      ed.store.update((proj) => {
-        const t = proj.items.find((i) => i.id === d.id)!;
-        t.x = snap.pt.x; t.y = snap.pt.y;
-        if (snap.rot !== null) t.rot = snap.rot;
-      });
-    }
+    moveDraggedItem(ed, d.id, d.off, p);
+  } else if (d?.kind === 'item-rotate') {
+    d.moved = true;
+    rotateDraggedItem(ed, d.id, p);
   } else if (d?.kind === 'node') {
     d.moved = true;
     const snap = snapWallPoint(ed, p, null);
@@ -67,16 +64,24 @@ function onMove(ed: Editor2D, e: PointerEvent) {
     }
   } else {
     // 无拖拽：刷新工具幽灵
-    const tool = ed.store.ui.tool.type;
-    if (tool === 'wall') {
+    const tool = ed.store.ui.tool;
+    if (tool.type === 'wall') {
       const ref = ed.st.chain[ed.st.chain.length - 1] ?? null;
       const snap = snapWallPoint(ed, p, ref);
       ed.st.chainCur = snap.pt;
       ed.st.guides = snap.guides;
       ed.st.snapped = snap.hard ? snap.pt : null;
-    } else if (tool === 'rect' && ed.st.rectA) {
+      ed.st.snapLabel = null;
+    } else if (tool.type === 'rect' && ed.st.rectA) {
       ed.st.rectB = snapWallPoint(ed, p, ed.st.rectA).pt;
+      ed.st.snapLabel = null;
+    } else if (tool.type === 'place') {
+      updatePlaceSnap(ed, tool.defId, p);
     } else {
+      ed.canvas.style.cursor = tool.type === 'select' && hitItemRotateHandle(ed, s) ? 'grab' : 'default';
+      ed.st.guides = [];
+      ed.st.snapped = null;
+      ed.st.snapLabel = null;
       updateGhostOpen(ed, s.x, s.y);
     }
   }
@@ -90,6 +95,7 @@ function onUp(ed: Editor2D, e: PointerEvent) {
   if (d.kind !== 'pan') ed.store.end();
   ed.st.drag = null;
   ed.st.snapped = null;
+  ed.st.snapLabel = null;
   if (ed.store.ui.tool.type !== 'wall') ed.st.guides = [];
   ed.requestDraw();
 }
@@ -112,7 +118,9 @@ export function bindInput(ed: Editor2D): () => void {
     if (hit) openCtxMenu(ed.store, e.clientX, e.clientY, hit);
     else closeCtxMenu(ed.store);
   };
-  const leave = () => { ed.st.hoverPt = null; ed.st.ghostOpen = null; ed.requestDraw(); };
+  const leave = () => {
+    ed.st.hoverPt = null; ed.st.ghostOpen = null; ed.st.snapLabel = null; ed.st.snapped = null; ed.requestDraw();
+  };
   c.addEventListener('pointerdown', down);
   c.addEventListener('pointermove', move);
   c.addEventListener('pointerup', up);

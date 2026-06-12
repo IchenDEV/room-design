@@ -42,6 +42,7 @@ export function drawOverlays(ed: Editor2D) {
     ctx.strokeStyle = pal.guide;
     ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(s.x, s.y, 7, 0, Math.PI * 2); ctx.stroke();
+    if (st.snapLabel) pill(ed, s.x, s.y - 18, st.snapLabel);
   }
 
   // 画墙链预览

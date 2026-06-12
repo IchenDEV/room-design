@@ -3,6 +3,7 @@ import { hitAny, hitNode, hitRoom } from './hit';
 import { endGroup, nearestWall, snapWallPoint } from './snap';
 import { addChainPoint, ghostValid, placeItem, placeOpening } from './commands';
 import { ensureRoomMeta } from '../core/store/actions';
+import { hitItemRotateHandle } from './item-handles';
 
 export function onDown(ed: Editor2D, e: PointerEvent) {
   const s = ed.evPos(e);
@@ -18,6 +19,12 @@ export function onDown(ed: Editor2D, e: PointerEvent) {
   if (e.button !== 0) return;
 
   if (tool.type === 'select') {
+    const rotateId = hitItemRotateHandle(ed, s);
+    if (rotateId) {
+      store.begin();
+      ed.st.drag = { kind: 'item-rotate', id: rotateId, moved: false };
+      return;
+    }
     const node = hitNode(ed, p, 14 / ed.view.s);
     if (node) {
       const w = store.project.walls.find((x) => x.id === node.wallId)!;
@@ -83,6 +90,8 @@ export function syncToolState(ed: Editor2D) {
   if (t !== 'rect') { ed.st.rectA = null; ed.st.rectB = null; }
   if (t !== 'door' && t !== 'window') ed.st.ghostOpen = null;
   ed.st.guides = [];
+  ed.st.snapped = null;
+  ed.st.snapLabel = null;
   ed.canvas.style.cursor = t === 'select' ? 'default' : 'crosshair';
 }
 
