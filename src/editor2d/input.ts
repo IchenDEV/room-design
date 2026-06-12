@@ -1,12 +1,12 @@
 import type { Editor2D } from './editor';
 import { onDown, syncToolState, updateGhostOpen } from './input-down';
 import { snapWallPoint, nearestWall, endGroup } from './snap';
-import { hitAny } from './hit';
 import { commitRect, endChain, ghostValid } from './commands';
-import { openCtxMenu, closeCtxMenu } from '../core/store/actions';
+import { moveItems, idsFromSelection } from '../core/store/item-groups';
 import { projT } from '../core/geometry/vec';
 import { moveDraggedItem, resizeDraggedItem, rotateDraggedItem, updatePlaceSnap } from './input-item';
 import { hitItemResizeHandle, hitItemRotateHandle, resizeCursor } from './item-handles';
+import { openEditorContext } from './input-context';
 
 function onMove(ed: Editor2D, e: PointerEvent) {
   const s = ed.evPos(e);
@@ -21,6 +21,12 @@ function onMove(ed: Editor2D, e: PointerEvent) {
   } else if (d?.kind === 'item') {
     d.moved = true;
     moveDraggedItem(ed, d.id, d.off, p);
+  } else if (d?.kind === 'group') {
+    d.moved = true;
+    const dx = p.x - d.last.x, dy = p.y - d.last.y;
+    d.last = p;
+    const ids = idsFromSelection(ed.store, { kind: 'group', id: d.id });
+    ed.store.update((proj) => moveItems(proj, ids, dx, dy));
   } else if (d?.kind === 'item-rotate') {
     d.moved = true;
     rotateDraggedItem(ed, d.id, p);
@@ -116,13 +122,7 @@ export function bindInput(ed: Editor2D): () => void {
     ed.zoomAt(s.x, s.y, e.deltaY < 0 ? 1.12 : 1 / 1.12);
   };
   const dbl = () => { if (ed.store.ui.tool.type === 'wall') endChain(ed); };
-  const ctx = (e: MouseEvent) => {
-    e.preventDefault();
-    const s = ed.evPos(e);
-    const hit = hitAny(ed, ed.s2w(s.x, s.y));
-    if (hit) openCtxMenu(ed.store, e.clientX, e.clientY, hit);
-    else closeCtxMenu(ed.store);
-  };
+  const ctx = (e: MouseEvent) => openEditorContext(ed, e);
   const leave = () => {
     ed.st.hoverPt = null; ed.st.ghostOpen = null; ed.st.snapLabel = null; ed.st.snapped = null; ed.requestDraw();
   };

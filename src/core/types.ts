@@ -45,6 +45,12 @@ export interface Item {
   flipX?: boolean;
 }
 
+export interface ItemGroup {
+  id: string;
+  name: string;
+  itemIds: string[];
+}
+
 export interface RoomMeta { id: string; anchor: Pt; name: string; floor: string }
 
 export interface Settings { wallHeight: number; wallThickness: number; showCeiling: boolean }
@@ -55,6 +61,7 @@ export interface Project {
   walls: Wall[];
   openings: Opening[];
   items: Item[];
+  groups?: ItemGroup[];
   roomMetas: RoomMeta[];
   settings: Settings;
 }
@@ -65,6 +72,8 @@ export type Selection =
   | { kind: 'wall'; id: string }
   | { kind: 'opening'; id: string }
   | { kind: 'item'; id: string }
+  | { kind: 'multi'; ids: string[] }
+  | { kind: 'group'; id: string }
   | { kind: 'room'; metaId: string };
 
 export type Tool =
@@ -87,5 +96,5 @@ export const uid = (p: string) =>
 export const defaultSettings = (): Settings => ({ wallHeight: 280, wallThickness: 20, showCeiling: false });
 
 export const emptyProject = (name = '未命名方案'): Project => ({
-  version: 1, name, walls: [], openings: [], items: [], roomMetas: [], settings: defaultSettings(),
+  version: 1, name, walls: [], openings: [], items: [], groups: [], roomMetas: [], settings: defaultSettings(),
 });

@@ -3,6 +3,7 @@ import type { Pt } from '../core/types';
 import type { Editor2D } from './editor';
 import { wallLen, lerp } from '../core/geometry/vec';
 import { defaultTexture, defOf } from '../core/catalog/catalog';
+import { idsFromSelection, moveItems } from '../core/store/item-groups';
 import { snapItemPos } from './snap';
 
 const wallTpl = (ed: Editor2D, a: Pt, b: Pt) => ({
@@ -107,11 +108,10 @@ export function rotateSel(ed: Editor2D, delta = 90) {
 }
 
 export function nudgeSel(ed: Editor2D, dx: number, dy: number) {
-  const sel = ed.store.sel;
-  if (sel?.kind !== 'item') return;
+  const ids = idsFromSelection(ed.store);
+  if (!ids.length) return;
   ed.store.commit((p) => {
-    const it = p.items.find((i) => i.id === sel.id);
-    if (it) { it.x += dx; it.y += dy; }
+    moveItems(p, ids, dx, dy);
   });
 }
 

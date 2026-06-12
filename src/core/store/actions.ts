@@ -3,6 +3,7 @@ import type { Pt, Selection } from '../types';
 import { uid } from '../types';
 import { dist, wallDir, wallLen } from '../geometry/vec';
 import { itemOf, wallOf } from './selectors';
+import { ensureGroups, idsFromSelection } from './item-groups';
 import { sampleOf } from '../samples';
 import { emptyProject } from '../types';
 
@@ -16,6 +17,12 @@ export function deleteSelection(s: Store) {
       p.openings = p.openings.filter((o) => o.wallId !== sel.id);
     } else if (sel.kind === 'opening') p.openings = p.openings.filter((o) => o.id !== sel.id);
     else if (sel.kind === 'item') p.items = p.items.filter((i) => i.id !== sel.id);
+    else if (sel.kind === 'multi') p.items = p.items.filter((i) => !sel.ids.includes(i.id));
+    else if (sel.kind === 'group') {
+      const ids = idsFromSelection(s, sel);
+      p.items = p.items.filter((i) => !ids.includes(i.id));
+      p.groups = ensureGroups(p).filter((g) => g.id !== sel.id);
+    }
     else if (sel.kind === 'room') p.roomMetas = p.roomMetas.filter((m) => m.id !== sel.metaId);
   });
   s.setSel(null);

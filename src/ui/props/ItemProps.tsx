@@ -2,7 +2,7 @@ import { store } from '../../core/store/store';
 import { itemOf } from '../../core/store/selectors';
 import { deleteSelection, duplicateItem, rotateItem } from '../../core/store/actions';
 import { defaultTexture, defOf, ITEM_COLORS, TEXTURES } from '../../core/catalog/catalog';
-import { BtnRow, Check, ChoiceGrid, NumField, Section, SliderNum, Swatches } from './widgets';
+import { ActionBtn, BtnRow, Check, ChoiceGrid, NumField, Section, SliderNum, Swatches } from './widgets';
 import type { Item } from '../../core/types';
 
 export function ItemProps({ id }: { id: string }) {
@@ -45,9 +45,9 @@ export function ItemProps({ id }: { id: string }) {
           onChange={(v) => store.commit((p) => { const t = p.items.find((x) => x.id === id); if (t) t.flipX = v; })} />
       </Section>
       <BtnRow>
-        <button className="btn" onClick={() => rotateItem(store, id)}>旋转 90°</button>
-        <button className="btn" onClick={() => duplicateItem(store, id)}>复制</button>
-        <button className="btn danger" onClick={() => deleteSelection(store)}>删除</button>
+        <ActionBtn icon="rotate" onClick={() => rotateItem(store, id)}>旋转 90°</ActionBtn>
+        <ActionBtn icon="copy" onClick={() => duplicateItem(store, id)}>复制</ActionBtn>
+        <ActionBtn icon="trash" danger onClick={() => deleteSelection(store)}>删除</ActionBtn>
       </BtnRow>
     </>
   );

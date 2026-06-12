@@ -2,7 +2,7 @@ import { store } from '../../core/store/store';
 import { metaOf, roomByMeta, roomPerimeter } from '../../core/store/selectors';
 import { deleteSelection } from '../../core/store/actions';
 import { FLOORS } from '../../core/catalog/catalog';
-import { KV, Section, BtnRow } from './widgets';
+import { ActionBtn, KV, Section, BtnRow } from './widgets';
 
 export function RoomProps({ metaId }: { metaId: string }) {
   const meta = metaOf(store, metaId);
@@ -33,7 +33,7 @@ export function RoomProps({ metaId }: { metaId: string }) {
         </div>
       </Section>
       <BtnRow>
-        <button className="btn danger" onClick={() => deleteSelection(store)}>移除房间标注</button>
+        <ActionBtn icon="trash" danger onClick={() => deleteSelection(store)}>移除房间标注</ActionBtn>
       </BtnRow>
     </>
   );

@@ -31,7 +31,7 @@ export function ToolbarRight() {
             <div className="dd-menu">
               {SAMPLES.map((s) => (
                 <button key={s.id} className="dd-item" onClick={() => { loadSample(store, s.id); setOpen(false); }}>
-                  {s.name}
+                  <Ic n="sample" size={15} /><span>{s.name}</span>
                 </button>
               ))}
             </div>

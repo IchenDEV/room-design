@@ -3,6 +3,7 @@ import { hitAny, hitNode, hitRoom } from './hit';
 import { endGroup, nearestWall, snapWallPoint } from './snap';
 import { addChainPoint, ghostValid, placeItem, placeOpening } from './commands';
 import { ensureRoomMeta } from '../core/store/actions';
+import { itemGroupId, toggleItemSelection } from '../core/store/item-groups';
 import { hitItemResizeHandle, hitItemRotateHandle, resizeAnchor } from './item-handles';
 
 export function onDown(ed: Editor2D, e: PointerEvent) {
@@ -45,9 +46,14 @@ export function onDown(ed: Editor2D, e: PointerEvent) {
     }
     const hit = hitAny(ed, p);
     if (hit) {
-      store.setSel(hit);
+      if (hit.kind === 'item' && e.shiftKey) { toggleItemSelection(store, hit.id); return; }
+      const groupId = hit.kind === 'item' ? itemGroupId(store.project, hit.id) : null;
+      const sel = groupId ? { kind: 'group' as const, id: groupId } : hit;
+      store.setSel(sel);
       store.begin();
-      if (hit.kind === 'item') {
+      if (sel.kind === 'group') {
+        ed.st.drag = { kind: 'group', id: sel.id, last: p, moved: false };
+      } else if (hit.kind === 'item') {
         const it = store.project.items.find((i) => i.id === hit.id)!;
         ed.st.drag = { kind: 'item', id: hit.id, off: { x: p.x - it.x, y: p.y - it.y }, moved: false };
       } else if (hit.kind === 'wall') {

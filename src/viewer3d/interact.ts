@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import type { Viewer3D } from './viewer';
 import { closeCtxMenu, openCtxMenu } from '../core/store/actions';
 import { snapItem } from '../core/geometry/item-snap';
+import { idsFromSelection, itemGroupId, moveItems } from '../core/store/item-groups';
+
+type DragTarget = { kind: 'item' | 'group'; id: string; pickedId: string };
 
 /** 3D 拾取：点选家具、平面拖拽、右键菜单 */
 export function bindInteract(v: Viewer3D): () => void {
@@ -10,7 +13,7 @@ export function bindInteract(v: Viewer3D): () => void {
   const ndc = new THREE.Vector2();
   const planeY = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
   const hitPt = new THREE.Vector3();
-  let dragId: string | null = null;
+  let drag: DragTarget | null = null;
   let off = { x: 0, z: 0 };
 
   const setNdc = (e: MouseEvent) => {
@@ -29,25 +32,31 @@ export function bindInteract(v: Viewer3D): () => void {
     if (v.walk.active || e.button !== 0) return;
     const id = pickItem(e);
     if (!id) { v.store.setSel(null); return; }
-    v.store.setSel({ kind: 'item', id });
+    const groupId = itemGroupId(v.store.project, id);
+    const sel = groupId ? { kind: 'group' as const, id: groupId } : { kind: 'item' as const, id };
+    v.store.setSel(sel);
     const it = v.store.project.items.find((i) => i.id === id);
     const p = planePt();
     if (!it || !p) return;
-    dragId = id;
+    drag = { kind: sel.kind, id: sel.id, pickedId: id };
     off = { x: p.x - it.x, z: p.z + it.y };
     v.controls.enabled = false;
     v.store.begin();
     canvas.setPointerCapture(e.pointerId);
   };
   const move = (e: PointerEvent) => {
-    if (!dragId) return;
+    if (!drag) return;
     setNdc(e);
     const p = planePt();
     if (!p) return;
     v.store.update((proj) => {
-      const it = proj.items.find((i) => i.id === dragId);
-      if (it) {
-        const snap = snapItem(proj, { x: p.x - off.x, y: -(p.z - off.z) }, it);
+      const it = proj.items.find((i) => i.id === drag?.pickedId);
+      if (!it || !drag) return;
+      const next = { x: p.x - off.x, y: -(p.z - off.z) };
+      if (drag.kind === 'group') {
+        moveItems(proj, idsFromSelection(v.store, { kind: 'group', id: drag.id }), next.x - it.x, next.y - it.y);
+      } else {
+        const snap = snapItem(proj, next, it);
         it.x = snap.pt.x;
         it.y = snap.pt.y;
         if (snap.rot !== null) it.rot = snap.rot;
@@ -55,8 +64,8 @@ export function bindInteract(v: Viewer3D): () => void {
     });
   };
   const up = () => {
-    if (!dragId) return;
-    dragId = null;
+    if (!drag) return;
+    drag = null;
     v.store.end();
     v.controls.enabled = !v.walk.active;
   };
@@ -65,7 +74,8 @@ export function bindInteract(v: Viewer3D): () => void {
     if (v.walk.active) return;
     const id = pickItem(e);
     if (id) {
-      openCtxMenu(v.store, e.clientX, e.clientY, { kind: 'item', id });
+      const groupId = itemGroupId(v.store.project, id);
+      openCtxMenu(v.store, e.clientX, e.clientY, groupId ? { kind: 'group', id: groupId } : { kind: 'item', id });
     } else closeCtxMenu(v.store);
   };
 

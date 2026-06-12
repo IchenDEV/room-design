@@ -3,7 +3,8 @@ import { openingsOnWall, wallOf } from '../../core/store/selectors';
 import { deleteSelection, setWallLength } from '../../core/store/actions';
 import { wallLen } from '../../core/geometry/vec';
 import { WALL_COLORS } from '../../core/catalog/catalog';
-import { KV, NumField, Section, SliderNum, Swatches, BtnRow } from './widgets';
+import { ActionBtn, KV, NumField, Section, SliderNum, Swatches, BtnRow } from './widgets';
+import { Ic } from '../icons';
 import type { Wall } from '../../core/types';
 
 export function WallProps({ id }: { id: string }) {
@@ -32,11 +33,11 @@ export function WallProps({ id }: { id: string }) {
         <div className="seg-row">
           <button className={`seg-btn ${!glass ? 'on' : ''}`}
             onClick={() => store.commit((p) => { const t = p.walls.find((x) => x.id === id); if (t) t.material = 'solid'; })}>
-            实体墙
+            <Ic n="solid" size={14} />实体墙
           </button>
           <button className={`seg-btn ${glass ? 'on' : ''}`}
             onClick={() => store.commit((p) => { const t = p.walls.find((x) => x.id === id); if (t) t.material = 'glass'; })}>
-            玻璃墙
+            <Ic n="glass" size={14} />玻璃墙
           </button>
         </div>
         {!glass && (
@@ -45,7 +46,7 @@ export function WallProps({ id }: { id: string }) {
         )}
       </Section>
       <BtnRow>
-        <button className="btn danger" onClick={() => deleteSelection(store)}>删除墙体</button>
+        <ActionBtn icon="trash" danger onClick={() => deleteSelection(store)}>删除墙体</ActionBtn>
       </BtnRow>
     </>
   );
