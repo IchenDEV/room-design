@@ -23,6 +23,8 @@ export function escape(ed: Editor2D) {
   }
   st.ghostOpen = null;
   st.guides = [];
+  st.snapped = null;
+  st.snapLabel = null;
   ed.requestDraw();
 }
 
@@ -85,10 +87,11 @@ export function ghostValid(ed: Editor2D, wallId: string, t: number, width: numbe
 
 export function placeItem(ed: Editor2D, defId: string, p: Pt) {
   const def = defOf(defId);
-  const snap = snapItemPos(ed, p, def.d);
   const id = uid('i');
+  const item = { id, defId, x: p.x, y: p.y, rot: 0, w: def.w, d: def.d, h: def.h };
+  const snap = snapItemPos(ed, p, item);
   ed.store.commit((proj) => {
-    proj.items.push({ id, defId, x: snap.pt.x, y: snap.pt.y, rot: snap.rot ?? 0, w: def.w, d: def.d, h: def.h });
+    proj.items.push({ ...item, x: snap.pt.x, y: snap.pt.y, rot: snap.rot ?? 0 });
   });
   ed.store.setSel({ kind: 'item', id });
 }

@@ -1,7 +1,7 @@
-import type { Pt, Wall } from '../core/types';
+import type { Guide, Item, Pt, Wall } from '../core/types';
 import type { Editor2D } from './editor';
-import type { Guide } from './state';
 import { distPtSeg, projT, wallNormal } from '../core/geometry/vec';
+import { snapItem, type ItemSnapResult } from '../core/geometry/item-snap';
 
 const GRID = 10;
 
@@ -52,26 +52,9 @@ export function snapWallPoint(ed: Editor2D, p: Pt, ref: Pt | null): { pt: Pt; gu
   return { pt: out, guides, hard: false };
 }
 
-/** 家具吸附：靠墙自动贴边对正，否则网格 */
-export function snapItemPos(ed: Editor2D, p: Pt, depth: number): { pt: Pt; rot: number | null } {
-  let best: { wall: Wall; d: number; t: number } | null = null;
-  for (const w of ed.store.project.walls) {
-    const d = distPtSeg(p, w.a, w.b);
-    if (d < depth / 2 + w.thickness / 2 + 18 && (!best || d < best.d)) best = { wall: w, d, t: projT(p, w.a, w.b) };
-  }
-  if (best) {
-    const w = best.wall;
-    const n = wallNormal(w);
-    const base = { x: w.a.x + (w.b.x - w.a.x) * best.t, y: w.a.y + (w.b.y - w.a.y) * best.t };
-    const side = Math.sign((p.x - base.x) * n.x + (p.y - base.y) * n.y) || 1;
-    const off = w.thickness / 2 + depth / 2;
-    const ang = (Math.atan2(w.b.y - w.a.y, w.b.x - w.a.x) * 180) / Math.PI;
-    return {
-      pt: { x: base.x + n.x * off * side, y: base.y + n.y * off * side },
-      rot: Math.round((side > 0 ? ang : ang + 180 + 360) % 360),
-    };
-  }
-  return { pt: { x: Math.round(p.x / 5) * 5, y: Math.round(p.y / 5) * 5 }, rot: null };
+/** 家具吸附：贴墙、家具边/中心线、网格 */
+export function snapItemPos(ed: Editor2D, p: Pt, item: Item): ItemSnapResult {
+  return snapItem(ed.store.project, p, item);
 }
 
 /** 求最近墙及参数位置：门窗放置 */

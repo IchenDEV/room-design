@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import type { Viewer3D } from './viewer';
 import { closeCtxMenu, openCtxMenu } from '../core/store/actions';
+import { snapItem } from '../core/geometry/item-snap';
 
 /** 3D 拾取：点选家具、平面拖拽、右键菜单 */
 export function bindInteract(v: Viewer3D): () => void {
@@ -46,8 +47,10 @@ export function bindInteract(v: Viewer3D): () => void {
     v.store.update((proj) => {
       const it = proj.items.find((i) => i.id === dragId);
       if (it) {
-        it.x = Math.round(p.x - off.x);
-        it.y = Math.round(-(p.z - off.z));
+        const snap = snapItem(proj, { x: p.x - off.x, y: -(p.z - off.z) }, it);
+        it.x = snap.pt.x;
+        it.y = snap.pt.y;
+        if (snap.rot !== null) it.rot = snap.rot;
       }
     });
   };
