@@ -31,4 +31,4 @@ export const stats = (s: Store): Stats => ({
 export const roomPerimeter = (r: RoomPoly): number => polygonPerimeter(r.poly) / 100;
 
 export const selKey = (sel: Selection | null): string =>
-  sel ? (sel.kind === 'room' ? `room:${sel.metaId}` : `${sel.kind}:${sel.id}`) : '';
+  sel ? (sel.kind === 'room' ? `room:${sel.metaId}` : sel.kind === 'multi' ? `multi:${sel.ids.join(',')}` : `${sel.kind}:${sel.id}`) : '';

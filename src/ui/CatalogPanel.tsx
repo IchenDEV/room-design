@@ -4,6 +4,16 @@ import type { CatId, FurnDef } from '../core/catalog/catalog';
 import { store } from '../core/store/store';
 import { useTick } from '../core/store/react';
 import { drawThumb } from '../editor2d/glyphs/glyphs';
+import { Ic } from './icons';
+
+const CAT_ICONS: Record<CatId, string> = {
+  living: 'sofa',
+  bedroom: 'bed',
+  dining: 'dining',
+  bath: 'bath',
+  seat: 'chair',
+  office: 'office',
+};
 
 function Thumb({ def }: { def: FurnDef }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -27,7 +37,7 @@ export function CatalogPanel() {
       <div className="cat-tabs">
         {CATS.map((c) => (
           <button key={c.id} className={`cat-tab ${cat === c.id ? 'on' : ''}`} onClick={() => { setCat(c.id); setQ(''); }}>
-            {c.name}
+            <Ic n={CAT_ICONS[c.id]} size={13} /><span>{c.name}</span>
           </button>
         ))}
       </div>

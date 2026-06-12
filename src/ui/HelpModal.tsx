@@ -1,5 +1,6 @@
 import { store } from '../core/store/store';
 import { useTick } from '../core/store/react';
+import { Ic } from './icons';
 
 const ROWS: [string, string][] = [
   ['V / W / T / D / N', '选择 / 画墙 / 矩形房间 / 门 / 窗'],
@@ -25,7 +26,7 @@ export function HelpModal() {
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
           <b>快捷键</b>
-          <button className="tb-btn" onClick={close}>✕</button>
+          <button className="tb-btn" title="关闭" onClick={close}><Ic n="close" /></button>
         </div>
         <div className="modal-body">
           {ROWS.map(([k, v]) => (

@@ -2,7 +2,7 @@ import { store } from '../../core/store/store';
 import { openingOf, wallOf } from '../../core/store/selectors';
 import { deleteSelection } from '../../core/store/actions';
 import { wallLen } from '../../core/geometry/vec';
-import { BtnRow, Check, ChoiceGrid, KV, Section, SliderNum } from './widgets';
+import { ActionBtn, BtnRow, Check, ChoiceGrid, KV, Section, SliderNum } from './widgets';
 import type { Opening } from '../../core/types';
 
 const DOOR_SWINGS = [{ id: 'single', name: '单开' }, { id: 'double', name: '双开' }] as const;
@@ -46,7 +46,7 @@ export function OpeningProps({ id }: { id: string }) {
           onChange={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.flip = v; })} />
       </Section>
       <BtnRow>
-        <button className="btn danger" onClick={() => deleteSelection(store)}>删除{isDoor ? '门' : '窗'}</button>
+        <ActionBtn icon="trash" danger onClick={() => deleteSelection(store)}>删除{isDoor ? '门' : '窗'}</ActionBtn>
       </BtnRow>
     </>
   );

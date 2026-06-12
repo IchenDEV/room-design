@@ -29,4 +29,4 @@ export const mkMeta = (name: string, x: number, y: number, floor: string): RoomM
 
 export const mkProject = (
   name: string, walls: Wall[], openings: Opening[], items: Item[], roomMetas: RoomMeta[],
-): Project => ({ version: 1, name, walls, openings, items, roomMetas, settings: defaultSettings() });
+): Project => ({ version: 1, name, walls, openings, items, groups: [], roomMetas, settings: defaultSettings() });

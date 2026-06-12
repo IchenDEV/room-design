@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { store } from '../core/store/store';
 import { closeCtxMenu, deleteSelection } from '../core/store/actions';
+import { createGroupFromSelection, idsFromSelection, ungroupSelection } from '../core/store/item-groups';
 import { editors } from '../ui/editors';
 import { endChain, escape, nudgeSel, rotateSel } from '../editor2d/commands';
 
@@ -48,6 +49,8 @@ export function useShortcuts() {
         case 'KeyM': store.setMode(store.ui.mode === '2d' ? '3d' : '2d'); break;
         case 'KeyG':
           if (store.ui.mode === '3d') editors.v3?.walk.toggle();
+          else if (store.sel?.kind === 'multi') createGroupFromSelection(store);
+          else if (store.sel?.kind === 'group') ungroupSelection(store);
           break;
         case 'Delete':
         case 'Backspace': deleteSelection(store); break;
@@ -58,7 +61,7 @@ export function useShortcuts() {
           const step = e.shiftKey ? 10 : 1;
           const dx = e.code === 'ArrowLeft' ? -step : e.code === 'ArrowRight' ? step : 0;
           const dy = e.code === 'ArrowDown' ? -step : e.code === 'ArrowUp' ? step : 0;
-          if (store.sel?.kind === 'item' && editors.e2) {
+          if (idsFromSelection(store).length && editors.e2) {
             e.preventDefault();
             nudgeSel(editors.e2, dx, dy);
           }

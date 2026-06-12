@@ -2,6 +2,7 @@ import type { CtxMenu, Project, RoomPoly, Selection, Theme, Tool, ViewMode } fro
 import { detectRooms } from '../geometry/rooms';
 import { pointInPoly } from '../geometry/polygon';
 import { defaultSample } from '../samples';
+import { pruneGroups } from './item-groups';
 
 export type EventName = 'change' | 'sel' | 'ui' | 'saved' | 'project';
 export interface ChangeInfo { transient?: boolean }
@@ -39,6 +40,7 @@ export class Store {
   }
 
   recompute() {
+    pruneGroups(this.project);
     this.rooms = detectRooms(this.project.walls);
     for (const r of this.rooms) {
       const meta = this.project.roomMetas.find((m) => pointInPoly(m.anchor, r.poly));

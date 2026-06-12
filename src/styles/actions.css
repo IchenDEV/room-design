@@ -1,0 +1,44 @@
+.icon-btn,
+.ctx-item,
+.dd-item,
+.cat-tab,
+.seg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon-btn {
+  justify-content: center;
+  min-width: 0;
+}
+
+.icon-btn span,
+.ctx-item span,
+.dd-item span,
+.cat-tab span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icon-btn svg,
+.ctx-item svg,
+.dd-item svg,
+.cat-tab svg,
+.seg-btn svg {
+  flex: 0 0 auto;
+}
+
+.ctx-item,
+.dd-item {
+  justify-content: flex-start;
+}
+
+.cat-tab {
+  justify-content: center;
+}
+
+.seg-btn {
+  justify-content: center;
+}

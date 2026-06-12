@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Ic } from '../icons';
 
 export const Section = ({ title, children }: { title: string; children: ReactNode }) => (
   <div className="prop-section">
@@ -103,3 +104,13 @@ export function ChoiceGrid<T extends string>({
 }
 
 export const BtnRow = ({ children }: { children: ReactNode }) => <div className="btn-row">{children}</div>;
+
+export function ActionBtn({
+  icon, children, danger, disabled, onClick, title,
+}: { icon: string; children: ReactNode; danger?: boolean; disabled?: boolean; onClick?: () => void; title?: string }) {
+  return (
+    <button className={`btn icon-btn ${danger ? 'danger' : ''}`} disabled={disabled} title={title} onClick={onClick}>
+      <Ic n={icon} size={15} /><span>{children}</span>
+    </button>
+  );
+}

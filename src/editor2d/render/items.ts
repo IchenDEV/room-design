@@ -1,6 +1,8 @@
 import type { Editor2D } from '../editor';
 import type { Item } from '../../core/types';
 import { defaultTexture, defOf } from '../../core/catalog/catalog';
+import { itemsBounds } from '../../core/geometry/item-bounds';
+import { groupItems, idsFromSelection, groupOf } from '../../core/store/item-groups';
 import { drawGlyph } from '../glyphs/glyphs';
 import { snapItemPos } from '../snap';
 import { pill } from './overlays';
@@ -32,6 +34,29 @@ function drawResizeHandles(ed: Editor2D, it: Item) {
   }
 }
 
+function drawGroupBox(ed: Editor2D) {
+  const { ctx, store, pal } = ed;
+  const sel = store.sel;
+  if (sel?.kind !== 'group' && sel?.kind !== 'multi') return;
+  const items = sel.kind === 'group'
+    ? groupItems(store, sel.id)
+    : store.project.items.filter((it) => idsFromSelection(store).includes(it.id));
+  const b = itemsBounds(items);
+  if (!b) return;
+  const a = ed.w2s({ x: b.minX, y: b.maxY });
+  const c = ed.w2s({ x: b.maxX, y: b.minY });
+  ctx.save();
+  ctx.strokeStyle = pal.sel;
+  ctx.fillStyle = pal.selSoft;
+  ctx.lineWidth = 2;
+  ctx.setLineDash([7, 5]);
+  ctx.fillRect(a.x - 8, a.y - 8, c.x - a.x + 16, c.y - a.y + 16);
+  ctx.strokeRect(a.x - 8, a.y - 8, c.x - a.x + 16, c.y - a.y + 16);
+  ctx.restore();
+  const label = sel.kind === 'group' ? groupOf(store, sel.id)?.name ?? '组合' : `${items.length} 件家具`;
+  pill(ed, (a.x + c.x) / 2, a.y - 18, label);
+}
+
 export function drawItems(ed: Editor2D) {
   const { ctx, store, pal } = ed;
   const s = ed.view.s;
@@ -60,6 +85,7 @@ export function drawItems(ed: Editor2D) {
       pill(ed, top.x, top.y - 16, `${def.name} ${Math.round(it.w)}×${Math.round(it.d)}`);
     }
   }
+  drawGroupBox(ed);
 
   // 放置幽灵
   const tool = store.ui.tool;
