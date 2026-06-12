@@ -1,4 +1,6 @@
 import { shade } from '../../core/geometry/vec';
+import type { FurnTexture } from '../../core/catalog/catalog';
+import { fillFor } from './fills';
 
 /** 图例绘制函数：画布已平移到家具中心，w/d 为像素尺寸，背朝 -y */
 export type GlyphFn = (ctx: CanvasRenderingContext2D, w: number, d: number, fill: string, line: string) => void;
@@ -24,10 +26,10 @@ export const ell = (ctx: CanvasRenderingContext2D, x: number, y: number, rx: num
 };
 
 /** 设定填色/描边，返回描边色 */
-export function prep(ctx: CanvasRenderingContext2D, fill: string): string {
+export function prep(ctx: CanvasRenderingContext2D, fill: string, texture?: FurnTexture): string {
   let line: string;
   try { line = shade(fill, -70); } catch { line = '#555'; }
-  ctx.fillStyle = fill;
+  ctx.fillStyle = fillFor(ctx, texture, fill);
   ctx.strokeStyle = line;
   ctx.lineWidth = 1.4;
   ctx.lineJoin = 'round';

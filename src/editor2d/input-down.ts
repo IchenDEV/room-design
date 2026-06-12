@@ -3,7 +3,7 @@ import { hitAny, hitNode, hitRoom } from './hit';
 import { endGroup, nearestWall, snapWallPoint } from './snap';
 import { addChainPoint, ghostValid, placeItem, placeOpening } from './commands';
 import { ensureRoomMeta } from '../core/store/actions';
-import { hitItemRotateHandle } from './item-handles';
+import { hitItemResizeHandle, hitItemRotateHandle, resizeAnchor } from './item-handles';
 
 export function onDown(ed: Editor2D, e: PointerEvent) {
   const s = ed.evPos(e);
@@ -19,6 +19,17 @@ export function onDown(ed: Editor2D, e: PointerEvent) {
   if (e.button !== 0) return;
 
   if (tool.type === 'select') {
+    const resize = hitItemResizeHandle(ed, s);
+    if (resize) {
+      const it = store.project.items.find((i) => i.id === resize.id);
+      if (!it) return;
+      store.begin();
+      ed.st.drag = {
+        kind: 'item-resize', id: resize.id, corner: resize.corner,
+        anchor: resizeAnchor(it, resize.corner), rot: it.rot, moved: false,
+      };
+      return;
+    }
     const rotateId = hitItemRotateHandle(ed, s);
     if (rotateId) {
       store.begin();

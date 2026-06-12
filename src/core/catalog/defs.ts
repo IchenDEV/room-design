@@ -1,4 +1,9 @@
-export type { CatId, FurnDef, FurnKind } from './types';
+export type { CatId, FurnDef, FurnKind, FurnTexture } from './types';
+export { BATH_DEFS } from './bath-defs';
+export { BEDROOM_DEFS } from './bedroom-defs';
+export { DINING_DEFS } from './dining-defs';
 export { EXTRA_DEFS } from './extra-defs';
 export { HOME_DEFS } from './home-defs';
+export { LIVING_DEFS } from './living-defs';
 export { OFFICE_DEFS } from './office-defs';
+export { SEAT_DEFS } from './seat-defs';

@@ -16,6 +16,10 @@ export interface Wall {
 
 export type OpeningKind = 'door' | 'window';
 export type DoorStyle = 'wood' | 'glass';
+export type DoorSwing = 'single' | 'double';
+export type FurnTexture =
+  | 'fabric' | 'leather' | 'wood' | 'darkWood' | 'metal' | 'glass'
+  | 'stone' | 'ceramic' | 'rattan' | 'felt' | 'plastic' | 'plant';
 
 export interface Opening {
   id: string;
@@ -25,8 +29,9 @@ export interface Opening {
   width: number;
   height: number;
   sill: number;        // 窗台高（窗有效）
-  flip: boolean;       // 门开向
+  flip: boolean;       // 沿墙左右翻转
   style?: DoorStyle;   // 门：木门/玻璃门
+  swing?: DoorSwing;   // 门：单开/双开
 }
 
 export interface Item {
@@ -36,6 +41,8 @@ export interface Item {
   rot: number;         // 度
   w: number; d: number; h: number;
   color?: string;
+  texture?: FurnTexture;
+  flipX?: boolean;
 }
 
 export interface RoomMeta { id: string; anchor: Pt; name: string; floor: string }

@@ -2,7 +2,7 @@ import type { Pt } from '../core/types';
 import { defOf } from '../core/catalog/catalog';
 import type { Editor2D } from './editor';
 import { snapItemPos } from './snap';
-import { snappedItemAngle } from './item-handles';
+import { resizeFromAnchor, snappedItemAngle, type ItemResizeCorner } from './item-handles';
 
 const applySnapFeedback = (ed: Editor2D, snap: ReturnType<typeof snapItemPos>) => {
   ed.st.guides = snap.guides;
@@ -32,6 +32,20 @@ export function rotateDraggedItem(ed: Editor2D, id: string, p: Pt) {
   ed.store.update((proj) => {
     const t = proj.items.find((i) => i.id === id);
     if (t) t.rot = rot;
+  });
+}
+
+export function resizeDraggedItem(ed: Editor2D, id: string, corner: ItemResizeCorner, anchor: Pt, rot: number, p: Pt) {
+  const next = resizeFromAnchor(anchor, rot, corner, p);
+  ed.st.guides = [
+    { a: anchor, b: { x: next.x, y: next.y }, label: '尺寸' },
+    { a: { x: next.x, y: next.y }, b: p, label: '拖拽' },
+  ];
+  ed.st.snapped = p;
+  ed.st.snapLabel = `${next.w}×${next.d} cm`;
+  ed.store.update((proj) => {
+    const t = proj.items.find((i) => i.id === id);
+    if (t) { t.x = next.x; t.y = next.y; t.w = next.w; t.d = next.d; }
   });
 }
 

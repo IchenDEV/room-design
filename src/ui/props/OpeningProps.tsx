@@ -2,8 +2,10 @@ import { store } from '../../core/store/store';
 import { openingOf, wallOf } from '../../core/store/selectors';
 import { deleteSelection } from '../../core/store/actions';
 import { wallLen } from '../../core/geometry/vec';
-import { Check, KV, Section, SliderNum, BtnRow } from './widgets';
+import { BtnRow, Check, ChoiceGrid, KV, Section, SliderNum } from './widgets';
 import type { Opening } from '../../core/types';
+
+const DOOR_SWINGS = [{ id: 'single', name: '单开' }, { id: 'double', name: '双开' }] as const;
 
 export function OpeningProps({ id }: { id: string }) {
   const o = openingOf(store, id);
@@ -33,12 +35,16 @@ export function OpeningProps({ id }: { id: string }) {
       </Section>
       {isDoor && (
         <Section title="样式">
+          <ChoiceGrid options={DOOR_SWINGS} value={o.swing ?? 'single'}
+            onPick={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.swing = v; })} />
           <Check label="玻璃门（铝框 + 透明玻璃）" checked={o.style === 'glass'}
             onChange={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.style = v ? 'glass' : 'wood'; })} />
-          <Check label="翻转开门方向" checked={o.flip}
-            onChange={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.flip = v; })} />
         </Section>
       )}
+      <Section title={isDoor ? '门窗方向' : '窗方向'}>
+        <Check label={isDoor ? '左右翻转门扇' : '左右翻转窗扇'} checked={o.flip}
+          onChange={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.flip = v; })} />
+      </Section>
       <BtnRow>
         <button className="btn danger" onClick={() => deleteSelection(store)}>删除{isDoor ? '门' : '窗'}</button>
       </BtnRow>

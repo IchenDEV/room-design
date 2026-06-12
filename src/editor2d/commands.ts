@@ -2,7 +2,7 @@ import { uid } from '../core/types';
 import type { Pt } from '../core/types';
 import type { Editor2D } from './editor';
 import { wallLen, lerp } from '../core/geometry/vec';
-import { defOf } from '../core/catalog/catalog';
+import { defaultTexture, defOf } from '../core/catalog/catalog';
 import { snapItemPos } from './snap';
 
 const wallTpl = (ed: Editor2D, a: Pt, b: Pt) => ({
@@ -67,6 +67,7 @@ export function placeOpening(ed: Editor2D, kind: 'door' | 'window') {
       width: kind === 'door' ? 90 : 150,
       height: kind === 'door' ? 210 : 140,
       sill: kind === 'door' ? 0 : 90, flip: false,
+      swing: kind === 'door' ? 'single' : undefined,
     });
   });
   ed.store.setSel({ kind: 'opening', id });
@@ -88,7 +89,7 @@ export function ghostValid(ed: Editor2D, wallId: string, t: number, width: numbe
 export function placeItem(ed: Editor2D, defId: string, p: Pt) {
   const def = defOf(defId);
   const id = uid('i');
-  const item = { id, defId, x: p.x, y: p.y, rot: 0, w: def.w, d: def.d, h: def.h };
+  const item = { id, defId, x: p.x, y: p.y, rot: 0, w: def.w, d: def.d, h: def.h, texture: defaultTexture(def) };
   const snap = snapItemPos(ed, p, item);
   ed.store.commit((proj) => {
     proj.items.push({ ...item, x: snap.pt.x, y: snap.pt.y, rot: snap.rot ?? 0 });

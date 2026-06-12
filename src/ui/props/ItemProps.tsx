@@ -1,8 +1,8 @@
 import { store } from '../../core/store/store';
 import { itemOf } from '../../core/store/selectors';
 import { deleteSelection, duplicateItem, rotateItem } from '../../core/store/actions';
-import { defOf, ITEM_COLORS } from '../../core/catalog/catalog';
-import { NumField, Section, SliderNum, Swatches, BtnRow } from './widgets';
+import { defaultTexture, defOf, ITEM_COLORS, TEXTURES } from '../../core/catalog/catalog';
+import { BtnRow, Check, ChoiceGrid, NumField, Section, SliderNum, Swatches } from './widgets';
 import type { Item } from '../../core/types';
 
 export function ItemProps({ id }: { id: string }) {
@@ -37,6 +37,12 @@ export function ItemProps({ id }: { id: string }) {
       <Section title="配色">
         <Swatches colors={ITEM_COLORS} value={it.color ?? def.color}
           onPick={(c) => store.commit((p) => { const t = p.items.find((x) => x.id === id); if (t) t.color = c; })} />
+      </Section>
+      <Section title="材质">
+        <ChoiceGrid options={TEXTURES} value={it.texture ?? defaultTexture(def)}
+          onPick={(v) => store.commit((p) => { const t = p.items.find((x) => x.id === id); if (t) t.texture = v; })} />
+        <Check label="左右翻转家具" checked={!!it.flipX}
+          onChange={(v) => store.commit((p) => { const t = p.items.find((x) => x.id === id); if (t) t.flipX = v; })} />
       </Section>
       <BtnRow>
         <button className="btn" onClick={() => rotateItem(store, id)}>旋转 90°</button>

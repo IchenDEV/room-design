@@ -2,7 +2,7 @@ import { store } from '../core/store/store';
 import { useTick } from '../core/store/react';
 import {
   closeCtxMenu, deleteSelection, duplicateItem, rotateItem,
-  toggleDoorStyle, toggleWallMaterial,
+  toggleDoorStyle, toggleDoorSwing, toggleItemFlip, toggleOpeningFlip, toggleWallMaterial,
 } from '../core/store/actions';
 import { openingOf, wallOf } from '../core/store/selectors';
 
@@ -17,6 +17,7 @@ export function ContextMenu() {
   if (sel.kind === 'item') {
     entries.push(
       { label: '旋转 90°', fn: () => rotateItem(store, sel.id) },
+      { label: '左右翻转', fn: () => toggleItemFlip(store, sel.id) },
       { label: '复制', fn: () => duplicateItem(store, sel.id) },
       { label: '删除', danger: true, fn: () => deleteSelection(store) },
     );
@@ -30,7 +31,9 @@ export function ContextMenu() {
     const o = openingOf(store, sel.id);
     if (o?.kind === 'door') {
       entries.push({ label: o.style === 'glass' ? '改为木门' : '改为玻璃门', fn: () => toggleDoorStyle(store, sel.id) });
+      entries.push({ label: o.swing === 'double' ? '改为单开门' : '改为双开门', fn: () => toggleDoorSwing(store, sel.id) });
     }
+    entries.push({ label: '左右翻转', fn: () => toggleOpeningFlip(store, sel.id) });
     entries.push({ label: o?.kind === 'door' ? '删除门' : '删除窗', danger: true, fn: () => deleteSelection(store) });
   }
   if (!entries.length) return null;
