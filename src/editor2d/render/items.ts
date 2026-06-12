@@ -1,10 +1,10 @@
 import type { Editor2D } from '../editor';
 import type { Item } from '../../core/types';
-import { defOf } from '../../core/catalog/catalog';
+import { defaultTexture, defOf } from '../../core/catalog/catalog';
 import { drawGlyph } from '../glyphs/glyphs';
 import { snapItemPos } from '../snap';
 import { pill } from './overlays';
-import { itemTopScreen, rotateHandleScreen } from '../item-handles';
+import { itemTopScreen, resizeHandlesScreen, rotateHandleScreen } from '../item-handles';
 
 function drawRotateHandle(ed: Editor2D, it: Item) {
   const { ctx, pal } = ed;
@@ -19,6 +19,19 @@ function drawRotateHandle(ed: Editor2D, it: Item) {
   ctx.beginPath(); ctx.arc(h.x, h.y, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 }
 
+function drawResizeHandles(ed: Editor2D, it: Item) {
+  const { ctx, pal } = ed;
+  for (const h of resizeHandlesScreen(ed, it)) {
+    ctx.fillStyle = pal.handle;
+    ctx.strokeStyle = pal.sel;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(h.pt.x - 5, h.pt.y - 5, 10, 10, 2);
+    ctx.fill();
+    ctx.stroke();
+  }
+}
+
 export function drawItems(ed: Editor2D) {
   const { ctx, store, pal } = ed;
   const s = ed.view.s;
@@ -30,7 +43,8 @@ export function drawItems(ed: Editor2D) {
     ctx.save();
     ctx.translate(cs.x, cs.y);
     ctx.rotate((-it.rot * Math.PI) / 180);
-    drawGlyph(ctx, def.kind, it.w * s, it.d * s, it.color ?? def.color);
+    if (it.flipX) ctx.scale(-1, 1);
+    drawGlyph(ctx, def.kind, it.w * s, it.d * s, it.color ?? def.color, it.texture ?? defaultTexture(def));
     if (it.id === selId) {
       ctx.strokeStyle = pal.sel;
       ctx.lineWidth = 2;
@@ -40,6 +54,7 @@ export function drawItems(ed: Editor2D) {
     }
     ctx.restore();
     if (it.id === selId) {
+      drawResizeHandles(ed, it);
       drawRotateHandle(ed, it);
       const top = itemTopScreen(ed, it);
       pill(ed, top.x, top.y - 16, `${def.name} ${Math.round(it.w)}×${Math.round(it.d)}`);
@@ -57,7 +72,7 @@ export function drawItems(ed: Editor2D) {
     ctx.globalAlpha = 0.6;
     ctx.translate(cs.x, cs.y);
     ctx.rotate((-(snap.rot ?? 0) * Math.PI) / 180);
-    drawGlyph(ctx, def.kind, def.w * s, def.d * s, def.color);
+    drawGlyph(ctx, def.kind, def.w * s, def.d * s, def.color, defaultTexture(def));
     ctx.strokeStyle = pal.ghostOk;
     ctx.lineWidth = 1.6;
     ctx.setLineDash([5, 4]);

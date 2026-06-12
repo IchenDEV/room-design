@@ -61,7 +61,7 @@
 .check-row { display: flex; align-items: center; gap: 8px; margin: 8px 0; cursor: pointer; font-size: 12.5px; }
 .check-row input { accent-color: var(--accent); width: 15px; height: 15px; }
 
-.seg-row { display: flex; gap: 6px; margin-bottom: 9px; }
+.seg-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 9px; }
 .seg-btn {
   flex: 1; height: 28px;
   border: 1px solid var(--line);
@@ -70,6 +70,7 @@
   color: var(--muted);
   font-size: 12px;
 }
+.seg-row.wrap .seg-btn { flex: 0 0 calc(33.333% - 4px); }
 .seg-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 .btn-row { display: flex; gap: 7px; margin-top: 12px; }

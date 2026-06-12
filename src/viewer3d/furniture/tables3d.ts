@@ -3,24 +3,24 @@ import { box, cyl, legs4, mat } from './parts';
 import { shade } from '../../core/geometry/vec';
 import type { Builder } from './seating3d';
 
-export const table: Builder = (w, d, h, c) => {
+export const table: Builder = (w, d, h, c, tex) => {
   const g = new THREE.Group();
-  g.add(box(w, 5, d, mat(c, 0.7), 0, h - 2.5, 0));
+  g.add(box(w, 5, d, mat(c, 0.7, 0, tex), 0, h - 2.5, 0));
   legs4(g, w * 0.9, d * 0.88, h - 5, 3, mat(shade(c, -40), 0.7));
   return g;
 };
 
-export const roundtable: Builder = (w, _d, h, c) => {
+export const roundtable: Builder = (w, _d, h, c, tex) => {
   const g = new THREE.Group();
-  g.add(cyl(w / 2, w / 2, 5, mat(c, 0.7), 0, h - 2.5, 0, 28));
+  g.add(cyl(w / 2, w / 2, 5, mat(c, 0.7, 0, tex), 0, h - 2.5, 0, 28));
   g.add(cyl(5, 7, h - 9, mat(shade(c, -45), 0.7), 0, (h - 9) / 2 + 4, 0));
   g.add(cyl(w * 0.3, w * 0.3, 4, mat(shade(c, -55), 0.7), 0, 2, 0, 24));
   return g;
 };
 
-export const tvstand: Builder = (w, d, h, c) => {
+export const tvstand: Builder = (w, d, h, c, tex) => {
   const g = new THREE.Group();
-  const body = mat(c, 0.75);
+  const body = mat(c, 0.75, 0, tex);
   g.add(box(w, h - 10, d, body, 0, (h - 10) / 2 + 8, 0));
   g.add(box(w * 0.96, 2.5, d * 0.9, mat(shade(c, -35), 0.7), 0, h - 9, 0));
   legs4(g, w * 0.9, d * 0.8, 8, 2.5, mat('#5d4a33', 0.7));
@@ -30,9 +30,9 @@ export const tvstand: Builder = (w, d, h, c) => {
   return g;
 };
 
-export const shelf: Builder = (w, d, h, c) => {
+export const shelf: Builder = (w, d, h, c, tex) => {
   const g = new THREE.Group();
-  const wood = mat(c, 0.8);
+  const wood = mat(c, 0.8, 0, tex);
   for (const s of [-1, 1]) g.add(box(4, h, d, wood, s * (w / 2 - 2), h / 2, 0));
   g.add(box(w, h, 2.5, wood, 0, h / 2, -d / 2 + 1.2));
   const layers = 4;

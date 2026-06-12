@@ -1,4 +1,5 @@
-import type { FurnKind, FurnDef } from '../../core/catalog/catalog';
+import type { FurnKind, FurnDef, FurnTexture } from '../../core/catalog/catalog';
+import { defaultTexture } from '../../core/catalog/catalog';
 import { prep } from './util';
 import type { GlyphFn } from './util';
 import { sofa, chair, stool, barstool, bench } from './seating';
@@ -18,8 +19,11 @@ const REG: Record<FurnKind, GlyphFn> = {
 };
 
 /** 在已平移至中心的画布上绘制家具图例（w/d 像素） */
-export function drawGlyph(ctx: CanvasRenderingContext2D, kind: FurnKind, w: number, d: number, color: string) {
-  const line = prep(ctx, color);
+export function drawGlyph(
+  ctx: CanvasRenderingContext2D, kind: FurnKind, w: number, d: number,
+  color: string, texture?: FurnTexture,
+) {
+  const line = prep(ctx, color, texture);
   (REG[kind] ?? table)(ctx, w, d, color, line);
 }
 
@@ -36,6 +40,6 @@ export function drawThumb(canvas: HTMLCanvasElement, def: FurnDef) {
   const k = Math.min((W - 16) / def.w, (H - 12) / def.d);
   ctx.save();
   ctx.translate(W / 2, H / 2);
-  drawGlyph(ctx, def.kind, def.w * k, def.d * k, def.color);
+  drawGlyph(ctx, def.kind, def.w * k, def.d * k, def.color, defaultTexture(def));
   ctx.restore();
 }

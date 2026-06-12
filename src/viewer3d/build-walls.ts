@@ -67,7 +67,7 @@ export function buildWall(wall: Wall, openings: Opening[]): WallBuild {
 
   const doors: DoorRef[] = [];
   for (const o of list) {
-    if (o.kind === 'door') doors.push(addDoor(group, o, L, T, H));
+    if (o.kind === 'door') doors.push(...addDoor(group, o, L, T, H));
     else addWindow(group, o, L, T, H);
   }
   return { group, doors };

@@ -1,7 +1,16 @@
 import * as THREE from 'three';
+import type { FurnTexture } from '../../core/catalog/catalog';
+import { furnitureMap } from './material-textures';
 
-export const mat = (color: string | number, rough = 0.85, metal = 0) =>
-  new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: metal });
+const hex = (color: string | number) => (typeof color === 'number' ? `#${color.toString(16).padStart(6, '0')}` : color);
+
+export const mat = (color: string | number, rough = 0.85, metal = 0, texture?: FurnTexture) =>
+  new THREE.MeshStandardMaterial({
+    color: texture ? '#ffffff' : color,
+    map: texture ? furnitureMap(texture, hex(color)) : null,
+    roughness: rough,
+    metalness: metal,
+  });
 
 function prepMesh(m: THREE.Mesh, x: number, y: number, z: number): THREE.Mesh {
   m.position.set(x, y, z);

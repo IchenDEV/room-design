@@ -11,22 +11,9 @@ const bar = (w: number, h: number, d: number, m: THREE.Material, x: number, y: n
   return mesh;
 };
 
-/** 门：含门框 + 可动门扇（pivot 铰链在洞口一侧） */
-export function addDoor(g: THREE.Group, o: Opening, L: number, T: number, H: number): DoorRef {
-  const w = o.width, h = Math.min(o.height, H - 6);
-  const c = o.t * L;
-  const x0 = c - w / 2, x1 = c + w / 2;
-  const jm = o.style === 'glass' ? frameMat : darkFrameMat;
-  g.add(bar(4, h, T + 2, jm, x0 + 2, h / 2, 0));
-  g.add(bar(4, h, T + 2, jm, x1 - 2, h / 2, 0));
-  g.add(bar(w, 4, T + 2, jm, c, h - 2, 0));
-
-  const pivot = new THREE.Group();
-  const hingeX = o.flip ? x1 - 2 : x0 + 2;
-  pivot.position.set(hingeX, 0, 0);
-  const pw = w - 6, sign = o.flip ? -1 : 1;
+function doorPanel(pw: number, h: number, style: Opening['style'], sign: number): THREE.Group {
   const panel = new THREE.Group();
-  if (o.style === 'glass') {
+  if (style === 'glass') {
     const pane = new THREE.Mesh(new THREE.BoxGeometry(pw - 6, h - 12, 1.6), glassMat);
     pane.position.set(0, 0, 0);
     panel.add(pane);
@@ -44,10 +31,39 @@ export function addDoor(g: THREE.Group, o: Opening, L: number, T: number, H: num
       panel.add(knob);
     }
   }
-  panel.position.set(sign * pw / 2, h / 2, 0);
-  pivot.add(panel);
-  g.add(pivot);
-  return { pivot, openAngle: sign * Math.PI * 0.52 };
+  return panel;
+}
+
+/** 门：含门框 + 可动门扇（pivot 铰链在洞口一侧） */
+export function addDoor(g: THREE.Group, o: Opening, L: number, T: number, H: number): DoorRef[] {
+  const w = o.width, h = Math.min(o.height, H - 6);
+  const c = o.t * L;
+  const x0 = c - w / 2, x1 = c + w / 2;
+  const jm = o.style === 'glass' ? frameMat : darkFrameMat;
+  g.add(bar(4, h, T + 2, jm, x0 + 2, h / 2, 0));
+  g.add(bar(4, h, T + 2, jm, x1 - 2, h / 2, 0));
+  g.add(bar(w, 4, T + 2, jm, c, h - 2, 0));
+
+  const refs: DoorRef[] = [];
+  const addLeaf = (hingeX: number, sign: number, pw: number, openSign = sign) => {
+    const pivot = new THREE.Group();
+    pivot.position.set(hingeX, 0, 0);
+    const panel = doorPanel(pw, h, o.style, sign);
+    panel.position.set(sign * pw / 2, h / 2, 0);
+    pivot.add(panel);
+    g.add(pivot);
+    refs.push({ pivot, openAngle: openSign * Math.PI * 0.52 });
+  };
+  if (o.swing === 'double') {
+    const pw = w / 2 - 5;
+    const side = o.flip ? -1 : 1;
+    addLeaf(x0 + 2, 1, pw, side);
+    addLeaf(x1 - 2, -1, pw, -side);
+  } else {
+    const sign = o.flip ? -1 : 1;
+    addLeaf(o.flip ? x1 - 2 : x0 + 2, sign, w - 6);
+  }
+  return refs;
 }
 
 /** 窗：铝框 + 玻璃 + 中梃 */

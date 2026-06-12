@@ -1,9 +1,15 @@
-import { EXTRA_DEFS, HOME_DEFS, OFFICE_DEFS } from './defs';
-import type { CatId, FurnDef } from './defs';
+import {
+  BATH_DEFS, BEDROOM_DEFS, DINING_DEFS, EXTRA_DEFS, HOME_DEFS,
+  LIVING_DEFS, OFFICE_DEFS, SEAT_DEFS,
+} from './defs';
+import type { CatId, FurnDef, FurnKind, FurnTexture } from './defs';
 
-export type { CatId, FurnDef, FurnKind } from './defs';
+export type { CatId, FurnDef, FurnKind, FurnTexture } from './defs';
 
-export const CATALOG: FurnDef[] = [...HOME_DEFS, ...EXTRA_DEFS, ...OFFICE_DEFS];
+export const CATALOG: FurnDef[] = [
+  ...HOME_DEFS, ...LIVING_DEFS, ...BEDROOM_DEFS, ...DINING_DEFS,
+  ...BATH_DEFS, ...EXTRA_DEFS, ...SEAT_DEFS, ...OFFICE_DEFS,
+];
 
 export const CATS: { id: CatId; name: string }[] = [
   { id: 'living', name: '客厅' },
@@ -16,6 +22,27 @@ export const CATS: { id: CatId; name: string }[] = [
 
 const defMap = new Map(CATALOG.map((d) => [d.id, d]));
 export const defOf = (id: string): FurnDef => defMap.get(id) ?? CATALOG[0];
+
+export const TEXTURES: { id: FurnTexture; name: string }[] = [
+  { id: 'fabric', name: '织物' }, { id: 'leather', name: '皮革' },
+  { id: 'wood', name: '木纹' }, { id: 'darkWood', name: '深木' },
+  { id: 'metal', name: '金属' }, { id: 'glass', name: '玻璃' },
+  { id: 'stone', name: '石材' }, { id: 'ceramic', name: '陶瓷' },
+  { id: 'rattan', name: '藤编' }, { id: 'felt', name: '绒面' },
+  { id: 'plastic', name: '塑料' }, { id: 'plant', name: '植栽' },
+];
+
+const byKind: Partial<Record<FurnKind, FurnTexture>> = {
+  sofa: 'fabric', chair: 'fabric', stool: 'wood', barstool: 'leather', bench: 'wood',
+  table: 'wood', roundtable: 'wood', bed: 'fabric', wardrobe: 'wood',
+  nightstand: 'wood', dresser: 'wood', shelf: 'wood', tvstand: 'darkWood',
+  counter: 'stone', fridge: 'metal', washer: 'metal', toilet: 'ceramic',
+  bathsink: 'ceramic', bathtub: 'ceramic', shower: 'glass', rug: 'felt',
+  lamp: 'metal', plant: 'plant', officedesk: 'wood', officechair: 'fabric',
+  filecabinet: 'metal', whiteboard: 'glass', printer: 'plastic', partition: 'fabric',
+};
+
+export const defaultTexture = (def: FurnDef): FurnTexture => def.texture ?? byKind[def.kind] ?? 'wood';
 
 export type FloorType = 'wood' | 'tile' | 'marble' | 'carpet';
 export interface FloorMat { id: string; name: string; type: FloorType; base: string; plan: string }

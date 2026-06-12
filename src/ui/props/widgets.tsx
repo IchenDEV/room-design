@@ -88,4 +88,18 @@ export function Check({ label, checked, onChange }: { label: string; checked: bo
   );
 }
 
+export function ChoiceGrid<T extends string>({
+  options, value, onPick,
+}: { options: readonly { id: T; name: string }[]; value: T; onPick: (v: T) => void }) {
+  return (
+    <div className="seg-row wrap">
+      {options.map((o) => (
+        <button key={o.id} className={`seg-btn ${value === o.id ? 'on' : ''}`} onClick={() => onPick(o.id)}>
+          {o.name}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export const BtnRow = ({ children }: { children: ReactNode }) => <div className="btn-row">{children}</div>;

@@ -5,8 +5,8 @@ import { hitAny } from './hit';
 import { commitRect, endChain, ghostValid } from './commands';
 import { openCtxMenu, closeCtxMenu } from '../core/store/actions';
 import { projT } from '../core/geometry/vec';
-import { moveDraggedItem, rotateDraggedItem, updatePlaceSnap } from './input-item';
-import { hitItemRotateHandle } from './item-handles';
+import { moveDraggedItem, resizeDraggedItem, rotateDraggedItem, updatePlaceSnap } from './input-item';
+import { hitItemResizeHandle, hitItemRotateHandle, resizeCursor } from './item-handles';
 
 function onMove(ed: Editor2D, e: PointerEvent) {
   const s = ed.evPos(e);
@@ -24,6 +24,9 @@ function onMove(ed: Editor2D, e: PointerEvent) {
   } else if (d?.kind === 'item-rotate') {
     d.moved = true;
     rotateDraggedItem(ed, d.id, p);
+  } else if (d?.kind === 'item-resize') {
+    d.moved = true;
+    resizeDraggedItem(ed, d.id, d.corner, d.anchor, d.rot, p);
   } else if (d?.kind === 'node') {
     d.moved = true;
     const snap = snapWallPoint(ed, p, null);
@@ -78,7 +81,9 @@ function onMove(ed: Editor2D, e: PointerEvent) {
     } else if (tool.type === 'place') {
       updatePlaceSnap(ed, tool.defId, p);
     } else {
-      ed.canvas.style.cursor = tool.type === 'select' && hitItemRotateHandle(ed, s) ? 'grab' : 'default';
+      const resize = tool.type === 'select' ? hitItemResizeHandle(ed, s) : null;
+      ed.canvas.style.cursor = resize ? resizeCursor(resize.corner)
+        : tool.type === 'select' && hitItemRotateHandle(ed, s) ? 'grab' : 'default';
       ed.st.guides = [];
       ed.st.snapped = null;
       ed.st.snapLabel = null;

@@ -37,6 +37,13 @@ export function rotateItem(s: Store, id: string, delta = 90) {
   });
 }
 
+export function toggleItemFlip(s: Store, id: string) {
+  s.commit((p) => {
+    const it = p.items.find((i) => i.id === id);
+    if (it) it.flipX = !it.flipX;
+  });
+}
+
 /** 精确设墙长：固定 a 端，b 端连同重合端点一起平移 */
 export function setWallLength(s: Store, id: string, len: number) {
   const w = wallOf(s, id);
@@ -64,6 +71,20 @@ export function toggleDoorStyle(s: Store, id: string) {
   s.commit((p) => {
     const o = p.openings.find((x) => x.id === id);
     if (o && o.kind === 'door') o.style = o.style === 'glass' ? 'wood' : 'glass';
+  });
+}
+
+export function toggleOpeningFlip(s: Store, id: string) {
+  s.commit((p) => {
+    const o = p.openings.find((x) => x.id === id);
+    if (o) o.flip = !o.flip;
+  });
+}
+
+export function toggleDoorSwing(s: Store, id: string) {
+  s.commit((p) => {
+    const o = p.openings.find((x) => x.id === id);
+    if (o?.kind === 'door') o.swing = o.swing === 'double' ? 'single' : 'double';
   });
 }
 

@@ -6,11 +6,17 @@ export type FurnKind =
   | 'officedesk' | 'officechair' | 'filecabinet' | 'whiteboard' | 'printer' | 'partition';
 
 export type CatId = 'living' | 'bedroom' | 'dining' | 'bath' | 'seat' | 'office';
+export type FurnTexture =
+  | 'fabric' | 'leather' | 'wood' | 'darkWood' | 'metal' | 'glass'
+  | 'stone' | 'ceramic' | 'rattan' | 'felt' | 'plastic' | 'plant';
 
 export interface FurnDef {
   id: string; name: string; cat: CatId; kind: FurnKind;
   w: number; d: number; h: number; color: string;
+  texture?: FurnTexture;
 }
 
-export const D = (id: string, name: string, cat: CatId, kind: FurnKind, w: number, d: number, h: number, color: string): FurnDef =>
-  ({ id, name, cat, kind, w, d, h, color });
+export const D = (
+  id: string, name: string, cat: CatId, kind: FurnKind,
+  w: number, d: number, h: number, color: string, texture?: FurnTexture,
+): FurnDef => ({ id, name, cat, kind, w, d, h, color, texture });

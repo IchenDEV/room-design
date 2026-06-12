@@ -27,19 +27,30 @@ function drawDoor(ed: Editor2D, w: Wall, o: Opening, ghost = false) {
   ctx.strokeStyle = col;
   ctx.lineWidth = 1.4;
   const side = o.flip ? -1 : 1;
-  const hinge = L(-half, 0), tip = L(-half + o.width * 0.04, side * o.width);
-  ctx.beginPath(); ctx.moveTo(hinge.x, hinge.y); ctx.lineTo(tip.x, tip.y); ctx.stroke();
-  if (o.style === 'glass') {
-    const t2 = L(-half + o.width * 0.12, side * o.width * 0.94);
-    ctx.beginPath(); ctx.moveTo(L(-half + o.width * 0.1, 0).x, L(-half + o.width * 0.1, 0).y); ctx.lineTo(t2.x, t2.y); ctx.stroke();
+  const drawLeaf = (hingeU: number, closedU: number, width: number) => {
+    const hinge = L(hingeU, 0);
+    const tip = L(hingeU + Math.sign(closedU - hingeU) * width * 0.04, side * width);
+    ctx.beginPath(); ctx.moveTo(hinge.x, hinge.y); ctx.lineTo(tip.x, tip.y); ctx.stroke();
+    if (o.style === 'glass') {
+      const g0 = L(hingeU + Math.sign(closedU - hingeU) * width * 0.1, 0);
+      const g1 = L(hingeU + Math.sign(closedU - hingeU) * width * 0.12, side * width * 0.94);
+      ctx.beginPath(); ctx.moveTo(g0.x, g0.y); ctx.lineTo(g1.x, g1.y); ctx.stroke();
+    }
+    const closed = L(closedU, 0);
+    const a0 = Math.atan2(closed.y - hinge.y, closed.x - hinge.x);
+    const a1 = Math.atan2(tip.y - hinge.y, tip.x - hinge.x);
+    ctx.beginPath();
+    ctx.arc(hinge.x, hinge.y, width * ed.view.s, Math.min(a0, a1), Math.max(a0, a1));
+    ctx.setLineDash([4, 3]); ctx.stroke(); ctx.setLineDash([]);
+  };
+  if (o.swing === 'double') {
+    drawLeaf(-half, 0, o.width / 2);
+    drawLeaf(half, 0, o.width / 2);
+    const mid = L(0, 0);
+    ctx.beginPath(); ctx.arc(mid.x, mid.y, 2.5, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill();
+  } else {
+    drawLeaf(o.flip ? half : -half, o.flip ? -half : half, o.width);
   }
-  const a0 = Math.atan2(L(half, 0).y - hinge.y, L(half, 0).x - hinge.x);
-  const a1 = Math.atan2(tip.y - hinge.y, tip.x - hinge.x);
-  ctx.beginPath();
-  ctx.arc(hinge.x, hinge.y, o.width * ed.view.s, Math.min(a0, a1), Math.max(a0, a1));
-  ctx.setLineDash([4, 3]);
-  ctx.stroke();
-  ctx.setLineDash([]);
   ctx.globalAlpha = 1;
 }
 
@@ -65,6 +76,10 @@ function drawWindow(ed: Editor2D, w: Wall, o: Opening, ghost = false) {
     ctx.lineWidth = 1.6;
     ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
   }
+  const dir = o.flip ? -1 : 1;
+  const s1 = L(-dir * half * 0.75, -ht * 0.65), s2 = L(dir * half * 0.75, ht * 0.65);
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(s1.x, s1.y); ctx.lineTo(s2.x, s2.y); ctx.stroke();
   ctx.globalAlpha = 1;
 }
 

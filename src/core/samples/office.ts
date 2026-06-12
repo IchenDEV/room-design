@@ -16,7 +16,7 @@ export function makeOffice(): Project {
     mkWall(0, 560, 320, 560, 12),         // 9 茶水间南隔墙
   ];
   const o = [
-    mkDoor(w[0], 0.385, 160, { style: 'glass' }),   // 入口玻璃双开门
+    mkDoor(w[0], 0.385, 160, { style: 'glass', swing: 'double' }), // 入口玻璃双开门
     mkDoor(w[5], 0.19, 100, { style: 'glass' }),    // 会议室玻璃门
     mkDoor(w[7], 0.2, 95, { style: 'glass' }),      // 经理室玻璃门
     mkDoor(w[8], 0.46, 100),                        // 茶水间门

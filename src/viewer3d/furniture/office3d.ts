@@ -3,9 +3,9 @@ import { box, cyl, mat } from './parts';
 import { shade } from '../../core/geometry/vec';
 import type { Builder } from './seating3d';
 
-export const officedesk: Builder = (w, d, h, c) => {
+export const officedesk: Builder = (w, d, h, c, tex) => {
   const g = new THREE.Group();
-  const top = mat(c, 0.65), leg = mat('#6b7077', 0.45, 0.5);
+  const top = mat(c, 0.65, 0, tex), leg = mat('#6b7077', 0.45, 0.5);
   g.add(box(w, 4.5, d, top, 0, h - 2.2, 0));
   for (const s of [-1, 1]) g.add(box(5, h - 5, d * 0.85, leg, s * (w / 2 - 5), (h - 5) / 2, 0));
   const mw = Math.min(w * 0.42, 62);
@@ -15,9 +15,9 @@ export const officedesk: Builder = (w, d, h, c) => {
   return g;
 };
 
-export const officechair: Builder = (w, d, h, c) => {
+export const officechair: Builder = (w, d, h, c, tex) => {
   const g = new THREE.Group();
-  const body = mat(c, 0.85), metal = mat('#888e94', 0.35, 0.7);
+  const body = mat(c, 0.85, 0, tex), metal = mat('#888e94', 0.35, 0.7);
   for (let i = 0; i < 5; i++) {
     const a = (i / 5) * Math.PI * 2;
     const arm = box(w * 0.42, 2.4, 4, metal, Math.cos(a) * w * 0.21, 3, Math.sin(a) * w * 0.21);
@@ -31,9 +31,9 @@ export const officechair: Builder = (w, d, h, c) => {
   return g;
 };
 
-export const filecabinet: Builder = (w, d, h, c) => {
+export const filecabinet: Builder = (w, d, h, c, tex) => {
   const g = new THREE.Group();
-  const body = mat(c, 0.5, 0.3), front = mat(shade(c, 12), 0.5, 0.3);
+  const body = mat(c, 0.5, 0.3, tex), front = mat(shade(c, 12), 0.5, 0.3, tex);
   g.add(box(w, h, d, body, 0, h / 2, 0));
   const n = 4;
   for (let i = 0; i < n; i++) {
@@ -44,10 +44,10 @@ export const filecabinet: Builder = (w, d, h, c) => {
   return g;
 };
 
-export const whiteboard: Builder = (w, d, h, c) => {
+export const whiteboard: Builder = (w, d, h, c, tex) => {
   const g = new THREE.Group();
   const metal = mat('#9aa0a6', 0.4, 0.6);
-  g.add(box(w, w * 0.62, 3, mat(c, 0.35), 0, h * 0.62, 0));
+  g.add(box(w, w * 0.62, 3, mat(c, 0.35, 0, tex), 0, h * 0.62, 0));
   g.add(box(w + 6, w * 0.62 + 6, 2, metal, 0, h * 0.62, -1));
   g.add(box(w * 0.7, 2.5, 8, metal, 0, h * 0.62 - w * 0.31 - 4, 3));
   for (const s of [-1, 1]) {
@@ -57,18 +57,18 @@ export const whiteboard: Builder = (w, d, h, c) => {
   return g;
 };
 
-export const printer: Builder = (w, d, h, c) => {
+export const printer: Builder = (w, d, h, c, tex) => {
   const g = new THREE.Group();
-  g.add(box(w, h * 0.4, d, mat(shade(c, -18), 0.6), 0, h * 0.2, 0));
-  g.add(box(w * 0.94, h * 0.34, d * 0.92, mat(c, 0.55), 0, h * 0.57, 0));
+  g.add(box(w, h * 0.4, d, mat(shade(c, -18), 0.6, 0, tex), 0, h * 0.2, 0));
+  g.add(box(w * 0.94, h * 0.34, d * 0.92, mat(c, 0.55, 0, tex), 0, h * 0.57, 0));
   g.add(box(w * 0.6, 2, d * 0.5, mat('#e9e7e0', 0.8), 0, h * 0.76, -d * 0.1));
   g.add(box(w * 0.5, h * 0.06, d * 0.3, mat('#3a3f45', 0.5), 0, h * 0.78, d * 0.25));
   return g;
 };
 
-export const partition: Builder = (w, d, h, c) => {
+export const partition: Builder = (w, d, h, c, tex) => {
   const g = new THREE.Group();
-  g.add(box(w, h - 12, Math.max(d, 5), mat(c, 0.95), 0, (h - 12) / 2 + 12, 0));
+  g.add(box(w, h - 12, Math.max(d, 5), mat(c, 0.95, 0, tex), 0, (h - 12) / 2 + 12, 0));
   g.add(box(w + 4, 4, Math.max(d, 5) + 2, mat(shade(c, -35), 0.6), 0, h - 8, 0));
   const metal = mat('#7d838a', 0.4, 0.6);
   for (const s of [-1, 1]) {
