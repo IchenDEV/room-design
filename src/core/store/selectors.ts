@@ -1,11 +1,12 @@
 import type { Store } from './store';
-import type { Item, Opening, RoomMeta, RoomPoly, Selection, Wall } from '../types';
+import type { Item, Measure, Opening, RoomMeta, RoomPoly, Selection, Wall } from '../types';
 import { wallLen } from '../geometry/vec';
 import { polygonPerimeter } from '../geometry/polygon';
 
 export const wallOf = (s: Store, id: string): Wall | undefined => s.project.walls.find((w) => w.id === id);
 export const openingOf = (s: Store, id: string): Opening | undefined => s.project.openings.find((o) => o.id === id);
 export const itemOf = (s: Store, id: string): Item | undefined => s.project.items.find((i) => i.id === id);
+export const measureOf = (s: Store, id: string): Measure | undefined => s.project.measures?.find((m) => m.id === id);
 export const metaOf = (s: Store, id: string): RoomMeta | undefined => s.project.roomMetas.find((m) => m.id === id);
 export const roomByMeta = (s: Store, metaId: string): RoomPoly | undefined => s.rooms.find((r) => r.metaId === metaId);
 

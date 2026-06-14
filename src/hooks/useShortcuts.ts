@@ -36,11 +36,13 @@ export function useShortcuts() {
           if (editors.e2) endChain(editors.e2);
           break;
         case 'KeyV': store.setTool({ type: 'select' }); break;
+        case 'KeyK': store.setTool({ type: 'boxSelect' }); break;
         case 'KeyW': store.setTool({ type: 'wall' }); break;
         case 'KeyT': store.setTool({ type: 'rect' }); break;
         case 'KeyD': store.setTool({ type: 'door' }); break;
         case 'KeyN': store.setTool({ type: 'window' }); break;
         case 'KeyL': store.setTool({ type: 'ruler' }); break;
+        case 'KeyB': store.setTool({ type: 'measure' }); break;
         case 'KeyR':
           if (editors.e2) rotateSel(editors.e2);
           break;

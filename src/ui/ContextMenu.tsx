@@ -48,6 +48,8 @@ export function ContextMenu() {
     }
     entries.push({ label: '左右翻转', icon: 'flip', fn: () => toggleOpeningFlip(store, sel.id) });
     entries.push({ label: o?.kind === 'door' ? '删除门' : '删除窗', icon: 'trash', danger: true, fn: () => deleteSelection(store) });
+  } else if (sel.kind === 'measure') {
+    entries.push({ label: '删除标注', icon: 'trash', danger: true, fn: () => deleteSelection(store) });
   }
   if (!entries.length) return null;
 

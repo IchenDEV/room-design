@@ -7,6 +7,7 @@ import { OpeningProps } from './props/OpeningProps';
 import { ItemProps } from './props/ItemProps';
 import { RoomProps } from './props/RoomProps';
 import { GroupProps, MultiProps } from './props/GroupProps';
+import { MeasureProps } from './props/MeasureProps';
 
 export function PropsPanel() {
   useTick();
@@ -21,6 +22,7 @@ export function PropsPanel() {
         {sel?.kind === 'item' && <ItemProps id={sel.id} />}
         {sel?.kind === 'multi' && <MultiProps />}
         {sel?.kind === 'group' && <GroupProps id={sel.id} />}
+        {sel?.kind === 'measure' && <MeasureProps id={sel.id} />}
         {sel?.kind === 'room' && <RoomProps metaId={sel.metaId} />}
       </div>
     </aside>

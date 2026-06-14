@@ -6,11 +6,13 @@ import { bindStatus } from './statusBus';
 
 const HINTS: Record<string, string> = {
   select: '左键选择/拖拽 · 右键快捷菜单 · 滚轮缩放 · 空格+拖拽平移',
+  boxSelect: '拖拽框选家具，框到家具外接框即可选中',
   wall: '点击放置墙体锚点，双击/回车结束，Esc 取消',
   rect: '按住拖拽画出矩形房间',
   door: '移动到墙上点击放置门',
   window: '移动到墙上点击放置窗',
   ruler: '按住拖拽测量距离，端点可吸附墙端/墙线',
+  measure: '按住拖拽创建距离标注，端点可吸附墙端/墙线',
   place: '在画布点击放置素材，靠墙自动贴齐，R 旋转',
 };
 

@@ -4,6 +4,7 @@ import { drawWalls } from './walls';
 import { drawOpenings } from './openings';
 import { drawItems } from './items';
 import { drawOverlays } from './overlays';
+import { drawBoxSelect } from './box-select';
 
 export function drawAll(ed: Editor2D) {
   const { ctx } = ed;
@@ -16,6 +17,7 @@ export function drawAll(ed: Editor2D) {
   drawOpenings(ed);
   drawItems(ed);
   drawOverlays(ed);
+  drawBoxSelect(ed);
 }
 
 function drawGrid(ed: Editor2D, w: number, h: number) {

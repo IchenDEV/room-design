@@ -8,6 +8,8 @@ import { moveDraggedItem, resizeDraggedItem, rotateDraggedItem } from './input-i
 import { openEditorContext } from './input-context';
 import { updateHoverState } from './input-hover';
 import { updateRuler } from './ruler';
+import { commitMeasure, updateMeasure } from './measure';
+import { commitBoxSelect, updateBoxSelect } from './box-select';
 
 function onMove(ed: Editor2D, e: PointerEvent) {
   const s = ed.evPos(e);
@@ -74,6 +76,10 @@ function onMove(ed: Editor2D, e: PointerEvent) {
     }
   } else if (d?.kind === 'ruler') {
     updateRuler(ed, p);
+  } else if (d?.kind === 'measure') {
+    updateMeasure(ed, p);
+  } else if (d?.kind === 'boxSelect') {
+    updateBoxSelect(ed, p);
   } else {
     updateHoverState(ed, s, p);
   }
@@ -84,7 +90,9 @@ function onUp(ed: Editor2D, e: PointerEvent) {
   if (ed.store.ui.tool.type === 'rect' && ed.st.rectA && e.button === 0) commitRect(ed);
   const d = ed.st.drag;
   if (!d) { ed.requestDraw(); return; }
-  if (d.kind !== 'pan') ed.store.end();
+  if (d.kind === 'measure') commitMeasure(ed);
+  else if (d.kind === 'boxSelect') commitBoxSelect(ed);
+  else if (d.kind !== 'pan') ed.store.end();
   ed.st.drag = null;
   ed.st.snapped = null;
   ed.st.snapLabel = null;

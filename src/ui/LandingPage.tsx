@@ -44,7 +44,7 @@ export function LandingPage() {
     <main className="landing" id="top">
       <header className="landing-nav">
         <a className="landing-brand" href="#top"><span>栖</span><b>栖居 Rooms</b></a>
-        <nav>
+        <nav aria-label="官网导航">
           <a href="#top">产品</a>
           <a href="#features">功能</a>
           <a href="#examples">示例</a>
@@ -54,7 +54,7 @@ export function LandingPage() {
 
       <section className="landing-hero">
         <div className="hero-copy">
-          <h1>在线规划你的下一间房</h1>
+          <h1>在线规划你的<span>下一间房</span></h1>
           <p>从墙体、门窗到家具、电源点位，一次完成 2D 平面和 3D 预览。</p>
           <div className="hero-actions">
             <a className="primary" href={studio}>开始设计</a>

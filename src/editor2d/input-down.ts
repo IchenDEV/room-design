@@ -6,6 +6,8 @@ import { ensureRoomMeta } from '../core/store/actions';
 import { itemGroupId, toggleItemSelection } from '../core/store/item-groups';
 import { hitItemResizeHandle, hitItemRotateHandle, resizeAnchor } from './item-handles';
 import { startRuler } from './ruler';
+import { startMeasure } from './measure';
+import { startBoxSelect } from './box-select';
 
 export function onDown(ed: Editor2D, e: PointerEvent) {
   const s = ed.evPos(e);
@@ -100,8 +102,15 @@ export function onDown(ed: Editor2D, e: PointerEvent) {
     return;
   }
 
+  if (tool.type === 'boxSelect') {
+    startBoxSelect(ed, p);
+    return;
+  }
+
   if (tool.type === 'ruler') {
     startRuler(ed, p);
+  } else if (tool.type === 'measure') {
+    startMeasure(ed, p);
   }
 }
 
@@ -112,6 +121,8 @@ export function syncToolState(ed: Editor2D) {
   if (t !== 'rect') { ed.st.rectA = null; ed.st.rectB = null; }
   if (t !== 'door' && t !== 'window') ed.st.ghostOpen = null;
   if (t !== 'ruler') ed.st.ruler = null;
+  if (t !== 'measure') ed.st.measure = null;
+  if (t !== 'boxSelect') ed.st.boxSelect = null;
   ed.st.guides = [];
   ed.st.snapped = null;
   ed.st.snapLabel = null;

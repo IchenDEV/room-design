@@ -10,7 +10,9 @@ export type Drag =
   | { kind: 'wall'; id: string; last: Pt; moved: boolean }
   | { kind: 'node'; ends: { wallId: string; end: 'a' | 'b' }[]; moved: boolean }
   | { kind: 'opening'; id: string; moved: boolean }
-  | { kind: 'ruler' };
+  | { kind: 'ruler' }
+  | { kind: 'measure' }
+  | { kind: 'boxSelect' };
 
 export interface GhostOpening { wallId: string; t: number; valid: boolean }
 export interface RulerMeasure { a: Pt; b: Pt }
@@ -23,6 +25,8 @@ export interface EditorState {
   rectB: Pt | null;
   ghostOpen: GhostOpening | null;
   ruler: RulerMeasure | null;
+  measure: RulerMeasure | null;
+  boxSelect: RulerMeasure | null;
   drag: Drag | null;
   guides: Guide[];
   snapped: Pt | null;          // 当前吸附点（高亮）
@@ -31,5 +35,5 @@ export interface EditorState {
 
 export const initialState = (): EditorState => ({
   hoverPt: null, chain: [], chainCur: null, rectA: null, rectB: null,
-  ghostOpen: null, ruler: null, drag: null, guides: [], snapped: null, snapLabel: null,
+  ghostOpen: null, ruler: null, measure: null, boxSelect: null, drag: null, guides: [], snapped: null, snapLabel: null,
 });

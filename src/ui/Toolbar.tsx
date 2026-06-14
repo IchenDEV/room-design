@@ -8,11 +8,13 @@ import type { Tool } from '../core/types';
 
 const TOOLS: { id: Tool['type']; icon: string; name: string; key: string }[] = [
   { id: 'select', icon: 'select', name: '选择', key: 'V' },
+  { id: 'boxSelect', icon: 'boxSelect', name: '框选', key: 'K' },
   { id: 'wall', icon: 'wall', name: '画墙', key: 'W' },
   { id: 'rect', icon: 'rect', name: '矩形房间', key: 'T' },
   { id: 'door', icon: 'door', name: '门', key: 'D' },
   { id: 'window', icon: 'window', name: '窗', key: 'N' },
   { id: 'ruler', icon: 'ruler', name: '尺子', key: 'L' },
+  { id: 'measure', icon: 'measure', name: '距离标注', key: 'B' },
 ];
 
 export function Toolbar() {

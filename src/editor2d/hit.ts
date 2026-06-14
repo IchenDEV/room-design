@@ -42,6 +42,15 @@ export function hitWall(ed: Editor2D, p: Pt, tol: number): string | null {
   return best;
 }
 
+export function hitMeasure(ed: Editor2D, p: Pt, tol: number): string | null {
+  const ms = ed.store.project.measures ?? [];
+  for (let i = ms.length - 1; i >= 0; i--) {
+    const m = ms[i];
+    if (distPtSeg(p, m.a, m.b) <= tol) return m.id;
+  }
+  return null;
+}
+
 /** 命中墙端点（仅当该墙被选中时显示手柄） */
 export function hitNode(ed: Editor2D, p: Pt, tol: number): { wallId: string; end: 'a' | 'b' } | null {
   const sel = ed.store.sel;
@@ -68,6 +77,8 @@ export function hitAny(ed: Editor2D, p: Pt): Selection | null {
   if (item) return { kind: 'item', id: item };
   const open = hitOpening(ed, p, tol);
   if (open) return { kind: 'opening', id: open };
+  const measure = hitMeasure(ed, p, tol);
+  if (measure) return { kind: 'measure', id: measure };
   const wall = hitWall(ed, p, tol);
   if (wall) return { kind: 'wall', id: wall };
   return null;

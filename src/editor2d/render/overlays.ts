@@ -59,6 +59,36 @@ function drawRuler(ed: Editor2D) {
   pill(ed, (sa.x + sb.x) / 2, (sa.y + sb.y) / 2 - 16, `距离 ${fmtLen(len)}`);
 }
 
+function drawMeasureLine(ed: Editor2D, a: Pt, b: Pt, selected = false) {
+  const { ctx, pal } = ed;
+  const sa = ed.w2s(a), sb = ed.w2s(b);
+  const dx = sb.x - sa.x, dy = sb.y - sa.y;
+  const len = Math.hypot(dx, dy);
+  if (len < 2) return;
+  const nx = -dy / len, ny = dx / len;
+  ctx.strokeStyle = selected ? pal.sel : pal.guide;
+  ctx.lineWidth = selected ? 2.2 : 1.7;
+  ctx.beginPath(); ctx.moveTo(sa.x, sa.y); ctx.lineTo(sb.x, sb.y); ctx.stroke();
+  for (const p of [sa, sb]) {
+    ctx.beginPath();
+    ctx.moveTo(p.x - nx * 7, p.y - ny * 7);
+    ctx.lineTo(p.x + nx * 7, p.y + ny * 7);
+    ctx.stroke();
+  }
+  if (selected) for (const p of [sa, sb]) {
+    ctx.fillStyle = pal.paper; ctx.strokeStyle = pal.sel;
+    ctx.beginPath(); ctx.arc(p.x, p.y, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+  }
+  pill(ed, (sa.x + sb.x) / 2, (sa.y + sb.y) / 2 - 14, fmtLen(Math.hypot(b.x - a.x, b.y - a.y)));
+}
+
+function drawMeasures(ed: Editor2D) {
+  const sel = ed.store.sel;
+  for (const m of ed.store.project.measures ?? []) drawMeasureLine(ed, m.a, m.b, sel?.kind === 'measure' && sel.id === m.id);
+  const draft = ed.st.measure;
+  if (draft) drawMeasureLine(ed, draft.a, draft.b, true);
+}
+
 export function drawOverlays(ed: Editor2D) {
   const { ctx, store, pal, st } = ed;
 
@@ -104,6 +134,7 @@ export function drawOverlays(ed: Editor2D) {
   }
 
   drawRuler(ed);
+  drawMeasures(ed);
 
   // 选中墙体的尺寸标注
   if (store.sel?.kind === 'wall') {

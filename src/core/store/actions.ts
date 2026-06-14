@@ -17,6 +17,7 @@ export function deleteSelection(s: Store) {
       p.openings = p.openings.filter((o) => o.wallId !== sel.id);
     } else if (sel.kind === 'opening') p.openings = p.openings.filter((o) => o.id !== sel.id);
     else if (sel.kind === 'item') p.items = p.items.filter((i) => i.id !== sel.id);
+    else if (sel.kind === 'measure') p.measures = (p.measures ?? []).filter((m) => m.id !== sel.id);
     else if (sel.kind === 'multi') p.items = p.items.filter((i) => !sel.ids.includes(i.id));
     else if (sel.kind === 'group') {
       const ids = idsFromSelection(s, sel);

@@ -52,6 +52,7 @@ export interface ItemGroup {
 }
 
 export interface RoomMeta { id: string; anchor: Pt; name: string; floor: string }
+export interface Measure { id: string; a: Pt; b: Pt }
 
 export interface Settings { wallHeight: number; wallThickness: number; showCeiling: boolean }
 
@@ -62,6 +63,7 @@ export interface Project {
   openings: Opening[];
   items: Item[];
   groups?: ItemGroup[];
+  measures?: Measure[];
   roomMetas: RoomMeta[];
   settings: Settings;
 }
@@ -74,6 +76,7 @@ export type Selection =
   | { kind: 'item'; id: string }
   | { kind: 'multi'; ids: string[] }
   | { kind: 'group'; id: string }
+  | { kind: 'measure'; id: string }
   | { kind: 'room'; metaId: string };
 
 export type Tool =
@@ -83,6 +86,8 @@ export type Tool =
   | { type: 'door' }
   | { type: 'window' }
   | { type: 'ruler' }
+  | { type: 'measure' }
+  | { type: 'boxSelect' }
   | { type: 'place'; defId: string };
 
 export interface CtxMenu { x: number; y: number; sel: Selection }
@@ -97,5 +102,5 @@ export const uid = (p: string) =>
 export const defaultSettings = (): Settings => ({ wallHeight: 280, wallThickness: 20, showCeiling: false });
 
 export const emptyProject = (name = '未命名方案'): Project => ({
-  version: 1, name, walls: [], openings: [], items: [], groups: [], roomMetas: [], settings: defaultSettings(),
+  version: 1, name, walls: [], openings: [], items: [], groups: [], measures: [], roomMetas: [], settings: defaultSettings(),
 });

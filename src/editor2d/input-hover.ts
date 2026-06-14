@@ -4,6 +4,7 @@ import { hitItemResizeHandle, hitItemRotateHandle, resizeCursor } from './item-h
 import { updatePlaceSnap } from './input-item';
 import { updateGhostOpen } from './input-down';
 import { updateRulerHover } from './ruler';
+import { updateMeasureHover } from './measure';
 import { snapWallPoint } from './snap';
 
 export function updateHoverState(ed: Editor2D, s: Pt, p: Pt) {
@@ -22,6 +23,13 @@ export function updateHoverState(ed: Editor2D, s: Pt, p: Pt) {
     updatePlaceSnap(ed, tool.defId, p);
   } else if (tool.type === 'ruler') {
     updateRulerHover(ed, p);
+  } else if (tool.type === 'measure') {
+    updateMeasureHover(ed, p);
+  } else if (tool.type === 'boxSelect') {
+    ed.canvas.style.cursor = 'crosshair';
+    ed.st.guides = [];
+    ed.st.snapped = null;
+    ed.st.snapLabel = null;
   } else {
     const resize = tool.type === 'select' ? hitItemResizeHandle(ed, s) : null;
     ed.canvas.style.cursor = resize ? resizeCursor(resize.corner)
