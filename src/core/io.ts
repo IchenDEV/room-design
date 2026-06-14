@@ -1,4 +1,5 @@
 import type { Store } from './store/store';
+import { addProjectAsFile } from './store/project-files';
 import { isValidProject } from './store/persist';
 
 /** 导出当前方案为 JSON 文件 */
@@ -21,6 +22,18 @@ export async function importProjectFile(store: Store, file: File): Promise<strin
     return importProjectText(store, text);
   } catch {
     return '文件读取失败';
+  }
+}
+
+export async function importProjectFileAsNew(store: Store, file: File): Promise<string | null> {
+  try {
+    const text = await file.text();
+    const p = JSON.parse(text);
+    if (!isValidProject(p)) return '文件格式不正确：缺少必要字段';
+    await addProjectAsFile(store, p);
+    return null;
+  } catch {
+    return 'JSON 解析失败或文件读取失败';
   }
 }
 

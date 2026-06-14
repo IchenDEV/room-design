@@ -2,10 +2,11 @@ import { useRef, useState } from 'react';
 import { store } from '../core/store/store';
 import { useTick } from '../core/store/react';
 import { clearAll, loadSample } from '../core/store/actions';
-import { exportProject, importProjectFile } from '../core/io';
+import { exportProject, importProjectFileAsNew } from '../core/io';
 import { SAMPLES } from '../core/samples';
 import { editors } from './editors';
 import { Ic } from './icons';
+import { FileMenu } from './FileMenu';
 
 export function ToolbarRight() {
   useTick();
@@ -15,12 +16,13 @@ export function ToolbarRight() {
 
   const onImport = async (f: File | undefined) => {
     if (!f) return;
-    const err = await importProjectFile(store, f);
+    const err = await importProjectFileAsNew(store, f);
     if (err) alert(`导入失败：${err}`);
   };
 
   return (
     <div className="tb-group right">
+      <FileMenu />
       <div className="dropdown">
         <button className="tb-btn wide" onClick={() => setOpen(!open)}>
           <span>示例方案</span><Ic n="chev" size={14} />
@@ -38,7 +40,7 @@ export function ToolbarRight() {
           </>
         )}
       </div>
-      <button className="tb-btn" title="导入方案 (JSON)" onClick={() => fileRef.current?.click()}><Ic n="upload" /></button>
+      <button className="tb-btn" title="导入为新方案文件 (JSON)" onClick={() => fileRef.current?.click()}><Ic n="upload" /></button>
       <input ref={fileRef} type="file" accept=".json,application/json" hidden
         onChange={(e) => { onImport(e.target.files?.[0]); e.target.value = ''; }} />
       <button className="tb-btn" title="导出方案 (JSON)" onClick={() => exportProject(store)}><Ic n="download" /></button>

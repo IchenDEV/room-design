@@ -56,6 +56,16 @@
 .tb-btn:disabled { opacity: 0.35; pointer-events: none; }
 .tb-btn.wide span { font-size: 12.5px; }
 
+@media (max-width: 900px) {
+  .toolbar {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .toolbar::-webkit-scrollbar { display: none; }
+  .toolbar .dd-menu { position: fixed; top: 45px; right: 8px; }
+}
+
 /* ---------- 主区域 ---------- */
 .main {
   flex: 1;

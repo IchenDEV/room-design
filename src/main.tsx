@@ -7,6 +7,9 @@ import './styles/layout.css';
 import './styles/panels.css';
 import './styles/widgets.css';
 import './styles/actions.css';
+import './styles/files.css';
+import './styles/landing.css';
+import './styles/landing-responsive.css';
 
 // 主题初始化：本地偏好 > 系统偏好
 const savedTheme = localStorage.getItem('qiju-theme');
