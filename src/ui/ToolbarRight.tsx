@@ -3,6 +3,7 @@ import { store } from '../core/store/store';
 import { useTick } from '../core/store/react';
 import { clearAll, loadSample } from '../core/store/actions';
 import { exportProject, importProjectFileAsNew } from '../core/io';
+import { shareProject } from '../core/share';
 import { SAMPLES } from '../core/samples';
 import { editors } from './editors';
 import { Ic } from './icons';
@@ -11,6 +12,7 @@ import { FileMenu } from './FileMenu';
 export function ToolbarRight() {
   useTick();
   const [open, setOpen] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const theme = store.ui.theme;
 
@@ -18,6 +20,18 @@ export function ToolbarRight() {
     if (!f) return;
     const err = await importProjectFileAsNew(store, f);
     if (err) alert(`导入失败：${err}`);
+  };
+
+  const onShare = async () => {
+    if (sharing) return;
+    setSharing(true);
+    try {
+      alert(await shareProject(store));
+    } catch {
+      alert('分享失败，请稍后再试');
+    } finally {
+      setSharing(false);
+    }
   };
 
   return (
@@ -44,6 +58,7 @@ export function ToolbarRight() {
       <input ref={fileRef} type="file" accept=".json,application/json" hidden
         onChange={(e) => { onImport(e.target.files?.[0]); e.target.value = ''; }} />
       <button className="tb-btn" title="导出方案 (JSON)" onClick={() => exportProject(store)}><Ic n="download" /></button>
+      <button className="tb-btn" title="分享当前方案" disabled={sharing} onClick={onShare}><Ic n="share" /></button>
       <button className="tb-btn" title="导出截图 (PNG)"
         onClick={() => (store.ui.mode === '2d' ? editors.e2?.screenshot() : editors.v3?.screenshot())}>
         <Ic n="camera" />
