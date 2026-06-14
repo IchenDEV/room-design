@@ -1,7 +1,7 @@
 // 家具种类：决定 2D 图例与 3D 模型的构建方式
 export type FurnKind =
   | 'sofa' | 'chair' | 'table' | 'roundtable' | 'bed' | 'wardrobe' | 'nightstand' | 'dresser'
-  | 'shelf' | 'tvstand' | 'counter' | 'fridge' | 'washer' | 'toilet' | 'bathsink' | 'bathtub'
+  | 'shelf' | 'tvstand' | 'counter' | 'fridge' | 'waterdispenser' | 'washer' | 'toilet' | 'bathsink' | 'bathtub'
   | 'shower' | 'rug' | 'lamp' | 'plant' | 'stool' | 'barstool' | 'bench'
   | 'officedesk' | 'officechair' | 'filecabinet' | 'whiteboard' | 'printer' | 'partition'
   | 'outlet' | 'weakbox' | 'accesspanel';

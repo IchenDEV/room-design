@@ -97,7 +97,7 @@ export const OFFICE_DEFS: FurnDef[] = [
   D('coffee-station', '咖啡吧台', 'office', 'counter', 180, 65, 92, '#9f8563'),
   D('pantry-counter', '茶水间台面', 'office', 'counter', 240, 62, 86, '#aeb6bd'),
   D('office-fridge', '办公冰箱', 'office', 'fridge', 70, 70, 180, '#b8c2c9'),
-  D('water-dispenser', '饮水机', 'office', 'fridge', 45, 42, 130, '#c5d1d8'),
+  D('water-dispenser', '饮水机', 'office', 'waterdispenser', 45, 42, 130, '#c5d1d8'),
   D('microwave-cart', '微波炉柜', 'office', 'counter', 80, 55, 120, '#b0a08a'),
   D('vending-machine', '自动售货机', 'office', 'fridge', 90, 75, 190, '#5d6875'),
   D('partition-80', '桌面屏风 80', 'office', 'partition', 80, 6, 60, '#95a1ad'),

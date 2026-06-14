@@ -4,7 +4,7 @@ import { prep } from './util';
 import type { GlyphFn } from './util';
 import { sofa, chair, stool, barstool, bench } from './seating';
 import { table, roundtable, tvstand, shelf, officedesk } from './tables';
-import { wardrobe, nightstand, dresser, fridge, washer, counter } from './storage';
+import { wardrobe, nightstand, dresser, fridge, waterdispenser, washer, counter } from './storage';
 import { bed, toilet, bathsink, bathtub, shower } from './bedbath';
 import { officechair, filecabinet, whiteboard, printer, partition } from './office';
 import { rug, lamp, plant, outlet, weakbox, accesspanel } from './decor';
@@ -12,7 +12,7 @@ import { rug, lamp, plant, outlet, weakbox, accesspanel } from './decor';
 const REG: Record<FurnKind, GlyphFn> = {
   sofa, chair, stool, barstool, bench,
   table, roundtable, tvstand, shelf, officedesk,
-  wardrobe, nightstand, dresser, fridge, washer, counter,
+  wardrobe, nightstand, dresser, fridge, waterdispenser, washer, counter,
   bed, toilet, bathsink, bathtub, shower,
   officechair, filecabinet, whiteboard, printer, partition,
   rug, lamp, plant, outlet, weakbox, accesspanel,

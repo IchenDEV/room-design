@@ -8,6 +8,7 @@ import { hitItemResizeHandle, hitItemRotateHandle, resizeAnchor } from './item-h
 import { startRuler } from './ruler';
 import { startMeasure } from './measure';
 import { startBoxSelect } from './box-select';
+import { startGroupDrag } from './input-group';
 
 export function onDown(ed: Editor2D, e: PointerEvent) {
   const s = ed.evPos(e);
@@ -55,7 +56,9 @@ export function onDown(ed: Editor2D, e: PointerEvent) {
       store.setSel(sel);
       store.begin();
       if (sel.kind === 'group') {
-        ed.st.drag = { kind: 'group', id: sel.id, last: p, moved: false };
+        const drag = startGroupDrag(ed, sel.id, p);
+        if (!drag) { store.end(); return; }
+        ed.st.drag = drag;
       } else if (hit.kind === 'item') {
         const it = store.project.items.find((i) => i.id === hit.id)!;
         ed.st.drag = { kind: 'item', id: hit.id, off: { x: p.x - it.x, y: p.y - it.y }, moved: false };

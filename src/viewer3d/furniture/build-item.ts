@@ -5,7 +5,7 @@ import type { FurnKind } from '../../core/catalog/catalog';
 import type { Builder } from './seating3d';
 import { sofa, chair, stool, barstool, bench } from './seating3d';
 import { table, roundtable, tvstand, shelf } from './tables3d';
-import { wardrobe, nightstand, dresser, fridge, washer, counter } from './storage3d';
+import { wardrobe, nightstand, dresser, fridge, waterdispenser, washer, counter } from './storage3d';
 import { bed, toilet, bathsink, bathtub, shower } from './bedbath3d';
 import { officedesk, officechair, filecabinet, whiteboard, printer, partition } from './office3d';
 import { rug, lamp, plant, outlet, weakbox, accesspanel } from './decor3d';
@@ -13,7 +13,7 @@ import { rug, lamp, plant, outlet, weakbox, accesspanel } from './decor3d';
 const REG: Record<FurnKind, Builder> = {
   sofa, chair, stool, barstool, bench,
   table, roundtable, tvstand, shelf, officedesk,
-  wardrobe, nightstand, dresser, fridge, washer, counter,
+  wardrobe, nightstand, dresser, fridge, waterdispenser, washer, counter,
   bed, toilet, bathsink, bathtub, shower,
   officechair, filecabinet, whiteboard, printer, partition,
   rug, lamp, plant, outlet, weakbox, accesspanel,

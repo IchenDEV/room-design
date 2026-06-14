@@ -1,10 +1,13 @@
+import type { Bounds } from '../core/geometry/item-bounds';
 import type { Guide, Pt } from '../core/types';
 import type { ItemResizeCorner } from './item-handles';
+
+export interface GroupDragItem { id: string; x: number; y: number }
 
 export type Drag =
   | { kind: 'pan'; sx: number; sy: number; ox: number; oy: number }
   | { kind: 'item'; id: string; off: Pt; moved: boolean }
-  | { kind: 'group'; id: string; last: Pt; moved: boolean }
+  | { kind: 'group'; id: string; off: Pt; origin: Pt; bounds: Bounds; items: GroupDragItem[]; moved: boolean }
   | { kind: 'item-rotate'; id: string; moved: boolean }
   | { kind: 'item-resize'; id: string; corner: ItemResizeCorner; anchor: Pt; rot: number; moved: boolean }
   | { kind: 'wall'; id: string; last: Pt; moved: boolean }

@@ -41,6 +41,21 @@ export const fridge: Builder = (w, d, h, c, tex) => {
   return g;
 };
 
+export const waterdispenser: Builder = (w, d, h, c, tex) => {
+  const g = new THREE.Group();
+  const bodyH = h * 0.72, r = Math.min(w, d) * 0.24;
+  const body = mat(c, 0.55, 0.05, tex), dark = mat('#4a535c', 0.45, 0.2);
+  const water = new THREE.MeshStandardMaterial({ color: '#9fd2e7', roughness: 0.2, metalness: 0.02 });
+  g.add(box(w * 0.82, bodyH, d * 0.82, body, 0, bodyH / 2, 0));
+  g.add(box(w * 0.52, h * 0.24, 2, dark, 0, bodyH * 0.55, d * 0.42 + 1));
+  g.add(box(w * 0.42, 4, 5, mat(shade(c, -28), 0.55), 0, bodyH * 0.32, d * 0.42 + 2.5));
+  for (const x of [-w * 0.12, w * 0.12]) g.add(box(w * 0.08, 3, 5, mat('#dfe6ea', 0.35, 0.2), x, bodyH * 0.6, d * 0.42 + 3));
+  g.add(cyl(r * 0.72, r, h * 0.2, water, 0, bodyH + h * 0.1, 0, 28));
+  g.add(cyl(r * 0.32, r * 0.32, h * 0.08, water, 0, bodyH + h * 0.24, 0, 20));
+  g.add(box(w * 0.9, 5, d * 0.88, mat(shade(c, -18), 0.62), 0, 2.5, 0));
+  return g;
+};
+
 export const washer: Builder = (w, d, h, c, tex) => {
   const g = new THREE.Group();
   g.add(box(w, h, d, mat(c, 0.4, 0.35, tex), 0, h / 2, 0));

@@ -30,6 +30,15 @@ export const fridge: GlyphFn = (ctx, w, d) => {
   seg(ctx, hw - 4, hd * 0.15, hw - 4, hd * 0.7);
 };
 
+export const waterdispenser: GlyphFn = (ctx, w, d) => {
+  const hw = w / 2, hd = d / 2, r = Math.min(w, d) * 0.2;
+  rr(ctx, -hw, -hd, w, d, 2.5); fs(ctx);
+  ring(ctx, 0, -hd * 0.35, r);
+  rr(ctx, -w * 0.24, -d * 0.03, w * 0.48, d * 0.42, 1.5); ctx.stroke();
+  seg(ctx, -w * 0.12, d * 0.1, w * 0.12, d * 0.1);
+  ring(ctx, -w * 0.11, d * 0.02, 1.2, true); ring(ctx, w * 0.11, d * 0.02, 1.2, true);
+};
+
 export const washer: GlyphFn = (ctx, w, d) => {
   rr(ctx, -w / 2, -d / 2, w, d, 2.5); fs(ctx);
   ring(ctx, 0, d * 0.06, Math.min(w, d) * 0.3);

@@ -1,3 +1,5 @@
+import type { Bounds } from './item-bounds';
+import { itemBounds } from './item-bounds';
 import type { Guide, Item, Project, Pt, Wall } from '../types';
 import { distPtSeg, projT, wallNormal } from './vec';
 
@@ -56,27 +58,30 @@ function alignAxis(base: number[], target: number[]): { delta: number; i: number
   return best;
 }
 
-function itemAlign(project: Project, p: Pt, it: Item): ItemSnapResult | null {
-  const h = halfExtents(it);
-  const baseX = [p.x - h.x, p.x, p.x + h.x];
-  const baseY = [p.y - h.y, p.y, p.y + h.y];
+const centerOf = (b: Bounds): Pt => ({ x: (b.minX + b.maxX) / 2, y: (b.minY + b.maxY) / 2 });
+
+function boundsAlign(project: Project, b: Bounds, exclude: Set<string>): ItemSnapResult | null {
+  const p = centerOf(b);
+  const baseX = [b.minX, p.x, b.maxX];
+  const baseY = [b.minY, p.y, b.maxY];
   let dx: number | null = null, dy: number | null = null;
   const guides: Guide[] = [];
   for (const other of project.items) {
-    if (other.id === it.id) continue;
-    const oh = halfExtents(other);
-    const tx = [other.x - oh.x, other.x, other.x + oh.x];
-    const ty = [other.y - oh.y, other.y, other.y + oh.y];
+    if (exclude.has(other.id)) continue;
+    const ob = itemBounds(other);
+    const op = centerOf(ob);
+    const tx = [ob.minX, op.x, ob.maxX];
+    const ty = [ob.minY, op.y, ob.maxY];
     const ax = alignAxis(baseX, tx);
     const ay = alignAxis(baseY, ty);
     if (ax && (dx === null || Math.abs(ax.delta) < Math.abs(dx))) {
       dx = ax.delta;
-      const x = tx[ax.i], y0 = Math.min(p.y - h.y, other.y - oh.y), y1 = Math.max(p.y + h.y, other.y + oh.y);
+      const x = tx[ax.i], y0 = Math.min(b.minY, ob.minY), y1 = Math.max(b.maxY, ob.maxY);
       guides[0] = { a: { x, y: y0 }, b: { x, y: y1 }, label: ax.i === 1 ? '中心对齐' : '边缘对齐' };
     }
     if (ay && (dy === null || Math.abs(ay.delta) < Math.abs(dy))) {
       dy = ay.delta;
-      const y = ty[ay.i], x0 = Math.min(p.x - h.x, other.x - oh.x), x1 = Math.max(p.x + h.x, other.x + oh.x);
+      const y = ty[ay.i], x0 = Math.min(b.minX, ob.minX), x1 = Math.max(b.maxX, ob.maxX);
       guides[1] = { a: { x: x0, y }, b: { x: x1, y }, label: ay.i === 1 ? '中心对齐' : '边缘对齐' };
     }
   }
@@ -90,10 +95,23 @@ function itemAlign(project: Project, p: Pt, it: Item): ItemSnapResult | null {
   };
 }
 
+function itemAlign(project: Project, p: Pt, it: Item): ItemSnapResult | null {
+  const h = halfExtents(it);
+  const b = { minX: p.x - h.x, minY: p.y - h.y, maxX: p.x + h.x, maxY: p.y + h.y };
+  return boundsAlign(project, b, new Set([it.id]));
+}
+
 export function snapItem(project: Project, p: Pt, it: Item): ItemSnapResult {
   const wall = wallSnap(project, p, it);
   if (wall) return wall;
   const align = itemAlign(project, p, it);
   if (align) return align;
+  return { pt: { x: grid(p.x), y: grid(p.y) }, rot: null, guides: [], label: '网格', mode: 'grid' };
+}
+
+export function snapGroup(project: Project, bounds: Bounds, excludeIds: string[]): ItemSnapResult {
+  const align = boundsAlign(project, bounds, new Set(excludeIds));
+  if (align) return align;
+  const p = centerOf(bounds);
   return { pt: { x: grid(p.x), y: grid(p.y) }, rot: null, guides: [], label: '网格', mode: 'grid' };
 }

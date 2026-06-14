@@ -2,9 +2,9 @@ import type { Editor2D } from './editor';
 import { onDown, syncToolState } from './input-down';
 import { snapWallPoint, nearestWall, endGroup } from './snap';
 import { commitRect, endChain, ghostValid } from './commands';
-import { moveItems, idsFromSelection } from '../core/store/item-groups';
 import { projT } from '../core/geometry/vec';
 import { moveDraggedItem, resizeDraggedItem, rotateDraggedItem } from './input-item';
+import { moveDraggedGroup } from './input-group';
 import { openEditorContext } from './input-context';
 import { updateHoverState } from './input-hover';
 import { updateRuler } from './ruler';
@@ -26,10 +26,7 @@ function onMove(ed: Editor2D, e: PointerEvent) {
     moveDraggedItem(ed, d.id, d.off, p);
   } else if (d?.kind === 'group') {
     d.moved = true;
-    const dx = p.x - d.last.x, dy = p.y - d.last.y;
-    d.last = p;
-    const ids = idsFromSelection(ed.store, { kind: 'group', id: d.id });
-    ed.store.update((proj) => moveItems(proj, ids, dx, dy));
+    moveDraggedGroup(ed, d, p);
   } else if (d?.kind === 'item-rotate') {
     d.moved = true;
     rotateDraggedItem(ed, d.id, p);

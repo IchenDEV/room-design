@@ -37,7 +37,7 @@ const byKind: Partial<Record<FurnKind, FurnTexture>> = {
   sofa: 'fabric', chair: 'fabric', stool: 'wood', barstool: 'leather', bench: 'wood',
   table: 'wood', roundtable: 'wood', bed: 'fabric', wardrobe: 'wood',
   nightstand: 'wood', dresser: 'wood', shelf: 'wood', tvstand: 'darkWood',
-  counter: 'stone', fridge: 'metal', washer: 'metal', toilet: 'ceramic',
+  counter: 'stone', fridge: 'metal', waterdispenser: 'plastic', washer: 'metal', toilet: 'ceramic',
   bathsink: 'ceramic', bathtub: 'ceramic', shower: 'glass', rug: 'felt',
   lamp: 'metal', plant: 'plant', officedesk: 'wood', officechair: 'fabric',
   filecabinet: 'metal', whiteboard: 'glass', printer: 'plastic', partition: 'fabric',
