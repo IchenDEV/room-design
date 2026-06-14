@@ -3,7 +3,7 @@ import { useTick } from '../core/store/react';
 import { Ic } from './icons';
 
 const ROWS: [string, string][] = [
-  ['V / W / T / D / N', '选择 / 画墙 / 矩形房间 / 门 / 窗'],
+  ['V / W / T / D / N / L', '选择 / 画墙 / 矩形房间 / 门 / 窗 / 尺子'],
   ['R', '旋转选中家具 90°'],
   ['方向键 (+Shift)', '微移家具 1cm (10cm)'],
   ['Delete / Backspace', '删除选中元素'],

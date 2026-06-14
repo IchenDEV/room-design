@@ -7,7 +7,7 @@ import { table, roundtable, tvstand, shelf, officedesk } from './tables';
 import { wardrobe, nightstand, dresser, fridge, washer, counter } from './storage';
 import { bed, toilet, bathsink, bathtub, shower } from './bedbath';
 import { officechair, filecabinet, whiteboard, printer, partition } from './office';
-import { rug, lamp, plant } from './decor';
+import { rug, lamp, plant, outlet, weakbox, accesspanel } from './decor';
 
 const REG: Record<FurnKind, GlyphFn> = {
   sofa, chair, stool, barstool, bench,
@@ -15,7 +15,7 @@ const REG: Record<FurnKind, GlyphFn> = {
   wardrobe, nightstand, dresser, fridge, washer, counter,
   bed, toilet, bathsink, bathtub, shower,
   officechair, filecabinet, whiteboard, printer, partition,
-  rug, lamp, plant,
+  rug, lamp, plant, outlet, weakbox, accesspanel,
 };
 
 /** 在已平移至中心的画布上绘制家具图例（w/d 像素） */

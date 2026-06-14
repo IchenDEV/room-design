@@ -1,12 +1,13 @@
 import type { Editor2D } from './editor';
-import { onDown, syncToolState, updateGhostOpen } from './input-down';
+import { onDown, syncToolState } from './input-down';
 import { snapWallPoint, nearestWall, endGroup } from './snap';
 import { commitRect, endChain, ghostValid } from './commands';
 import { moveItems, idsFromSelection } from '../core/store/item-groups';
 import { projT } from '../core/geometry/vec';
-import { moveDraggedItem, resizeDraggedItem, rotateDraggedItem, updatePlaceSnap } from './input-item';
-import { hitItemResizeHandle, hitItemRotateHandle, resizeCursor } from './item-handles';
+import { moveDraggedItem, resizeDraggedItem, rotateDraggedItem } from './input-item';
 import { openEditorContext } from './input-context';
+import { updateHoverState } from './input-hover';
+import { updateRuler } from './ruler';
 
 function onMove(ed: Editor2D, e: PointerEvent) {
   const s = ed.evPos(e);
@@ -71,30 +72,10 @@ function onMove(ed: Editor2D, e: PointerEvent) {
         else if (o && o.wallId === near.wall.id) o.t = Math.max(0.02, Math.min(0.98, projT(p, near.wall.a, near.wall.b)));
       });
     }
+  } else if (d?.kind === 'ruler') {
+    updateRuler(ed, p);
   } else {
-    // 无拖拽：刷新工具幽灵
-    const tool = ed.store.ui.tool;
-    if (tool.type === 'wall') {
-      const ref = ed.st.chain[ed.st.chain.length - 1] ?? null;
-      const snap = snapWallPoint(ed, p, ref);
-      ed.st.chainCur = snap.pt;
-      ed.st.guides = snap.guides;
-      ed.st.snapped = snap.hard ? snap.pt : null;
-      ed.st.snapLabel = null;
-    } else if (tool.type === 'rect' && ed.st.rectA) {
-      ed.st.rectB = snapWallPoint(ed, p, ed.st.rectA).pt;
-      ed.st.snapLabel = null;
-    } else if (tool.type === 'place') {
-      updatePlaceSnap(ed, tool.defId, p);
-    } else {
-      const resize = tool.type === 'select' ? hitItemResizeHandle(ed, s) : null;
-      ed.canvas.style.cursor = resize ? resizeCursor(resize.corner)
-        : tool.type === 'select' && hitItemRotateHandle(ed, s) ? 'grab' : 'default';
-      ed.st.guides = [];
-      ed.st.snapped = null;
-      ed.st.snapLabel = null;
-      updateGhostOpen(ed, s.x, s.y);
-    }
+    updateHoverState(ed, s, p);
   }
   ed.requestDraw();
 }

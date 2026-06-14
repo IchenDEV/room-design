@@ -9,9 +9,11 @@ export type Drag =
   | { kind: 'item-resize'; id: string; corner: ItemResizeCorner; anchor: Pt; rot: number; moved: boolean }
   | { kind: 'wall'; id: string; last: Pt; moved: boolean }
   | { kind: 'node'; ends: { wallId: string; end: 'a' | 'b' }[]; moved: boolean }
-  | { kind: 'opening'; id: string; moved: boolean };
+  | { kind: 'opening'; id: string; moved: boolean }
+  | { kind: 'ruler' };
 
 export interface GhostOpening { wallId: string; t: number; valid: boolean }
+export interface RulerMeasure { a: Pt; b: Pt }
 
 export interface EditorState {
   hoverPt: Pt | null;          // 鼠标世界坐标
@@ -20,6 +22,7 @@ export interface EditorState {
   rectA: Pt | null;            // 矩形起点
   rectB: Pt | null;
   ghostOpen: GhostOpening | null;
+  ruler: RulerMeasure | null;
   drag: Drag | null;
   guides: Guide[];
   snapped: Pt | null;          // 当前吸附点（高亮）
@@ -28,5 +31,5 @@ export interface EditorState {
 
 export const initialState = (): EditorState => ({
   hoverPt: null, chain: [], chainCur: null, rectA: null, rectB: null,
-  ghostOpen: null, drag: null, guides: [], snapped: null, snapLabel: null,
+  ghostOpen: null, ruler: null, drag: null, guides: [], snapped: null, snapLabel: null,
 });

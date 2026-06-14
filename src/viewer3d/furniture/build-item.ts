@@ -8,7 +8,7 @@ import { table, roundtable, tvstand, shelf } from './tables3d';
 import { wardrobe, nightstand, dresser, fridge, washer, counter } from './storage3d';
 import { bed, toilet, bathsink, bathtub, shower } from './bedbath3d';
 import { officedesk, officechair, filecabinet, whiteboard, printer, partition } from './office3d';
-import { rug, lamp, plant } from './decor3d';
+import { rug, lamp, plant, outlet, weakbox, accesspanel } from './decor3d';
 
 const REG: Record<FurnKind, Builder> = {
   sofa, chair, stool, barstool, bench,
@@ -16,7 +16,7 @@ const REG: Record<FurnKind, Builder> = {
   wardrobe, nightstand, dresser, fridge, washer, counter,
   bed, toilet, bathsink, bathtub, shower,
   officechair, filecabinet, whiteboard, printer, partition,
-  rug, lamp, plant,
+  rug, lamp, plant, outlet, weakbox, accesspanel,
 };
 
 /** 构建带位置/旋转的家具组，userData.itemId 用于拾取 */

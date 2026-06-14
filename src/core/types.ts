@@ -82,6 +82,7 @@ export type Tool =
   | { type: 'rect' }
   | { type: 'door' }
   | { type: 'window' }
+  | { type: 'ruler' }
   | { type: 'place'; defId: string };
 
 export interface CtxMenu { x: number; y: number; sel: Selection }

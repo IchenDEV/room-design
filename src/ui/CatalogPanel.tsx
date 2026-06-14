@@ -11,6 +11,7 @@ const CAT_ICONS: Record<CatId, string> = {
   bedroom: 'bed',
   dining: 'dining',
   bath: 'bath',
+  electric: 'outlet',
   seat: 'chair',
   office: 'office',
 };
@@ -41,7 +42,7 @@ export function CatalogPanel() {
           </button>
         ))}
       </div>
-      <input className="cat-search" value={q} placeholder="搜索家具"
+      <input className="cat-search" value={q} placeholder="搜索素材"
         onChange={(e) => setQ(e.target.value)} />
       <div className="cat-grid">
         {items.map((d) => {

@@ -40,6 +40,7 @@ export function useShortcuts() {
         case 'KeyT': store.setTool({ type: 'rect' }); break;
         case 'KeyD': store.setTool({ type: 'door' }); break;
         case 'KeyN': store.setTool({ type: 'window' }); break;
+        case 'KeyL': store.setTool({ type: 'ruler' }); break;
         case 'KeyR':
           if (editors.e2) rotateSel(editors.e2);
           break;

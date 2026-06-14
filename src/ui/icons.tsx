@@ -4,6 +4,8 @@ export const ICONS: Record<string, string> = {
   rect: 'M4 6h16v12H4z',
   door: 'M6 20V4h9M15 4c4.4 1.8 6.5 5.8 6.5 10.5M4 20h16',
   window: 'M4 5h16v14H4zM12 5v14M4 12h16',
+  outlet: 'M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM9.5 9v3M14.5 9v3M10 16h4',
+  ruler: 'M4 17L17 4l3 3L7 20zM14.5 6.5l3 3M12 9l1.5 1.5M9.5 11.5l3 3M7 14l1.5 1.5',
   undo: 'M8 5L3 10l5 5M3 10h10.5a6 6 0 0 1 0 12H10',
   redo: 'M16 5l5 5-5 5M21 10H10.5a6 6 0 0 0 0 12H14',
   trash: 'M4 7h16M9 7V4h6v3M6.5 7l1 13h9l1-13M10 11v5M14 11v5',

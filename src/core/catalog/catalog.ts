@@ -16,6 +16,7 @@ export const CATS: { id: CatId; name: string }[] = [
   { id: 'bedroom', name: '卧室' },
   { id: 'dining', name: '餐厨' },
   { id: 'bath', name: '卫浴' },
+  { id: 'electric', name: '电气' },
   { id: 'seat', name: '桌椅' },
   { id: 'office', name: '办公' },
 ];
@@ -40,6 +41,7 @@ const byKind: Partial<Record<FurnKind, FurnTexture>> = {
   bathsink: 'ceramic', bathtub: 'ceramic', shower: 'glass', rug: 'felt',
   lamp: 'metal', plant: 'plant', officedesk: 'wood', officechair: 'fabric',
   filecabinet: 'metal', whiteboard: 'glass', printer: 'plastic', partition: 'fabric',
+  outlet: 'plastic', weakbox: 'metal', accesspanel: 'plastic',
 };
 
 export const defaultTexture = (def: FurnDef): FurnTexture => def.texture ?? byKind[def.kind] ?? 'wood';

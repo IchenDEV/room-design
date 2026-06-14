@@ -3,9 +3,10 @@ export type FurnKind =
   | 'sofa' | 'chair' | 'table' | 'roundtable' | 'bed' | 'wardrobe' | 'nightstand' | 'dresser'
   | 'shelf' | 'tvstand' | 'counter' | 'fridge' | 'washer' | 'toilet' | 'bathsink' | 'bathtub'
   | 'shower' | 'rug' | 'lamp' | 'plant' | 'stool' | 'barstool' | 'bench'
-  | 'officedesk' | 'officechair' | 'filecabinet' | 'whiteboard' | 'printer' | 'partition';
+  | 'officedesk' | 'officechair' | 'filecabinet' | 'whiteboard' | 'printer' | 'partition'
+  | 'outlet' | 'weakbox' | 'accesspanel';
 
-export type CatId = 'living' | 'bedroom' | 'dining' | 'bath' | 'seat' | 'office';
+export type CatId = 'living' | 'bedroom' | 'dining' | 'bath' | 'electric' | 'seat' | 'office';
 export type FurnTexture =
   | 'fabric' | 'leather' | 'wood' | 'darkWood' | 'metal' | 'glass'
   | 'stone' | 'ceramic' | 'rattan' | 'felt' | 'plastic' | 'plant';

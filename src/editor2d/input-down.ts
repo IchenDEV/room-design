@@ -5,6 +5,7 @@ import { addChainPoint, ghostValid, placeItem, placeOpening } from './commands';
 import { ensureRoomMeta } from '../core/store/actions';
 import { itemGroupId, toggleItemSelection } from '../core/store/item-groups';
 import { hitItemResizeHandle, hitItemRotateHandle, resizeAnchor } from './item-handles';
+import { startRuler } from './ruler';
 
 export function onDown(ed: Editor2D, e: PointerEvent) {
   const s = ed.evPos(e);
@@ -98,6 +99,10 @@ export function onDown(ed: Editor2D, e: PointerEvent) {
     placeItem(ed, tool.defId, p);
     return;
   }
+
+  if (tool.type === 'ruler') {
+    startRuler(ed, p);
+  }
 }
 
 /** 工具切换时复位临时态 */
@@ -106,6 +111,7 @@ export function syncToolState(ed: Editor2D) {
   if (t !== 'wall') { ed.st.chain = []; ed.st.chainCur = null; }
   if (t !== 'rect') { ed.st.rectA = null; ed.st.rectB = null; }
   if (t !== 'door' && t !== 'window') ed.st.ghostOpen = null;
+  if (t !== 'ruler') ed.st.ruler = null;
   ed.st.guides = [];
   ed.st.snapped = null;
   ed.st.snapLabel = null;

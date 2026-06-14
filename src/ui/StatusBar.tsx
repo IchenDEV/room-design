@@ -10,6 +10,7 @@ const HINTS: Record<string, string> = {
   rect: '按住拖拽画出矩形房间',
   door: '移动到墙上点击放置门',
   window: '移动到墙上点击放置窗',
+  ruler: '按住拖拽测量距离，端点可吸附墙端/墙线',
   place: '在画布点击放置素材，靠墙自动贴齐，R 旋转',
 };
 
