@@ -42,6 +42,8 @@ export const ICONS: Record<string, string> = {
   bath: 'M5 11h16v2a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6v-2h2M7 11V6a3 3 0 0 1 3-3h1M9 19l-1 2M17 19l1 2',
   chair: 'M7 4h10v8H7zM7 12v8M17 12v8M7 16h10',
   office: 'M4 7h16v13H4zM9 7V4h6v3M4 12h16',
+  more: 'M12 5h.01M12 12h.01M12 19h.01',
+  align: 'M4 6h16M4 12h10M4 18h16',
 };
 
 export function Ic({ n, size = 17 }: { n: string; size?: number }) {

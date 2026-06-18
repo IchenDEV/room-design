@@ -82,7 +82,8 @@ export function drawItems(ed: Editor2D) {
       drawResizeHandles(ed, it);
       drawRotateHandle(ed, it);
       const top = itemTopScreen(ed, it);
-      pill(ed, top.x, top.y - 16, `${def.name} ${Math.round(it.w)}×${Math.round(it.d)}`);
+      const zLabel = it.z ? ` 离地${Math.round(it.z)}cm` : '';
+      pill(ed, top.x, top.y - 16, `${def.name} ${Math.round(it.w)}×${Math.round(it.d)}${zLabel}`);
     }
   }
   drawGroupBox(ed);

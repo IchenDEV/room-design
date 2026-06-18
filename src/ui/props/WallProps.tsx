@@ -21,7 +21,7 @@ export function WallProps({ id }: { id: string }) {
   return (
     <>
       <Section title={glass ? '玻璃墙属性' : '墙体属性'}>
-        <NumField label="长度（精确）" value={wallLen(w)} min={10} max={5000}
+        <NumField label="长度" value={wallLen(w)} min={10} max={5000}
           onCommit={(v) => setWallLength(store, id, v)} />
         <SliderNum label="厚度" min={4} max={50} value={w.thickness}
           onPreview={(v) => mut((x) => { x.thickness = v; }, false)} onCommit={(v) => mut((x) => { x.thickness = v; }, true)} />

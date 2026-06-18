@@ -37,11 +37,11 @@ export function OpeningProps({ id }: { id: string }) {
         <Section title="样式">
           <ChoiceGrid options={DOOR_SWINGS} value={o.swing ?? 'single'}
             onPick={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.swing = v; })} />
-          <Check label="玻璃门（铝框 + 透明玻璃）" checked={o.style === 'glass'}
+          <Check label="玻璃门" checked={o.style === 'glass'}
             onChange={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.style = v ? 'glass' : 'wood'; })} />
         </Section>
       )}
-      <Section title={isDoor ? '门窗方向' : '窗方向'}>
+      <Section title={isDoor ? '门方向' : '窗方向'}>
         <Check label={isDoor ? '左右翻转门扇' : '左右翻转窗扇'} checked={o.flip}
           onChange={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.flip = v; })} />
       </Section>

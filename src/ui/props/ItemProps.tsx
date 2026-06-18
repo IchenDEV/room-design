@@ -23,10 +23,12 @@ export function ItemProps({ id }: { id: string }) {
       <Section title={`${def.name}`}>
         <NumField label="位置 X" value={it.x} onCommit={setNum('x')} />
         <NumField label="位置 Y" value={it.y} onCommit={setNum('y')} />
+        <SliderNum label="离地高" min={0} max={store.project.settings.wallHeight} value={it.z ?? 0}
+          onPreview={(v) => mut((x) => { x.z = v; }, false)} onCommit={(v) => mut((x) => { x.z = v; }, true)} />
         <SliderNum label="旋转" min={0} max={359} value={it.rot} unit="°"
           onPreview={(v) => mut((x) => { x.rot = v; }, false)} onCommit={(v) => mut((x) => { x.rot = v; }, true)} />
       </Section>
-      <Section title="尺寸（精确输入）">
+      <Section title="尺寸">
         <SliderNum label="宽" min={20} max={400} value={it.w}
           onPreview={(v) => mut((x) => { x.w = v; }, false)} onCommit={(v) => mut((x) => { x.w = v; }, true)} />
         <SliderNum label="深" min={10} max={400} value={it.d}

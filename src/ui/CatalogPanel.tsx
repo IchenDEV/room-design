@@ -58,7 +58,7 @@ export function CatalogPanel() {
           );
         })}
       </div>
-      <div className="cat-tip">点击素材后，在 2D 画布上点击放置；靠墙自动贴齐。</div>
+      <div className="cat-tip">选中素材后，在画布上点击放置。</div>
     </aside>
   );
 }

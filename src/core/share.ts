@@ -114,7 +114,7 @@ export async function shareProject(store: Store) {
   const title = `栖居 Rooms · ${store.project.name || '未命名方案'}`;
   if (navigator.share) {
     try {
-      await navigator.share({ title, text: '打开这个链接查看房间设计方案。', url });
+      await navigator.share({ title, text: '查看这个房间设计方案', url });
       return '已打开系统分享';
     } catch (err) {
       if ((err as DOMException).name === 'AbortError') return '已取消分享';

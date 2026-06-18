@@ -29,7 +29,8 @@ function wallSnap(project: Project, p: Pt, it: Item): ItemSnapResult | null {
   let best: { wall: Wall; d: number; t: number } | null = null;
   for (const w of project.walls) {
     const d = distPtSeg(p, w.a, w.b);
-    const limit = it.d / 2 + w.thickness / 2 + 22;
+    // 容差：家具外缘离墙 6cm 内才贴墙（it.d/2 + 墙半厚 = 刚好贴墙的距离）
+    const limit = it.d / 2 + w.thickness / 2 + 6;
     if (d < limit && (!best || d < best.d)) best = { wall: w, d, t: projT(p, w.a, w.b) };
   }
   if (!best) return null;

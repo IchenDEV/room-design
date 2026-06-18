@@ -13,7 +13,7 @@ const HINTS: Record<string, string> = {
   window: '移动到墙上点击放置窗',
   ruler: '按住拖拽测量距离，端点可吸附墙端/墙线',
   measure: '按住拖拽创建距离标注，端点可吸附墙端/墙线',
-  place: '在画布点击放置素材，靠墙自动贴齐，R 旋转',
+  place: '在画布上点击放置，R 旋转',
 };
 
 export function StatusBar() {
@@ -29,22 +29,23 @@ export function StatusBar() {
   }, []);
 
   const s = stats(store);
-  const hint = store.ui.walking
+  const base = store.ui.walking
     ? 'W/A/S/D 移动 · 拖拽转视角 · Shift 加速 · Esc 退出漫游'
     : HINTS[store.ui.tool.type] ?? '';
+  const selItem3d = store.ui.mode === '3d' && !store.ui.walking && store.sel?.kind === 'item';
+  const hint = selItem3d ? `${base} · Shift+拖拽 调高度` : base;
 
   return (
     <footer className="statusbar">
       <span className="sb-hint">{hint}</span>
       <span className="sb-spacer" />
       <span ref={coordRef} className="sb-mono">—</span>
-      <span className="sb-sep">|</span>
       <span ref={zoomRef} className="sb-mono">100%</span>
-      <span className="sb-sep">|</span>
-      <span>{s.rooms} 房间 · {s.area.toFixed(1)} ㎡ · {s.items} 家具</span>
-      <span className="sb-sep">|</span>
-      <span className="sb-saved" title="所有编辑实时保存到浏览器 IndexedDB">
-        {savedAt ? `已保存 ${savedAt}` : 'IndexedDB 实时存储'}
+      <span className="sb-stat">房间<b>{s.rooms}</b></span>
+      <span className="sb-stat">面积<b>{s.area.toFixed(1)}㎡</b></span>
+      <span className="sb-stat">家具<b>{s.items}</b></span>
+      <span className="sb-saved" title="编辑会自动保存到本地">
+        <i className="sb-dot" />{savedAt ? `已保存 ${savedAt}` : '已自动保存'}
       </span>
     </footer>
   );

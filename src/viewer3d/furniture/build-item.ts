@@ -24,7 +24,7 @@ export function buildItem(it: Item): THREE.Group {
   const def = defOf(it.defId);
   const builder = REG[def.kind] ?? table;
   const g = builder(it.w, it.d, it.h, it.color ?? def.color, it.texture ?? defaultTexture(def));
-  g.position.set(it.x, 0, -it.y);
+  g.position.set(it.x, it.z ?? 0, -it.y);
   g.rotation.y = (it.rot * Math.PI) / 180;
   if (it.flipX) g.scale.x = -1;
   g.userData.itemId = it.id;

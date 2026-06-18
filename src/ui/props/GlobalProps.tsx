@@ -39,7 +39,7 @@ export function GlobalProps() {
         <Check label="3D 显示吊顶" checked={set.showCeiling}
           onChange={(v) => store.commit((p) => { p.settings.showCeiling = v; })} />
       </Section>
-      <Section title="墙面配色（整体）">
+      <Section title="墙面配色">
         <div className="swatches">
           {WALL_COLORS.map((c) => (
             <button key={c} className="swatch" style={{ background: c }}
@@ -49,7 +49,7 @@ export function GlobalProps() {
       </Section>
       <Section title="操作提示">
         <p className="tip-text">
-          选中任意墙、门窗、家具或房间可编辑属性；所有尺寸都支持直接输入数值精确调整。右键元素可快速旋转 / 复制 / 删除。编辑会实时保存到本地 IndexedDB。
+          选中墙体、门窗、家具或房间可编辑其属性；尺寸可直接输入数值。右键元素可旋转、复制或删除。
         </p>
       </Section>
     </>

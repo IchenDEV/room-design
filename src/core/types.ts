@@ -43,6 +43,7 @@ export interface Item {
   color?: string;
   texture?: FurnTexture;
   flipX?: boolean;
+  z?: number;          // 离地高度 cm，缺省 0（贴地）
 }
 
 export interface ItemGroup {

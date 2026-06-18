@@ -2,6 +2,8 @@ import type { Store } from './store';
 import type { Pt, Selection } from '../types';
 import { uid } from '../types';
 import { dist, wallDir, wallLen } from '../geometry/vec';
+import { itemBounds } from '../geometry/item-bounds';
+import type { Bounds } from '../geometry/item-bounds';
 import { itemOf, wallOf } from './selectors';
 import { ensureGroups, idsFromSelection } from './item-groups';
 import { sampleOf } from '../samples';
@@ -23,8 +25,7 @@ export function deleteSelection(s: Store) {
       const ids = idsFromSelection(s, sel);
       p.items = p.items.filter((i) => !ids.includes(i.id));
       p.groups = ensureGroups(p).filter((g) => g.id !== sel.id);
-    }
-    else if (sel.kind === 'room') p.roomMetas = p.roomMetas.filter((m) => m.id !== sel.metaId);
+    } else if (sel.kind === 'room') p.roomMetas = p.roomMetas.filter((m) => m.id !== sel.metaId);
   });
   s.setSel(null);
 }
@@ -39,17 +40,19 @@ export function duplicateItem(s: Store, id: string) {
 }
 
 export function rotateItem(s: Store, id: string, delta = 90) {
-  s.commit((p) => {
-    const it = p.items.find((i) => i.id === id);
-    if (it) it.rot = (it.rot + delta + 360) % 360;
-  });
+  s.commit((p) => { const it = p.items.find((i) => i.id === id); if (it) it.rot = (it.rot + delta + 360) % 360; });
+}
+export function toggleItemFlip(s: Store, id: string) {
+  s.commit((p) => { const it = p.items.find((i) => i.id === id); if (it) it.flipX = !it.flipX; });
+}
+/** 家具离地高度归零（贴地） */
+export function resetItemZ(s: Store, id: string) {
+  s.commit((p) => { const it = p.items.find((i) => i.id === id); if (it) it.z = 0; });
 }
 
-export function toggleItemFlip(s: Store, id: string) {
-  s.commit((p) => {
-    const it = p.items.find((i) => i.id === id);
-    if (it) it.flipX = !it.flipX;
-  });
+/** 反转墙方向：交换 a/b 端（影响门窗开启朝向） */
+export function reverseWall(s: Store, id: string) {
+  s.commit((p) => { const w = p.walls.find((x) => x.id === id); if (w) { const t = w.a; w.a = w.b; w.b = t; } });
 }
 
 /** 精确设墙长：固定 a 端，b 端连同重合端点一起平移 */
@@ -69,49 +72,43 @@ export function setWallLength(s: Store, id: string, len: number) {
 }
 
 export function toggleWallMaterial(s: Store, id: string) {
-  s.commit((p) => {
-    const w = p.walls.find((x) => x.id === id);
-    if (w) w.material = w.material === 'glass' ? 'solid' : 'glass';
-  });
+  s.commit((p) => { const w = p.walls.find((x) => x.id === id); if (w) w.material = w.material === 'glass' ? 'solid' : 'glass'; });
 }
-
 export function toggleDoorStyle(s: Store, id: string) {
-  s.commit((p) => {
-    const o = p.openings.find((x) => x.id === id);
-    if (o && o.kind === 'door') o.style = o.style === 'glass' ? 'wood' : 'glass';
-  });
+  s.commit((p) => { const o = p.openings.find((x) => x.id === id); if (o && o.kind === 'door') o.style = o.style === 'glass' ? 'wood' : 'glass'; });
 }
-
 export function toggleOpeningFlip(s: Store, id: string) {
-  s.commit((p) => {
-    const o = p.openings.find((x) => x.id === id);
-    if (o) o.flip = !o.flip;
-  });
+  s.commit((p) => { const o = p.openings.find((x) => x.id === id); if (o) o.flip = !o.flip; });
 }
-
 export function toggleDoorSwing(s: Store, id: string) {
-  s.commit((p) => {
-    const o = p.openings.find((x) => x.id === id);
-    if (o?.kind === 'door') o.swing = o.swing === 'double' ? 'single' : 'double';
-  });
+  s.commit((p) => { const o = p.openings.find((x) => x.id === id); if (o?.kind === 'door') o.swing = o.swing === 'double' ? 'single' : 'double'; });
 }
 
-export function loadSample(s: Store, id: string) {
-  const def = sampleOf(id);
-  if (def) s.replaceProject(def.make());
-}
-
-export function clearAll(s: Store) {
-  s.replaceProject(emptyProject());
-}
+export function loadSample(s: Store, id: string) { const def = sampleOf(id); if (def) s.replaceProject(def.make()); }
+export function clearAll(s: Store) { s.replaceProject(emptyProject()); }
 
 export function openCtxMenu(s: Store, x: number, y: number, sel: Selection) {
-  s.setSel(sel);
-  s.patchUI({ ctx: { x, y, sel } });
+  s.setSel(sel); s.patchUI({ ctx: { x, y, sel } });
 }
+export function closeCtxMenu(s: Store) { if (s.ui.ctx) s.patchUI({ ctx: null }); }
 
-export function closeCtxMenu(s: Store) {
-  if (s.ui.ctx) s.patchUI({ ctx: null });
+export type AlignMode = 'left' | 'right' | 'top' | 'bottom' | 'hCenter' | 'vCenter';
+const AX: Record<AlignMode, 'x' | 'y'> = { left: 'x', right: 'x', top: 'y', bottom: 'y', hCenter: 'x', vCenter: 'y' };
+const EDGE: Record<AlignMode, 'lo' | 'hi' | 'mid'> = { left: 'lo', right: 'hi', top: 'hi', bottom: 'lo', hCenter: 'mid', vCenter: 'mid' };
+const ev = (b: Bounds, ax: 'x' | 'y', edge: 'lo' | 'hi' | 'mid') => {
+  const lo = ax === 'x' ? b.minX : b.minY, hi = ax === 'x' ? b.maxX : b.maxY;
+  return edge === 'lo' ? lo : edge === 'hi' ? hi : (lo + hi) / 2;
+};
+
+/** 多选家具对齐：按整体包围盒对齐到左/右/上/下/水平居中/垂直居中 */
+export function alignItems(s: Store, mode: AlignMode) {
+  const ids = idsFromSelection(s);
+  const items = s.project.items.filter((i) => ids.includes(i.id));
+  if (items.length < 2) return;
+  const bs = items.map(itemBounds);
+  const box = bs.reduce((o, b) => ({ minX: Math.min(o.minX, b.minX), minY: Math.min(o.minY, b.minY), maxX: Math.max(o.maxX, b.maxX), maxY: Math.max(o.maxY, b.maxY) }));
+  const ax = AX[mode], target = ev(box, ax, EDGE[mode]);
+  s.commit((p) => { items.forEach((it, i) => { const t = p.items.find((x) => x.id === it.id); if (t) t[ax] += target - ev(bs[i], ax, EDGE[mode]); }); });
 }
 
 /** 确保房间有 meta（点选房间时自动建档） */
@@ -119,9 +116,7 @@ export function ensureRoomMeta(s: Store, roomIdx: number): string {
   const r = s.rooms[roomIdx];
   if (r.metaId) return r.metaId;
   const id = uid('r');
-  s.commit((p) => {
-    p.roomMetas.push({ id, anchor: { ...r.centroid }, name: `房间${p.roomMetas.length + 1}`, floor: 'woodLight' });
-  });
+  s.commit((p) => { p.roomMetas.push({ id, anchor: { ...r.centroid }, name: `房间${p.roomMetas.length + 1}`, floor: 'woodLight' }); });
   return id;
 }
 

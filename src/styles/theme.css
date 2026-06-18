@@ -1,30 +1,46 @@
-/* 主题变量：深色 / 浅色（需求 5） */
+/* 主题变量：深色 / 浅色（专业工具感，参考 Figma / Linear） */
 :root,
 :root[data-theme='dark'] {
-  --bg: #131519;
-  --panel: #1a1d23;
-  --panel-2: #21252d;
-  --line: #2a2f39;
-  --text: #e7ebf2;
-  --muted: #8d97a7;
+  --bg: #0f1115;
+  --panel: #15171c;
+  --panel-2: #1c1f26;
+  --panel-3: #23272f;
+  --line: #272b34;
+  --line-soft: #1d2128;
+  --text: #e8ecf2;
+  --muted: #7d8696;
   --accent: #4f8cff;
-  --accent-soft: rgba(79, 140, 255, 0.15);
+  --accent-soft: rgba(79, 140, 255, 0.14);
+  --accent-ring: rgba(79, 140, 255, 0.32);
   --danger: #e36a6a;
-  --shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --ok: #4ecf8a;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.28);
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.46);
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 11px;
   color-scheme: dark;
 }
 
 :root[data-theme='light'] {
-  --bg: #eef0f4;
+  --bg: #f5f6f8;
   --panel: #ffffff;
-  --panel-2: #f4f6f9;
-  --line: #dee2ea;
-  --text: #283038;
-  --muted: #6d7787;
+  --panel-2: #f3f5f8;
+  --panel-3: #ebedf2;
+  --line: #e2e5eb;
+  --line-soft: #eef0f3;
+  --text: #1f2733;
+  --muted: #6b7585;
   --accent: #2f6fe4;
-  --accent-soft: rgba(47, 111, 228, 0.12);
+  --accent-soft: rgba(47, 111, 228, 0.10);
+  --accent-ring: rgba(47, 111, 228, 0.28);
   --danger: #d4514f;
-  --shadow: 0 12px 32px rgba(45, 55, 75, 0.16);
+  --ok: #2ea368;
+  --shadow-sm: 0 2px 8px rgba(35, 45, 65, 0.08);
+  --shadow: 0 10px 30px rgba(35, 45, 65, 0.14);
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 11px;
   color-scheme: light;
 }
 
@@ -41,6 +57,8 @@ body {
   color: var(--text);
   overflow: hidden;
   font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 button {
@@ -57,6 +75,18 @@ input, select {
   color: var(--text);
 }
 
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 6px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--muted); background-clip: padding-box; }
 ::-webkit-scrollbar-track { background: transparent; }

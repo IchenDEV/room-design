@@ -38,7 +38,7 @@ export function Stage() {
       </div>
       {store.ui.walking && (
         <div className="walk-hint">
-          漫游中：<b>W/A/S/D</b> 移动 · 拖拽鼠标转视角 · <b>Shift</b> 加速 · <b>Esc</b> 退出 · 靠近门会自动打开
+          漫游中：<b>W/A/S/D</b> 移动 · 拖拽鼠标转视角 · <b>Shift</b> 加速 · <b>Esc</b> 退出 · 靠近门时门会打开
         </div>
       )}
     </div>
