@@ -1,5 +1,5 @@
 import type { Store } from './store/store';
-import { addProjectAsFile } from './store/project-files';
+import { addProjectAsFile } from './store/files';
 import { isValidProject } from './store/persist';
 
 /** 导出当前方案为 JSON 文件 */

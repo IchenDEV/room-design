@@ -8,6 +8,9 @@ import { SAMPLES } from '../core/samples';
 import { editors } from './editors';
 import { Ic } from './icons';
 import { FileMenu } from './FileMenu';
+import { AccountMenu } from './AccountMenu';
+import { isCloudActive } from '../core/collab/sync-status';
+import { toastErr, toastOk } from './toast';
 
 function useToggle() {
   const [open, setOpen] = useState(false);
@@ -29,13 +32,18 @@ export function ToolbarRight() {
   const onImport = async (f: File | undefined) => {
     if (!f) return;
     const err = await importProjectFileAsNew(store, f);
-    if (err) alert(`导入失败：${err}`);
+    if (err) toastErr(`导入失败：${err}`);
   };
   const onShare = async () => {
     if (sharing) return;
+    // 云端模式：打开协作分享弹窗（邀请链接 + 成员管理）
+    if (isCloudActive()) { store.patchUI({ modal: 'share' }); return; }
+    // 本地模式：沿用 URL 内嵌分享
     setSharing(true);
-    try { alert(await shareProject(store)); }
-    catch { alert('分享失败，请稍后再试'); }
+    try {
+      const msg = await shareProject(store);
+      toastOk(msg);
+    } catch { toastErr('分享失败，请稍后再试'); }
     finally { setSharing(false); }
   };
 
@@ -90,14 +98,14 @@ export function ToolbarRight() {
 
       <span className="tb-divider" />
 
-      <button className="tb-btn" title={theme === 'dark' ? '切换浅色模式' : '切换深色模式'} onClick={flipTheme}>
-        <Ic n={theme === 'dark' ? 'sun' : 'moon'} />
-      </button>
       <div className="dropdown">
         <button className="tb-btn" title="更多" onClick={more.flip}><Ic n="more" /></button>
         {more.open && (<>
           <div className="dd-backdrop" onClick={more.off} />
           <div className="dd-menu">
+            <button className="dd-item" onClick={() => { flipTheme(); more.off(); }}>
+              <Ic n={theme === 'dark' ? 'sun' : 'moon'} size={15} /><span>{theme === 'dark' ? '浅色模式' : '深色模式'}</span>
+            </button>
             <button className="dd-item" onClick={() => { store.patchUI({ help: !store.ui.help }); more.off(); }}>
               <Ic n="help" size={15} /><span>快捷键说明</span>
             </button>
@@ -110,6 +118,9 @@ export function ToolbarRight() {
           </div>
         </>)}
       </div>
+
+      <span className="tb-divider" />
+      <AccountMenu />
     </div>
   );
 }

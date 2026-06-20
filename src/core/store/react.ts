@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 import { store } from './store';
 import type { EventName } from './store';
 
-const EVENTS: EventName[] = ['change', 'sel', 'ui', 'saved', 'project'];
+const EVENTS: EventName[] = ['change', 'sel', 'ui', 'saved', 'project', 'auth', 'toast'];
 
 function subscribe(cb: () => void): () => void {
   const offs = EVENTS.map((ev) => store.on(ev, cb));

@@ -8,14 +8,26 @@
   flex-shrink: 0;
 }
 
-.panel-title {
-  padding: 14px 16px 8px;
-  font-weight: 600;
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
+.panel-title { font-weight: 600; font-size: 11px; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; }
+
+/* 面板标题行 + 收起按钮 */
+.panel-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 10px 8px 14px; }
+.panel-collapse, .panel-edge {
+  display: grid; place-items: center; width: 22px; height: 22px;
+  border-radius: var(--r-sm); color: var(--muted); transition: background 0.13s, color 0.13s;
 }
+.panel-collapse:hover, .panel-edge:hover { background: var(--panel-3); color: var(--text); }
+.catalog .panel-collapse svg { transform: rotate(90deg); }
+.props .panel-collapse svg { transform: rotate(-90deg); }
+
+/* 收起态窄边条 */
+.catalog.collapsed, .props.collapsed {
+  width: 28px; background: var(--panel); border-right: 1px solid var(--line);
+  display: flex; align-items: flex-start; justify-content: center; padding-top: 10px; flex-shrink: 0;
+}
+.props.collapsed { border-right: none; border-left: 1px solid var(--line); }
+.catalog.collapsed .panel-edge svg { transform: rotate(-90deg); }
+.props.collapsed .panel-edge svg { transform: rotate(90deg); }
 
 .cat-tabs {
   display: grid;
@@ -81,19 +93,11 @@
 .cat-name { font-size: 12px; margin-top: 2px; color: var(--text); }
 .cat-dims { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
 
-.cat-tip {
-  padding: 10px 16px 12px;
-  border-top: 1px solid var(--line-soft);
-  color: var(--muted);
-  font-size: 11px;
-  line-height: 1.55;
-}
+.cat-tip { padding: 10px 16px 12px; border-top: 1px solid var(--line-soft); color: var(--muted); font-size: 11px; line-height: 1.55; }
 
 /* ---------- 右侧属性面板 ---------- */
 .props {
-  width: 268px;
-  background: var(--panel);
-  border-left: 1px solid var(--line);
+  width: 268px; background: var(--panel); border-left: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;

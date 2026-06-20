@@ -3,6 +3,15 @@ import { store } from '../core/store/store';
 import { useTick } from '../core/store/react';
 import { stats } from '../core/store/selectors';
 import { bindStatus } from './statusBus';
+import { getSyncState, isCloudActive, type SyncStatus } from '../core/collab/sync-status';
+
+const SYNC_TEXT: Record<SyncStatus, string> = {
+  local: '本地已保存',
+  syncing: '同步中…',
+  synced: '已同步到云端',
+  offline: '离线',
+  error: '同步失败',
+};
 
 const HINTS: Record<string, string> = {
   select: '左键选择/拖拽 · 右键快捷菜单 · 滚轮缩放 · 空格+拖拽平移',
@@ -34,6 +43,8 @@ export function StatusBar() {
     : HINTS[store.ui.tool.type] ?? '';
   const selItem3d = store.ui.mode === '3d' && !store.ui.walking && store.sel?.kind === 'item';
   const hint = selItem3d ? `${base} · Shift+拖拽 调高度` : base;
+  const sync = getSyncState();
+  const syncCls = isCloudActive() ? `sb-sync sb-sync-${sync.status}` : 'sb-sync sb-sync-local';
 
   return (
     <footer className="statusbar">
@@ -44,8 +55,11 @@ export function StatusBar() {
       <span className="sb-stat">房间<b>{s.rooms}</b></span>
       <span className="sb-stat">面积<b>{s.area.toFixed(1)}㎡</b></span>
       <span className="sb-stat">家具<b>{s.items}</b></span>
-      <span className="sb-saved" title="编辑会自动保存到本地">
-        <i className="sb-dot" />{savedAt ? `已保存 ${savedAt}` : '已自动保存'}
+      <span className={syncCls} title={sync.message || SYNC_TEXT[sync.status]}>
+        <i className="sb-dot" />
+        {isCloudActive()
+          ? (sync.status === 'syncing' ? '同步中…' : sync.status === 'synced' ? '已同步' : sync.status === 'error' ? '同步失败' : '已同步')
+          : (savedAt ? `已保存 ${savedAt}` : '已自动保存')}
       </span>
     </footer>
   );

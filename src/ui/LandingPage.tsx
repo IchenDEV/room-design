@@ -25,6 +25,13 @@ const files = [
   ['trash', '清理', '删除草稿。'],
 ];
 
+const cloud = [
+  ['cloud', '云端同步', '登录后方案自动上云，跨设备打开继续编辑。'],
+  ['user', '账号管理', '邮箱、Google、GitHub 多种登录方式。'],
+  ['share', '协作分享', '生成邀请链接，邀请他人实时协同编辑。'],
+  ['sync', '自动保存', '改动即时同步，离线也能继续，联网自动合并。'],
+];
+
 function FeatureRow({ items }: { items: string[][] }) {
   return (
     <div className="landing-grid">
@@ -47,6 +54,7 @@ export function LandingPage() {
         <nav aria-label="官网导航">
           <a href="#top">产品</a>
           <a href="#features">功能</a>
+          <a href="#collab">协作</a>
           <a href="#examples">示例</a>
         </nav>
         <a className="nav-cta" href={studio}>开始设计</a>
@@ -61,7 +69,7 @@ export function LandingPage() {
             <a className="secondary" href="#examples">查看示例</a>
           </div>
           <div className="hero-notes">
-            <span>本地实时保存</span><span>厘米级尺寸</span><span>多方案编辑</span>
+            <span>云端自动保存</span><span>厘米级尺寸</span><span>实时多人协作</span>
           </div>
         </div>
         <figure className="hero-shot">
@@ -87,6 +95,14 @@ export function LandingPage() {
           <p>插座、地插、弱电箱和门禁可以像家具一样放置到墙面。</p>
           <FeatureRow items={electric} />
         </div>
+      </section>
+
+      <section className="landing-band compact" id="collab">
+        <div>
+          <h2>云端协作</h2>
+          <p>登录账号，方案自动上云；生成邀请链接，多人实时协同编辑同一户型。</p>
+        </div>
+        <FeatureRow items={cloud} />
       </section>
 
       <section className="landing-band compact">
