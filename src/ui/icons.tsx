@@ -44,6 +44,11 @@ export const ICONS: Record<string, string> = {
   office: 'M4 7h16v13H4zM9 7V4h6v3M4 12h16',
   more: 'M12 5h.01M12 12h.01M12 19h.01',
   align: 'M4 6h16M4 12h10M4 18h16',
+  user: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6',
+  logout: 'M14 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2M16 12h6M19 9l3 3-3 3',
+  cloud: 'M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1.3A4 4 0 0 1 17 18H7z',
+  sync: 'M4 4v6h6M20 20v-6h-6M5 14a7 7 0 0 0 12 2M19 10A7 7 0 0 0 7 8',
+  settings: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8M3 12h3M18 12h3M12 3v3M12 18v3',
 };
 
 export function Ic({ n, size = 17 }: { n: string; size?: number }) {

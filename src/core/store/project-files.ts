@@ -6,7 +6,11 @@ import { idbDel, idbGet, idbSet } from './idb';
 const INDEX = 'project:index';
 const LEGACY = 'project:current';
 
-export interface ProjectFileMeta { id: string; name: string; updatedAt: number }
+export interface ProjectFileMeta {
+  id: string; name: string; updatedAt: number;
+  cloudId?: string; ownerId?: string; ownerName?: string;
+  role?: 'owner' | 'editor' | 'viewer';
+}
 interface ProjectIndex { activeId: string; files: ProjectFileMeta[] }
 
 export const projectFileState = { activeId: '', files: [] as ProjectFileMeta[] };

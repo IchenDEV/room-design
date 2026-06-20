@@ -4,6 +4,7 @@ import { deleteSelection } from '../core/store/actions';
 import { editors } from './editors';
 import { Ic } from './icons';
 import { ToolbarRight } from './ToolbarRight';
+import { PresenceBar } from './PresenceBar';
 import type { Tool } from '../core/types';
 
 const TOOLS: { id: Tool['type']; icon: string; name: string; key: string }[] = [
@@ -34,8 +35,7 @@ export function Toolbar() {
             <Ic n={t.icon} />
           </button>
         ))}
-      </div>
-      <div className="tb-group">
+        <span className="tb-divider" />
         <button className="tb-btn" title="撤销 (⌘Z)" disabled={!store.canUndo} onClick={() => store.undo()}><Ic n="undo" /></button>
         <button className="tb-btn" title="重做 (⇧⌘Z)" disabled={!store.canRedo} onClick={() => store.redo()}><Ic n="redo" /></button>
         <button className="tb-btn" title="删除选中 (Del)" disabled={!store.sel} onClick={() => deleteSelection(store)}><Ic n="trash" /></button>
@@ -43,18 +43,15 @@ export function Toolbar() {
           onClick={() => (ui.mode === '2d' ? editors.e2?.fit() : editors.v3?.fitCamera())}><Ic n="fit" /></button>
       </div>
       <div className="tb-group seg">
-        <button className={`tb-btn wide ${ui.mode === '2d' ? 'on' : ''}`} onClick={() => store.setMode('2d')}>
-          <Ic n="plan" /><span>2D 平面</span>
-        </button>
-        <button className={`tb-btn wide ${ui.mode === '3d' ? 'on' : ''}`} onClick={() => store.setMode('3d')}>
-          <Ic n="cube" /><span>3D 效果</span>
-        </button>
-        <button className={`tb-btn wide ${ui.walking ? 'on' : ''}`} title="第一人称漫游 (G)" disabled={ui.mode !== '3d'}
-          onClick={() => editors.v3?.walk.toggle()}>
-          <Ic n="walk" /><span>漫游</span>
-        </button>
+        <button className={`tb-btn ${ui.mode === '2d' ? 'on' : ''}`} title="2D 平面图"
+          onClick={() => store.setMode('2d')}><Ic n="plan" /></button>
+        <button className={`tb-btn ${ui.mode === '3d' ? 'on' : ''}`} title="3D 效果"
+          onClick={() => store.setMode('3d')}><Ic n="cube" /></button>
+        <button className={`tb-btn ${ui.walking ? 'on' : ''}`} title="第一人称漫游 (G)" disabled={ui.mode !== '3d'}
+          onClick={() => editors.v3?.walk.toggle()}><Ic n="walk" /></button>
       </div>
       <div className="tb-spacer" />
+      <PresenceBar />
       <ToolbarRight />
     </header>
   );

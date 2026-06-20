@@ -1,9 +1,7 @@
 name: Deploy to GitHub Pages
 
+# 已迁移到 Vercel 托管（见 vercel.json）；此工作流仅保留为手动触发，默认不再部署到 GitHub Pages。
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:

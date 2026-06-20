@@ -11,6 +11,10 @@ import { PropsPanel } from './ui/PropsPanel';
 import { StatusBar } from './ui/StatusBar';
 import { ContextMenu } from './ui/ContextMenu';
 import { HelpModal } from './ui/HelpModal';
+import { Toaster } from './ui/Toaster';
+import { AuthModal } from './ui/AuthModal';
+import { AccountModal } from './ui/AccountModal';
+import { ShareModal } from './ui/ShareModal';
 
 export default function App() {
   const [studio, setStudio] = useState(() => location.hash.startsWith('#/studio'));
@@ -27,7 +31,15 @@ export default function App() {
     if (!studio) document.documentElement.dataset.theme = 'light';
   }, [studio]);
 
-  return studio ? <StudioApp /> : <LandingPage />;
+  return (
+    <>
+      {studio ? <StudioApp /> : <LandingPage />}
+      <Toaster />
+      <AuthModal />
+      <AccountModal />
+      <ShareModal />
+    </>
+  );
 }
 
 function StudioApp() {

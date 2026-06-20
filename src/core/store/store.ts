@@ -1,42 +1,38 @@
 import type { CtxMenu, Project, RoomPoly, Selection, Theme, Tool, ViewMode } from '../types';
+import type { UserProfile } from '../auth/types';
 import { detectRooms } from '../geometry/rooms';
 import { pointInPoly } from '../geometry/polygon';
 import { defaultSample } from '../samples';
 import { pruneGroups } from './item-groups';
+import { Emitter, type EventName, type ChangeInfo } from './store-events';
 
-export type EventName = 'change' | 'sel' | 'ui' | 'saved' | 'project';
-export interface ChangeInfo { transient?: boolean }
-type Listener = (e?: ChangeInfo) => void;
+export type { EventName, ChangeInfo } from './store-events';
 
 export interface UIState {
   mode: ViewMode; tool: Tool; walking: boolean; theme: Theme;
-  ctx: CtxMenu | null; hydrated: boolean; help: boolean;
+  ctx: CtxMenu | null; hydrated: boolean; help: boolean; panelL: boolean; panelR: boolean;
+  modal: null | 'auth' | 'account' | 'share';
 }
 
 const UNDO_CAP = 100;
 
-export class Store {
+export class Store extends Emitter {
   project: Project = defaultSample();
   rooms: RoomPoly[] = [];
   sel: Selection | null = null;
-  ui: UIState = { mode: '2d', tool: { type: 'select' }, walking: false, theme: 'dark', ctx: null, hydrated: false, help: false };
+  user: UserProfile | null = null;
+  authLoading = true;
+  ui: UIState = { mode: '2d', tool: { type: 'select' }, walking: false, theme: 'dark', ctx: null, hydrated: false, help: false, panelL: true, panelR: true, modal: null };
   version = 0;
-  private listeners = new Map<EventName, Set<Listener>>();
   private undoStack: string[] = [];
   private redoStack: string[] = [];
   private txn: string | null = null;
 
-  constructor() { this.recompute(); }
-
-  on(ev: EventName, fn: Listener): () => void {
-    if (!this.listeners.has(ev)) this.listeners.set(ev, new Set());
-    this.listeners.get(ev)!.add(fn);
-    return () => this.listeners.get(ev)!.delete(fn);
-  }
+  constructor() { super(); this.recompute(); }
 
   emit(ev: EventName, e?: ChangeInfo) {
     this.version++;
-    this.listeners.get(ev)?.forEach((fn) => fn(e));
+    this.fire(ev, e);
   }
 
   recompute() {

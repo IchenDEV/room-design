@@ -31,10 +31,25 @@ export function CatalogPanel() {
   const tool = store.ui.tool;
   const query = q.trim().toLowerCase();
   const items = CATALOG.filter((d) => d.cat === cat && (!query || `${d.name} ${d.id}`.toLowerCase().includes(query)));
+  const open = store.ui.panelL;
+  const toggle = () => store.patchUI({ panelL: !open });
+
+  if (!open) return (
+    <aside className="catalog collapsed">
+      <button className="panel-edge" title="展开素材库" onClick={toggle}>
+        <Ic n="chev" size={14} />
+      </button>
+    </aside>
+  );
 
   return (
     <aside className="catalog">
-      <div className="panel-title">素材库</div>
+      <div className="panel-head">
+        <span className="panel-title">素材库</span>
+        <button className="panel-collapse" title="收起素材库" onClick={toggle}>
+          <Ic n="chev" size={14} />
+        </button>
+      </div>
       <div className="cat-tabs">
         {CATS.map((c) => (
           <button key={c.id} className={`cat-tab ${cat === c.id ? 'on' : ''}`} onClick={() => { setCat(c.id); setQ(''); }}>

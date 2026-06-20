@@ -1,6 +1,6 @@
 import type { Project } from './types';
 import type { Store } from './store/store';
-import { addProjectAsFile, isValidProject } from './store/project-files';
+import { addProjectAsFile, isValidProject } from './store/files';
 
 type StreamCtor = new (format: string) => {
   readable: ReadableStream<Uint8Array>;
