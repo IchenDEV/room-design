@@ -1,7 +1,7 @@
 import { supabase } from '../supabase/client';
 import type { Project } from '../types';
 import { emptyProject } from '../types';
-import { decodeProjectUpdate, encodeProjectUpdate } from '../collab/ydoc';
+import { bytesFromBytea, bytesToBase64, decodeProjectUpdate, encodeProjectUpdate } from '../collab/ydoc';
 
 export type MemberRole = 'owner' | 'editor' | 'viewer';
 
@@ -45,26 +45,28 @@ export async function createCloudProject(name: string, p?: Project): Promise<Clo
   const { data: u } = await supabase.auth.getUser();
   if (!u.user) throw new Error('未登录');
   const seed: Project = p ? { ...p, name } : emptyProject(name);
-  const { data, error } = await supabase
-    .from(T).insert({ owner_id: u.user.id, name, ydoc: encodeProjectUpdate(seed) })
-    .select('id,name,owner_id,updated_at').single();
+  const { data, error } = await supabase.rpc('create_project', {
+    p_name: name,
+    p_ydoc_base64: bytesToBase64(encodeProjectUpdate(seed)),
+  }).single();
   if (error) throw error;
-  await supabase.from(MT).insert({ project_id: data.id, user_id: u.user.id, role: 'owner' });
-  return row({ ...data, role: 'owner' });
+  return row(data);
 }
 
 /** 读取云端方案（解码 ydoc → Project） */
 export async function getCloudProject(id: string): Promise<Project | null> {
   const { data, error } = await supabase.from(T).select('ydoc').eq('id', id).maybeSingle();
   if (error) throw error;
-  return decodeProjectUpdate((data?.ydoc as Uint8Array) ?? null);
+  return decodeProjectUpdate(bytesFromBytea(data?.ydoc));
 }
 
 /** 整体覆盖云端 ydoc（Phase 2 单端写入） */
 export async function saveCloudProject(id: string, p: Project): Promise<void> {
-  const { error } = await supabase.from(T)
-    .update({ ydoc: encodeProjectUpdate(p), name: p.name, updated_at: new Date().toISOString() })
-    .eq('id', id);
+  const { error } = await supabase.rpc('save_project', {
+    p_project_id: id,
+    p_name: p.name,
+    p_ydoc_base64: bytesToBase64(encodeProjectUpdate(p)),
+  });
   if (error) throw error;
 }
 

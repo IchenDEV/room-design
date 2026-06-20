@@ -17,26 +17,42 @@ export interface InviteMember {
 
 const IT = 'project_invites';
 const MT = 'project_members';
+const TOKEN_BYTES = 9;
+
+function inviteToken(): string {
+  const bytes = new Uint8Array(TOKEN_BYTES);
+  crypto.getRandomValues(bytes);
+  let raw = '';
+  for (const b of bytes) raw += String.fromCharCode(b);
+  return btoa(raw).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function mapInvite(r: any): Invite {
+  return { id: r.id, token: r.token, role: r.role, createdAt: r.created_at,
+    expiresAt: r.expires_at, uses: r.uses, maxUses: r.max_uses };
+}
 
 export async function listInvites(projectId: string): Promise<Invite[]> {
   const { data, error } = await supabase
     .from(IT).select('id,token,role,created_at,expires_at,uses,max_uses')
     .eq('project_id', projectId).order('created_at', { ascending: false });
   if (error) throw error;
-  return (data ?? []).map((r: any) => ({
-    id: r.id, token: r.token, role: r.role, createdAt: r.created_at,
-    expiresAt: r.expires_at, uses: r.uses, maxUses: r.max_uses,
-  }));
+  return (data ?? []).map(mapInvite);
 }
 
 export async function createInvite(projectId: string, role: 'editor' | 'viewer'): Promise<Invite> {
   const { data: u } = await supabase.auth.getUser();
-  const { data, error } = await supabase
-    .from(IT).insert({ project_id: projectId, role, created_by: u.user!.id })
-    .select('id,token,role,created_at,expires_at,uses,max_uses').single();
-  if (error) throw error;
-  return { id: data.id, token: data.token, role: data.role, createdAt: data.created_at,
-    expiresAt: data.expires_at, uses: data.uses, maxUses: data.max_uses };
+  if (!u.user) throw new Error('未登录');
+  let last: unknown;
+  for (let i = 0; i < 3; i++) {
+    const { data, error } = await supabase
+      .from(IT).insert({ project_id: projectId, role, created_by: u.user.id, token: inviteToken() })
+      .select('id,token,role,created_at,expires_at,uses,max_uses').single();
+    if (!error) return mapInvite(data);
+    last = error;
+    if (error.code !== '23505') throw error;
+  }
+  throw last;
 }
 
 export async function revokeInvite(inviteId: string): Promise<void> {

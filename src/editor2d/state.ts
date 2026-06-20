@@ -3,6 +3,9 @@ import type { Guide, Pt } from '../core/types';
 import type { ItemResizeCorner } from './item-handles';
 
 export interface GroupDragItem { id: string; x: number; y: number }
+export interface WallEndRef { wallId: string; end: 'a' | 'b' }
+export interface WallNodeRef extends WallEndRef { pt: Pt }
+export interface WallDragEnd extends WallEndRef { origin: Pt }
 
 export type Drag =
   | { kind: 'pan'; sx: number; sy: number; ox: number; oy: number }
@@ -10,8 +13,8 @@ export type Drag =
   | { kind: 'group'; id: string; off: Pt; origin: Pt; bounds: Bounds; items: GroupDragItem[]; moved: boolean }
   | { kind: 'item-rotate'; id: string; moved: boolean }
   | { kind: 'item-resize'; id: string; corner: ItemResizeCorner; anchor: Pt; rot: number; moved: boolean }
-  | { kind: 'wall'; id: string; last: Pt; moved: boolean }
-  | { kind: 'node'; ends: { wallId: string; end: 'a' | 'b' }[]; moved: boolean }
+  | { kind: 'wall'; id: string; start: Pt; ends: WallDragEnd[]; moved: boolean }
+  | { kind: 'node'; ends: WallEndRef[]; refs: WallNodeRef[]; moved: boolean }
   | { kind: 'opening'; id: string; moved: boolean }
   | { kind: 'ruler' }
   | { kind: 'measure' }

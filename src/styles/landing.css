@@ -37,13 +37,11 @@ body.landing-mode {
 }
 
 .landing-brand { display: flex; align-items: center; gap: 10px; margin-right: auto; font-size: 19px; font-weight: 700; }
-.landing-brand span {
+.landing-brand-mark {
   width: 34px; height: 34px;
-  display: grid; place-items: center;
+  display: block;
   border-radius: 8px;
-  background: var(--brand-green);
-  color: #fff;
-  font-weight: 800;
+  flex: 0 0 auto;
 }
 
 .landing-nav nav { display: flex; align-items: center; gap: 32px; color: var(--hig-secondary); font-size: 14px; font-weight: 600; }
@@ -56,8 +54,8 @@ body.landing-mode {
   font-weight: 600;
 }
 
-.nav-cta, .primary { background: var(--hig-blue); color: #fff; }
-.nav-cta:hover, .primary:hover { background: var(--hig-blue-hover); }
+.landing .nav-cta, .landing .primary { background: var(--hig-blue); color: #fff; }
+.landing .nav-cta:hover, .landing .primary:hover { background: var(--hig-blue-hover); color: #fff; }
 .secondary { border: 1px solid rgba(0, 0, 0, 0.18); color: var(--hig-text); background: #fff; }
 
 .landing-hero {

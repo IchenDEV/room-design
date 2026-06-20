@@ -2,6 +2,7 @@
 export interface UserProfile {
   id: string;
   email: string;
+  username: string | null;
   displayName: string;
   avatarUrl: string | null;
   /** 协作时的光标/选区颜色（十六进制） */

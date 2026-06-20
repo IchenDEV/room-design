@@ -76,6 +76,53 @@ export function encodeProjectUpdate(p: Project): Uint8Array {
   return Y.encodeStateAsUpdate(doc);
 }
 
+export function bytesToBase64(bytes: Uint8Array): string {
+  let raw = '';
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    raw += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  }
+  return btoa(raw);
+}
+
+function bytesFromHex(hex: string): Uint8Array | null {
+  if (hex.length % 2 !== 0 || /[^0-9a-f]/i.test(hex)) return null;
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i++) bytes[i] = Number.parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+  return bytes;
+}
+
+function bytesFromBase64(text: string): Uint8Array | null {
+  try {
+    const raw = atob(text);
+    const bytes = new Uint8Array(raw.length);
+    for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+    return bytes;
+  } catch {
+    return null;
+  }
+}
+
+export function bytesFromBytea(value: unknown): Uint8Array | null {
+  if (!value) return null;
+  if (value instanceof Uint8Array) return value;
+  if (value instanceof ArrayBuffer) return new Uint8Array(value);
+  if (Array.isArray(value)) return new Uint8Array(value);
+  if (typeof value === 'string') {
+    if (!value) return null;
+    if (value.startsWith('\\x')) return bytesFromHex(value.slice(2));
+    return bytesFromBase64(value);
+  }
+  if (typeof value === 'object') {
+    const entries = Object.entries(value as Record<string, unknown>)
+      .map(([k, v]) => [Number(k), Number(v)] as const)
+      .filter(([k, v]) => Number.isInteger(k) && Number.isInteger(v))
+      .sort(([a], [b]) => a - b);
+    if (entries.length) return new Uint8Array(entries.map(([, v]) => v));
+  }
+  return null;
+}
+
 /** Yjs 编码状态 → Project（损坏或空数据返回 null） */
 export function decodeProjectUpdate(bytes: Uint8Array | null): Project | null {
   if (!bytes || bytes.length === 0) return null;

@@ -32,7 +32,8 @@ function AccountBody() {
     close();
   };
 
-  const initial = (name || u.email || '?').trim().charAt(0).toUpperCase();
+  const handle = u.username ? `@${u.username}` : u.email;
+  const initial = (name || u.username || u.email || '?').trim().charAt(0).toUpperCase();
 
   return (
     <div className="modal-backdrop" onClick={close}>
@@ -46,7 +47,7 @@ function AccountBody() {
             <span className="account-avatar xl" style={{ background: color }}>{initial}</span>
             <div>
               <b>{name || u.displayName}</b>
-              <span className="account-email">{u.email}</span>
+              <span className="account-email">{handle}</span>
             </div>
           </div>
           <label className="prop-label">昵称</label>

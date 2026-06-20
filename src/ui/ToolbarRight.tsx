@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { store } from '../core/store/store';
 import { useTick } from '../core/store/react';
 import { clearAll, loadSample } from '../core/store/actions';
+import { activeProjectFile } from '../core/store/files';
 import { exportProject, importProjectFileAsNew } from '../core/io';
 import { shareProject } from '../core/share';
 import { SAMPLES } from '../core/samples';
@@ -10,6 +11,8 @@ import { Ic } from './icons';
 import { FileMenu } from './FileMenu';
 import { AccountMenu } from './AccountMenu';
 import { isCloudActive } from '../core/collab/sync-status';
+import { isSupabaseConfigured } from '../core/supabase/client';
+import { restartCollab } from '../core/collab/sync';
 import { toastErr, toastOk } from './toast';
 
 function useToggle() {
@@ -27,17 +30,27 @@ export function ToolbarRight() {
   const [sharing, setSharing] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const theme = store.ui.theme;
+  const showAccount = isSupabaseConfigured;
   const flipTheme = () => store.patchUI({ theme: theme === 'dark' ? 'light' : 'dark' });
 
   const onImport = async (f: File | undefined) => {
     if (!f) return;
     const err = await importProjectFileAsNew(store, f);
     if (err) toastErr(`导入失败：${err}`);
+    else if (isCloudActive()) {
+      const id = activeProjectFile()?.cloudId;
+      if (id) restartCollab(id).catch((e) => toastErr(msg(e)));
+    }
   };
   const onShare = async () => {
     if (sharing) return;
     // 云端模式：打开协作分享弹窗（邀请链接 + 成员管理）
     if (isCloudActive()) { store.patchUI({ modal: 'share' }); return; }
+    if (isSupabaseConfigured) {
+      store.patchUI({ modal: 'auth' });
+      toastOk('登录后可生成短协作链接');
+      return;
+    }
     // 本地模式：沿用 URL 内嵌分享
     setSharing(true);
     try {
@@ -49,6 +62,12 @@ export function ToolbarRight() {
 
   return (
     <div className="tb-group right">
+      {showAccount && (
+        <>
+          <AccountMenu />
+          <span className="tb-divider" />
+        </>
+      )}
       <FileMenu />
       <div className="dropdown">
         <button className="tb-btn wide" title="示例方案" onClick={sample.flip}>
@@ -118,9 +137,8 @@ export function ToolbarRight() {
           </div>
         </>)}
       </div>
-
-      <span className="tb-divider" />
-      <AccountMenu />
     </div>
   );
 }
+
+const msg = (e: unknown) => (e instanceof Error ? e.message : String(e));

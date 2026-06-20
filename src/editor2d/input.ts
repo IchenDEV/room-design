@@ -1,6 +1,7 @@
 import type { Editor2D } from './editor';
 import { onDown, syncToolState } from './input-down';
-import { snapWallPoint, nearestWall, endGroup } from './snap';
+import { nearestWall } from './snap';
+import { snapWallMove, snapWallNode } from './wall-snap';
 import { commitRect, endChain, ghostValid } from './commands';
 import { projT } from '../core/geometry/vec';
 import { moveDraggedItem, resizeDraggedItem, rotateDraggedItem } from './input-item';
@@ -35,9 +36,10 @@ function onMove(ed: Editor2D, e: PointerEvent) {
     resizeDraggedItem(ed, d.id, d.corner, d.anchor, d.rot, p);
   } else if (d?.kind === 'node') {
     d.moved = true;
-    const snap = snapWallPoint(ed, p, null);
-    ed.st.snapped = snap.hard ? snap.pt : null;
+    const snap = snapWallNode(ed, p, d.ends, d.refs);
+    ed.st.snapped = snap.hard || snap.label ? snap.pt : null;
     ed.st.guides = snap.guides;
+    ed.st.snapLabel = snap.label;
     ed.store.update((proj) => {
       for (const en of d.ends) {
         const w = proj.walls.find((x) => x.id === en.wallId);
@@ -46,19 +48,14 @@ function onMove(ed: Editor2D, e: PointerEvent) {
     });
   } else if (d?.kind === 'wall') {
     d.moved = true;
-    const dx = p.x - d.last.x, dy = p.y - d.last.y;
-    d.last = p;
+    const snap = snapWallMove(ed, d.ends, p.x - d.start.x, p.y - d.start.y);
+    ed.st.guides = snap.guides;
+    ed.st.snapped = snap.snapped;
+    ed.st.snapLabel = snap.label;
     ed.store.update((proj) => {
-      const w = proj.walls.find((x) => x.id === d.id);
-      if (!w) return;
-      const groups = [...endGroup(ed, w.a), ...endGroup(ed, w.b)];
-      const seen = new Set<string>();
-      for (const g of groups) {
-        const key = `${g.wallId}:${g.end}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        const t = proj.walls.find((x) => x.id === g.wallId)!;
-        t[g.end].x += dx; t[g.end].y += dy;
+      for (const en of d.ends) {
+        const w = proj.walls.find((x) => x.id === en.wallId);
+        if (w) { w[en.end].x = en.origin.x + snap.dx; w[en.end].y = en.origin.y + snap.dy; }
       }
     });
   } else if (d?.kind === 'opening') {

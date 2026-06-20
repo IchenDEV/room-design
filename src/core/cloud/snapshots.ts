@@ -1,5 +1,5 @@
 import { supabase } from '../supabase/client';
-import { encodeProjectUpdate, decodeProjectUpdate } from '../collab/ydoc';
+import { bytesFromBytea, decodeProjectUpdate, encodeProjectUpdate } from '../collab/ydoc';
 import type { Project } from '../types';
 
 export interface Snapshot {
@@ -31,7 +31,7 @@ export async function createSnapshot(projectId: string, name: string, p: Project
 export async function loadSnapshot(snapshotId: string): Promise<Project | null> {
   const { data, error } = await supabase.from(T).select('ydoc').eq('id', snapshotId).maybeSingle();
   if (error) throw error;
-  return decodeProjectUpdate((data?.ydoc as Uint8Array) ?? null);
+  return decodeProjectUpdate(bytesFromBytea(data?.ydoc));
 }
 
 export async function deleteSnapshot(snapshotId: string): Promise<void> {

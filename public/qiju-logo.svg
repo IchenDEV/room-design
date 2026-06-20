@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 284 72" role="img" aria-labelledby="title desc">
+  <title id="title">栖居 Rooms</title>
+  <desc id="desc">栖居 Rooms 的横版产品标志。</desc>
+  <g>
+    <rect x="4" y="4" width="64" height="64" rx="14" fill="#118642"/>
+    <path d="M18 32 36 18l18 14" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M22 34v18h28V34M35 34v18M22 43h13M42 34v9h8" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M44.5 54.5h9m-2.8-2.8 2.8 2.8-2.8 2.8" fill="none" stroke="#9fd5ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="27" cy="38" r="2.2" fill="#9fd5ff"/>
+  </g>
+  <text x="86" y="39" fill="#1d1d1f" font-family="'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="28" font-weight="750" letter-spacing="0">栖居</text>
+  <text x="155" y="39" fill="#118642" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" font-size="26" font-weight="720" letter-spacing="0">Rooms</text>
+  <path d="M87 51h159" stroke="#d8e1dc" stroke-width="2" stroke-linecap="round"/>
+  <path d="M87 51h56" stroke="#2f80ed" stroke-width="2" stroke-linecap="round"/>
+</svg>

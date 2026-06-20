@@ -48,15 +48,16 @@ export const outlet: Builder = (w, d, h, c, tex) => {
     g.add(box(w * 0.12, h * 0.42, d + 0.4, dark, w * 0.18, h * 0.52, 0));
     return g;
   }
-  g.add(box(w, h, d, body, 0, h / 2, 0));
-  g.add(box(w * 0.52, h * 0.25, d * 0.52, mat('#f4f0e5', 0.7), 0, h + 0.2, 0));
-  g.add(box(w * 0.38, h * 0.35, 1, dark, 0, h + 0.5, 0));
+  const plateH = Math.min(h, 1.2);
+  g.add(box(w, plateH, d, body, 0, plateH / 2, 0));
+  g.add(box(w * 0.52, plateH * 0.16, d * 0.52, mat('#f4f0e5', 0.7), 0, plateH + plateH * 0.08, 0));
+  g.add(box(w * 0.38, plateH * 0.18, 1, dark, 0, plateH + plateH * 0.22, 0));
   return g;
 };
 
 export const weakbox: Builder = (w, d, h, c, tex) => {
   const g = new THREE.Group();
-  const y = 105;
+  const y = 35;
   const body = mat(c, 0.55, 0.45, tex);
   const line = mat('#68727d', 0.7, 0.2);
   g.add(box(w, h, d, body, 0, y + h / 2, 0));

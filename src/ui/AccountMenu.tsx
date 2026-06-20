@@ -23,7 +23,8 @@ export function AccountMenu() {
     );
   }
 
-  const initial = (u.displayName || u.email || '?').trim().charAt(0).toUpperCase();
+  const handle = u.username ? `@${u.username}` : u.email;
+  const initial = (u.displayName || u.username || u.email || '?').trim().charAt(0).toUpperCase();
   const out = async () => {
     close();
     await signOut();
@@ -32,7 +33,7 @@ export function AccountMenu() {
 
   return (
     <div className="dropdown">
-      <button className="tb-btn account-btn" title={u.email} onClick={() => setOpen(!open)}>
+      <button className="tb-btn account-btn" title={handle} onClick={() => setOpen(!open)}>
         <span className="account-avatar" style={{ background: u.color }}>{initial}</span>
         <span className="account-name">{u.displayName}</span>
         <Ic n="chev" size={13} />
@@ -45,7 +46,7 @@ export function AccountMenu() {
               <span className="account-avatar lg" style={{ background: u.color }}>{initial}</span>
               <div className="account-meta">
                 <b>{u.displayName}</b>
-                <span className="account-email">{u.email}</span>
+                <span className="account-email">{handle}</span>
               </div>
             </div>
             <div className="dd-sep" />

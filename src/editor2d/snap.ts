@@ -1,6 +1,6 @@
 import type { Guide, Item, Pt, Wall } from '../core/types';
 import type { Editor2D } from './editor';
-import { distPtSeg, projT, wallNormal } from '../core/geometry/vec';
+import { distPtSeg, projT } from '../core/geometry/vec';
 import { snapItem, type ItemSnapResult } from '../core/geometry/item-snap';
 
 const GRID = 10;

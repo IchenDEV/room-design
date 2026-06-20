@@ -64,7 +64,7 @@
 
 @media (max-width: 520px) {
   .landing-brand { font-size: 17px; }
-  .landing-brand span { width: 32px; height: 32px; }
+  .landing-brand-mark { width: 32px; height: 32px; }
   .nav-cta, .primary, .secondary { min-width: 0; height: 44px; padding: 0 18px; }
   .landing-hero { padding-left: 18px; padding-right: 18px; }
   .hero-copy h1 { font-size: 39px; }

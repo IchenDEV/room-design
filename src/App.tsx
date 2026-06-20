@@ -16,11 +16,13 @@ import { AuthModal } from './ui/AuthModal';
 import { AccountModal } from './ui/AccountModal';
 import { ShareModal } from './ui/ShareModal';
 
+const isStudioHash = () => location.hash.startsWith('#/studio') || location.hash.startsWith('#/i/');
+
 export default function App() {
-  const [studio, setStudio] = useState(() => location.hash.startsWith('#/studio'));
+  const [studio, setStudio] = useState(isStudioHash);
 
   useEffect(() => {
-    const sync = () => setStudio(location.hash.startsWith('#/studio'));
+    const sync = () => setStudio(isStudioHash());
     addEventListener('hashchange', sync);
     return () => removeEventListener('hashchange', sync);
   }, []);
@@ -51,6 +53,10 @@ function StudioApp() {
     document.documentElement.dataset.theme = store.ui.theme;
     localStorage.setItem('qiju-theme', store.ui.theme);
   }, [store.ui.theme]);
+
+  if (!store.ui.hydrated) {
+    return <div className="app app-loading"><span>正在加载方案…</span></div>;
+  }
 
   return (
     <div className="app">

@@ -116,7 +116,7 @@ export class Store extends Emitter {
     this.sel = null;
     this.recompute();
     this.emit('sel');
-    this.emit('change');
+    this.emit('change', { transient: true });
     this.emit('project');
   }
 

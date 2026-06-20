@@ -15,16 +15,18 @@
 该脚本可重复执行（使用 `if not exists` / `drop policy if exists`），但会重置策略。
 
 涉及的表：
-- `profiles` 用户档案（昵称、头像、协作光标颜色）
+- `profiles` 用户档案（用户名、昵称、头像、协作光标颜色）
 - `projects` 云端方案（含 Yjs 文档 `ydoc`）
 - `project_members` 协作成员（owner / editor / viewer）
 - `project_invites` 邀请链接
 - `project_snapshots` 版本历史（可选）
 - 所有表均已启用 **行级安全（RLS）**，规则见 schema 注释。
 
+脚本也会为 `authenticated` 显式授予前端 API 需要的表权限，以兼容 Supabase 新项目默认不自动暴露表权限的设置；实际可见行仍由 RLS 控制。
+
 ## 3. 配置登录方式
 进入 **Authentication → Providers**：
-- **Email**：开启即可（默认邮箱密码 + 确认邮件）。
+- **Email**：开启即可（底层仍使用邮箱密码；应用注册时会同时写入唯一用户名，登录时支持「用户名或邮箱 + 密码」）。
 - **Google**：在 Google Cloud Console 创建 OAuth 凭据，回调地址填
   `https://<你的项目>.supabase.co/auth/v1/callback`，把 client id/secret 填回 Supabase。
 - **GitHub**：在 GitHub Developer Settings 创建 OAuth App，回调地址同上，填回 Supabase。
@@ -37,22 +39,12 @@
 实时协同通过 Supabase Realtime 的 **Broadcast 频道** `yjs:<projectId>` 传输 Yjs 更新，
 需限定只有项目成员能加入频道。
 
-进入 **Realtime → Authorization**，新增 policy：
-- **Channel pattern**：`yjs:*`
-- **Action**：`read` 与 `write` 都允许
-- **Condition**（需解析 channel 末尾的 projectId 校验成员）：
-  ```sql
-  exists (
-    select 1 from public.projects p
-    left join public.project_members m on m.project_id = p.id and m.user_id = auth.uid()
-    where p.id = ($1)::uuid   -- $1 为 channel 名中解析出的 projectId
-      and (p.owner_id = auth.uid() or m.user_id = auth.uid())
-  )
-  ```
+`db/schema.sql` 已在 `realtime.messages` 上创建 RLS policy：
+- `yjs:<projectId>` 频道的 Broadcast / Presence 读取仅允许项目 owner 或成员。
+- Broadcast 写入仅允许 owner / editor，避免 viewer 通过实时广播绕过项目写权限。
+- Presence 写入允许所有项目成员。
 
-  > 若你的 Supabase 版本不支持按 channel 解析参数的复杂条件，临时方案：
-  > 在 `redeem_invite` 与成员变更后用服务端密钥广播，或退化为「知道 projectId 即可加入」
-  > （依赖 projectId 的不可猜测性），正式版请补全 Realtime Authorization。
+进入 **Realtime → Settings**，关闭 **Allow public access**，确保私有频道只走上述 RLS。
 
 ## 5. 部署到 Vercel
 1. 导入仓库到 Vercel，框架选 Vite（`vercel.json` 已配置 SPA rewrite）。

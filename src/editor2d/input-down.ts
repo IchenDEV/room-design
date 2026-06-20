@@ -1,6 +1,7 @@
 import type { Editor2D } from './editor';
 import { hitAny, hitNode, hitRoom } from './hit';
 import { endGroup, nearestWall, snapWallPoint } from './snap';
+import { wallDragEnds, wallNodeRefs } from './wall-snap';
 import { addChainPoint, ghostValid, placeItem, placeOpening } from './commands';
 import { ensureRoomMeta } from '../core/store/actions';
 import { itemGroupId, toggleItemSelection } from '../core/store/item-groups';
@@ -44,8 +45,9 @@ export function onDown(ed: Editor2D, e: PointerEvent) {
     const node = hitNode(ed, p, 14 / ed.view.s);
     if (node) {
       const w = store.project.walls.find((x) => x.id === node.wallId)!;
+      const ends = endGroup(ed, w[node.end]);
       store.begin();
-      ed.st.drag = { kind: 'node', ends: endGroup(ed, w[node.end]), moved: false };
+      ed.st.drag = { kind: 'node', ends, refs: wallNodeRefs(ed, ends), moved: false };
       return;
     }
     const hit = hitAny(ed, p);
@@ -63,7 +65,9 @@ export function onDown(ed: Editor2D, e: PointerEvent) {
         const it = store.project.items.find((i) => i.id === hit.id)!;
         ed.st.drag = { kind: 'item', id: hit.id, off: { x: p.x - it.x, y: p.y - it.y }, moved: false };
       } else if (hit.kind === 'wall') {
-        ed.st.drag = { kind: 'wall', id: hit.id, last: p, moved: false };
+        const w = store.project.walls.find((x) => x.id === hit.id);
+        if (!w) { store.end(); return; }
+        ed.st.drag = { kind: 'wall', id: hit.id, start: p, ends: wallDragEnds(ed, w), moved: false };
       } else if (hit.kind === 'opening') {
         ed.st.drag = { kind: 'opening', id: hit.id, moved: false };
       }

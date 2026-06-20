@@ -22,14 +22,15 @@ const toMeta = (c: { id: string; name: string; ownerId: string; updatedAt: strin
 });
 const msg = (e: unknown): string => (e instanceof Error ? e.message : String(e));
 
-export async function initProjectFiles(s: Store): Promise<void> {
+export async function initProjectFiles(s: Store, preferredId?: string): Promise<void> {
   if (isCloudActive()) {
     try {
       const cloud = await listCloudProjects();
       if (!cloud.length) { await migrateLocalToCloud(s); return; }
+      const active = cloud.find((c) => c.id === preferredId) ?? cloud[0];
       projectFileState.files = cloud.map(toMeta);
-      projectFileState.activeId = cloud[0].id;
-      s.hydrate((await getCloudProject(cloud[0].id)) ?? emptyProject(cloud[0].name));
+      projectFileState.activeId = active.id;
+      s.hydrate((await getCloudProject(active.id)) ?? emptyProject(active.name));
       setSync('synced');
     } catch (e) {
       toastErr(`云端加载失败：${msg(e)}`); setSync('error', msg(e)); await initLocal(s);
@@ -145,5 +146,4 @@ export function bindProjectFilePersistence(s: Store): void {
     cloudTimer = setTimeout(() => { cloudTimer = null; saveProjectFile(s).catch(() => {}); }, 1000);
   });
 }
-
 

@@ -2,7 +2,7 @@ import * as Y from 'yjs';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { supabase } from '../supabase/client';
 import { store } from '../store/store';
-import { projectFromYDoc, seedYDocFromProject } from './ydoc';
+import { bytesFromBytea, projectFromYDoc, seedYDocFromProject } from './ydoc';
 import { setPresence, localAwareness } from './awareness';
 import { setSync } from './sync-status';
 import { saveCloudProject } from '../cloud/projects';
@@ -32,7 +32,7 @@ export async function openCollab(projectId: string): Promise<CollabProvider> {
 
   // 初始加载：云端 ydoc → 本地 doc；云端无则尝试离线缓存；都无则用当前 store 播种
   const { data } = await supabase.from('projects').select('ydoc').eq('id', projectId).maybeSingle();
-  const cloudBytes = (data?.ydoc as Uint8Array | undefined) ?? null;
+  const cloudBytes = bytesFromBytea(data?.ydoc);
   if (cloudBytes && cloudBytes.length) {
     Y.applyUpdate(doc, cloudBytes);
   } else {
@@ -43,7 +43,7 @@ export async function openCollab(projectId: string): Promise<CollabProvider> {
   syncStoreFromDoc(doc);
 
   const channel: RealtimeChannel = supabase.channel(`yjs:${projectId}`, {
-    config: { broadcast: { self: false }, presence: { key: store.user?.id ?? 'anon' } },
+    config: { private: true, broadcast: { self: false }, presence: { key: store.user?.id ?? 'anon' } },
   });
 
   // doc 更新统一处理：远端→同步镜像+持久化；本地→广播给他人

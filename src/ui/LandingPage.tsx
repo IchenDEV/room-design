@@ -1,6 +1,7 @@
 import { Ic } from './icons';
 
 const base = import.meta.env.BASE_URL;
+const logoMark = `${base}qiju-logo-mark.svg`;
 const preview = `${base}editor-preview.png`;
 const preview3d = `${base}editor-preview-3d.png`;
 const studio = '#/studio';
@@ -50,7 +51,10 @@ export function LandingPage() {
   return (
     <main className="landing" id="top">
       <header className="landing-nav">
-        <a className="landing-brand" href="#top"><span>栖</span><b>栖居 Rooms</b></a>
+        <a className="landing-brand" href="#top">
+          <img className="landing-brand-mark" src={logoMark} alt="" aria-hidden="true" />
+          <b>栖居 Rooms</b>
+        </a>
         <nav aria-label="官网导航">
           <a href="#top">产品</a>
           <a href="#features">功能</a>

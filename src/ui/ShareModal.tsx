@@ -10,6 +10,22 @@ import { isCloudActive } from '../core/collab/sync-status';
 import { toastErr, toastOk } from './toast';
 import { Ic } from './icons';
 
+const inviteUrl = (token: string) => `${location.origin}/#/i/${encodeURIComponent(token)}`;
+
+async function copyText(text: string): Promise<void> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return;
+  } catch { /* fall back to textarea copy */ }
+  const area = document.createElement('textarea');
+  area.value = text;
+  area.style.cssText = 'position:fixed;left:-9999px;top:0';
+  document.body.appendChild(area);
+  area.select();
+  document.execCommand('copy');
+  area.remove();
+}
+
 export function ShareModal() {
   useTick();
   if (store.ui.modal !== 'share') return null;
@@ -37,11 +53,14 @@ function ShareBody({ projectId, ownerId }: { projectId: string; ownerId?: string
     setBusy(true);
     try {
       const inv = await createInvite(projectId, role);
-      const url = `${location.origin}/#/studio?invite=${inv.token}`;
-      await navigator.clipboard.writeText(url).catch(() => {});
+      await copyText(inviteUrl(inv.token));
       toastOk(`已复制${role === 'editor' ? '可编辑' : '只读'}邀请链接`);
       refresh();
     } catch (e) { toastErr(msg(e)); } finally { setBusy(false); }
+  };
+  const copyInvite = async (token: string) => {
+    try { await copyText(inviteUrl(token)); toastOk('邀请链接已复制'); }
+    catch (e) { toastErr(msg(e)); }
   };
   const revoke = async (id: string) => {
     try { await revokeInvite(id); refresh(); toastOk('已撤销链接'); } catch (e) { toastErr(msg(e)); }
@@ -79,6 +98,9 @@ function ShareBody({ projectId, ownerId }: { projectId: string; ownerId?: string
                   <div key={iv.id} className="invite-row">
                     <span className={`invite-role ${iv.role}`}>{iv.role === 'editor' ? '可编辑' : '只读'}</span>
                     <span className="invite-uses">已用 {iv.uses}{iv.maxUses ? `/${iv.maxUses}` : ''} 次</span>
+                    <button className="dd-item" onClick={() => copyInvite(iv.token)} title="复制链接">
+                      <Ic n="copy" size={13} />
+                    </button>
                     <button className="dd-item danger" onClick={() => revoke(iv.id)}><Ic n="trash" size={13} /></button>
                   </div>
                 ))}

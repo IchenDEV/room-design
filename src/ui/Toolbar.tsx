@@ -18,13 +18,15 @@ const TOOLS: { id: Tool['type']; icon: string; name: string; key: string }[] = [
   { id: 'measure', icon: 'measure', name: '距离标注', key: 'B' },
 ];
 
+const logoMark = `${import.meta.env.BASE_URL}qiju-logo-mark.svg`;
+
 export function Toolbar() {
   useTick();
   const ui = store.ui;
   return (
     <header className="toolbar">
       <div className="brand">
-        <span className="brand-mark">栖</span>
+        <img className="brand-mark" src={logoMark} alt="" aria-hidden="true" />
         <span className="brand-name">栖居设计</span>
       </div>
       <div className="tb-group">
