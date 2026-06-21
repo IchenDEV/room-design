@@ -30,6 +30,7 @@ export function drawWalls(ed: Editor2D) {
     ctx.closePath();
     ctx.fillStyle = glass ? pal.glassFill : pal.wallFill;
     ctx.fill();
+    if (!glass && w.texture === 'wallpaper') drawWallpaperFill(ctx, quad);
     ctx.strokeStyle = glass ? pal.glassStroke : pal.wallStroke;
     ctx.lineWidth = glass ? 1.5 : 1;
     ctx.stroke();
@@ -48,6 +49,36 @@ export function drawWalls(ed: Editor2D) {
       drawHandles(ed, w);
     }
   }
+}
+
+function drawWallpaperFill(ctx: CanvasRenderingContext2D, quad: { x: number; y: number }[]) {
+  const xs = quad.map((p) => p.x), ys = quad.map((p) => p.y);
+  const minX = Math.min(...xs), maxX = Math.max(...xs);
+  const minY = Math.min(...ys), maxY = Math.max(...ys);
+
+  ctx.save();
+  ctx.beginPath();
+  quad.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+  ctx.closePath();
+  ctx.clip();
+  ctx.strokeStyle = 'rgba(70, 83, 96, 0.24)';
+  ctx.lineWidth = 1;
+  const startX = Math.floor(minX / 12) * 12;
+  for (let x = startX; x <= maxX + 12; x += 12) {
+    ctx.beginPath();
+    ctx.moveTo(x, minY - 8);
+    ctx.lineTo(x, maxY + 8);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
+  const startY = Math.floor(minY / 24) * 24;
+  for (let y = startY; y <= maxY + 24; y += 24) {
+    ctx.beginPath();
+    ctx.moveTo(minX - 8, y);
+    ctx.lineTo(maxX + 8, y);
+    ctx.stroke();
+  }
+  ctx.restore();
 }
 
 function drawHandles(ed: Editor2D, w: Wall) {

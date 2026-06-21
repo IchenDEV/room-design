@@ -3,6 +3,7 @@ import {
   LIVING_DEFS, OFFICE_DEFS, SEAT_DEFS,
 } from './defs';
 import type { CatId, FurnDef, FurnKind, FurnTexture } from './defs';
+import type { CeilingStyle, WallTexture } from '../types';
 
 export type { CatId, FurnDef, FurnKind, FurnTexture } from './defs';
 
@@ -62,7 +63,22 @@ export const FLOORS: FloorMat[] = [
 const floorMap = new Map(FLOORS.map((f) => [f.id, f]));
 export const floorOf = (id: string): FloorMat => floorMap.get(id) ?? FLOORS[0];
 
+export const CEILING_STYLES: { id: CeilingStyle; name: string }[] = [
+  { id: 'none', name: '无吊顶' }, { id: 'flat', name: '平面' },
+  { id: 'tray', name: '回形' }, { id: 'cove', name: '灯槽' },
+  { id: 'grid', name: '格栅' },
+];
+
+export const CEILING_COLORS = ['#f2f0ea', '#ece7dd', '#dfe4e7', '#e8ded3', '#f5f2eb', '#d8d2c8'];
+
 export const WALL_COLORS = ['#e8e4da', '#dfd6c6', '#cfd8dc', '#d9c8b8', '#c9d3c5', '#e3d2d2', '#b8c5d1', '#efe9dd'];
+
+export const WALL_TEXTURES: { id: WallTexture; name: string }[] = [
+  { id: 'paint', name: '涂料' }, { id: 'wallpaper', name: '墙纸' },
+  { id: 'plaster', name: '肌理' },
+  { id: 'brick', name: '砖纹' }, { id: 'concrete', name: '混凝土' },
+  { id: 'woodPanel', name: '木饰面' }, { id: 'tile', name: '墙砖' },
+];
 
 export const ITEM_COLORS = [
   '#7d93ab', '#a98f76', '#9a7b58', '#7e8c75', '#90a4be', '#b08e6a',

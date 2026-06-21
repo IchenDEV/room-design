@@ -5,6 +5,7 @@ import { initPersist } from './core/store/persist';
 import { initAuth } from './core/store/store-user';
 import './styles/theme.css';
 import './styles/layout.css';
+import './styles/loading.css';
 import './styles/panels.css';
 import './styles/widgets.css';
 import './styles/actions.css';

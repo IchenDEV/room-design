@@ -10,6 +10,7 @@ export interface SceneKit {
   camera: THREE.PerspectiveCamera;
   controls: OrbitControls;
   sun: THREE.DirectionalLight;
+  hemi: THREE.HemisphereLight;
 }
 
 export function initScene(canvas: HTMLCanvasElement): SceneKit {
@@ -18,7 +19,7 @@ export function initScene(canvas: HTMLCanvasElement): SceneKit {
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
 
   const scene = new THREE.Scene();
   scene.background = skyTexture();
@@ -40,7 +41,7 @@ export function initScene(canvas: HTMLCanvasElement): SceneKit {
   scene.add(hemi);
   const sun = new THREE.DirectionalLight(0xfff2dd, 2.2);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.mapSize.set(1024, 1024);
   sun.shadow.bias = -0.0004;
   sun.shadow.normalBias = 2;
   scene.add(sun);
@@ -52,12 +53,22 @@ export function initScene(canvas: HTMLCanvasElement): SceneKit {
   ground.receiveShadow = true;
   scene.add(ground);
 
-  return { renderer, scene, camera, controls, sun };
+  return { renderer, scene, camera, controls, sun, hemi };
 }
 
+export interface SunConfig { intensity?: number; azimuth?: number; elevation?: number }
+
 /** 根据场景包围盒布置太阳与阴影相机 */
-export function layoutSun(sun: THREE.DirectionalLight, center: THREE.Vector3, radius: number) {
-  sun.position.set(center.x + radius * 0.9, radius * 1.5, center.z + radius * 0.7);
+export function layoutSun(sun: THREE.DirectionalLight, center: THREE.Vector3, radius: number, cfg: SunConfig = {}) {
+  const az = ((cfg.azimuth ?? 35) * Math.PI) / 180;
+  const el = ((cfg.elevation ?? 52) * Math.PI) / 180;
+  const dist = radius * 1.85;
+  sun.intensity = cfg.intensity ?? 2.2;
+  sun.position.set(
+    center.x + Math.cos(az) * Math.cos(el) * dist,
+    Math.max(120, Math.sin(el) * dist),
+    center.z + Math.sin(az) * Math.cos(el) * dist,
+  );
   sun.target.position.copy(center);
   const c = sun.shadow.camera;
   c.left = -radius * 1.5; c.right = radius * 1.5;

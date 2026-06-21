@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { store } from '../core/store/store';
-import { useTick } from '../core/store/react';
+import { useUiTick } from '../core/store/react';
 import { Editor2D } from '../editor2d/editor';
 import { Viewer3D } from '../viewer3d/viewer';
 import { editors } from './editors';
 
 export function Stage() {
-  useTick();
+  useUiTick();
   const ref2 = useRef<HTMLCanvasElement>(null);
   const ref3 = useRef<HTMLCanvasElement>(null);
 

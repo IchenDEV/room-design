@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import type { FurnTexture } from '../../core/catalog/catalog';
 import { furnitureMap } from './material-textures';
 
@@ -22,11 +23,29 @@ function prepMesh(m: THREE.Mesh, x: number, y: number, z: number): THREE.Mesh {
 export const box = (w: number, h: number, d: number, m: THREE.Material, x = 0, y = 0, z = 0) =>
   prepMesh(new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m), x, y, z);
 
+export const softBox = (w: number, h: number, d: number, m: THREE.Material, x = 0, y = 0, z = 0, r = 2, seg = 2) =>
+  prepMesh(new THREE.Mesh(new RoundedBoxGeometry(w, h, d, seg, Math.max(0.1, r)), m), x, y, z);
+
 export const cyl = (rt: number, rb: number, h: number, m: THREE.Material, x = 0, y = 0, z = 0, seg = 20) =>
   prepMesh(new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg), m), x, y, z);
 
 export const sph = (r: number, m: THREE.Material, x = 0, y = 0, z = 0) =>
   prepMesh(new THREE.Mesh(new THREE.SphereGeometry(r, 18, 14), m), x, y, z);
+
+export const torus = (r: number, tube: number, m: THREE.Material, x = 0, y = 0, z = 0, seg = 32) =>
+  prepMesh(new THREE.Mesh(new THREE.TorusGeometry(r, tube, 8, seg), m), x, y, z);
+
+export const rodX = (len: number, r: number, m: THREE.Material, x = 0, y = 0, z = 0, seg = 16) => {
+  const o = cyl(r, r, len, m, x, y, z, seg);
+  o.rotation.z = Math.PI / 2;
+  return o;
+};
+
+export const rodZ = (len: number, r: number, m: THREE.Material, x = 0, y = 0, z = 0, seg = 16) => {
+  const o = cyl(r, r, len, m, x, y, z, seg);
+  o.rotation.x = Math.PI / 2;
+  return o;
+};
 
 /** 四条腿 */
 export function legs4(g: THREE.Group, w: number, d: number, h: number, r: number, m: THREE.Material) {

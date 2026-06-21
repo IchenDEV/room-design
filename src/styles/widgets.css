@@ -30,6 +30,7 @@
 .swatches { display: flex; flex-wrap: wrap; gap: 6px; }
 .swatch { width: 24px; height: 24px; border-radius: var(--r-sm); border: 1.5px solid rgba(0, 0, 0, 0.2); }
 .swatch.on { outline: 2px solid var(--accent); outline-offset: 1.5px; }
+.swatches + .seg-row { margin-top: 9px; }
 
 .check-row { display: flex; align-items: center; gap: 8px; margin: 8px 0; cursor: pointer; font-size: 12.5px; }
 .check-row input { accent-color: var(--accent); width: 15px; height: 15px; }

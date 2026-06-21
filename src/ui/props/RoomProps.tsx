@@ -1,13 +1,23 @@
 import { store } from '../../core/store/store';
 import { metaOf, roomByMeta, roomPerimeter } from '../../core/store/selectors';
 import { deleteSelection } from '../../core/store/actions';
-import { FLOORS } from '../../core/catalog/catalog';
-import { ActionBtn, KV, Section, BtnRow } from './widgets';
+import { CEILING_COLORS, CEILING_STYLES, FLOORS } from '../../core/catalog/catalog';
+import { normalizeCeiling, type CeilingConfig } from '../../core/types';
+import { ActionBtn, ChoiceGrid, KV, Section, BtnRow, SliderNum, Swatches } from './widgets';
 
 export function RoomProps({ metaId }: { metaId: string }) {
   const meta = metaOf(store, metaId);
   const room = roomByMeta(store, metaId);
   if (!meta) return null;
+  const ceiling = normalizeCeiling(meta.ceiling);
+  const patchCeiling = (patch: Partial<CeilingConfig>, commit = true) => {
+    store.begin();
+    store.update((p) => {
+      const m = p.roomMetas.find((x) => x.id === metaId);
+      if (m) m.ceiling = { ...normalizeCeiling(m.ceiling), ...patch };
+    });
+    if (commit) store.end();
+  };
 
   return (
     <>
@@ -31,6 +41,23 @@ export function RoomProps({ metaId }: { metaId: string }) {
             </button>
           ))}
         </div>
+      </Section>
+      <Section title="吊顶配置">
+        {!store.project.settings.showCeiling && <KV k="3D 状态" v="全局关闭" />}
+        <ChoiceGrid options={CEILING_STYLES} value={ceiling.style}
+          onPick={(style) => patchCeiling({ style })} />
+        {ceiling.style !== 'none' && (
+          <>
+            <SliderNum label="下吊" min={6} max={60} value={ceiling.drop}
+              onPreview={(v) => patchCeiling({ drop: v }, false)}
+              onCommit={(v) => patchCeiling({ drop: v })} />
+            <SliderNum label="边距" min={18} max={120} value={ceiling.inset}
+              onPreview={(v) => patchCeiling({ inset: v }, false)}
+              onCommit={(v) => patchCeiling({ inset: v })} />
+            <Swatches colors={CEILING_COLORS} value={ceiling.color}
+              onPick={(color) => patchCeiling({ color })} />
+          </>
+        )}
       </Section>
       <BtnRow>
         <ActionBtn icon="trash" danger onClick={() => deleteSelection(store)}>移除房间标注</ActionBtn>

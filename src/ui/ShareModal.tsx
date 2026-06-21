@@ -98,10 +98,12 @@ function ShareBody({ projectId, ownerId }: { projectId: string; ownerId?: string
                   <div key={iv.id} className="invite-row">
                     <span className={`invite-role ${iv.role}`}>{iv.role === 'editor' ? '可编辑' : '只读'}</span>
                     <span className="invite-uses">已用 {iv.uses}{iv.maxUses ? `/${iv.maxUses}` : ''} 次</span>
-                    <button className="dd-item" onClick={() => copyInvite(iv.token)} title="复制链接">
+                    <button className="dd-item" onClick={() => copyInvite(iv.token)} title="复制链接" aria-label="复制链接">
                       <Ic n="copy" size={13} />
                     </button>
-                    <button className="dd-item danger" onClick={() => revoke(iv.id)}><Ic n="trash" size={13} /></button>
+                    <button className="dd-item danger" onClick={() => revoke(iv.id)} title="撤销链接" aria-label="撤销链接">
+                      <Ic n="trash" size={13} />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -122,7 +124,7 @@ function ShareBody({ projectId, ownerId }: { projectId: string; ownerId?: string
                       <option value="editor">可编辑</option>
                       <option value="viewer">只读</option>
                     </select>
-                    <button className="dd-item danger" onClick={() => kick(m.userId)} title="移除">
+                    <button className="dd-item danger" onClick={() => kick(m.userId)} title="移除成员" aria-label="移除成员">
                       <Ic n="trash" size={13} />
                     </button>
                   </>

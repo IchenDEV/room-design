@@ -11,21 +11,17 @@ import { disposeGroup, sceneBounds } from './util3d';
 import type { Bounds } from './util3d';
 import { wallLen } from '../core/geometry/vec';
 import { Walk } from './walk';
+import { sceneSignatures } from './signatures';
+import { applyRenderSettings, type RenderSettingsState } from './render-settings';
 
 export class Viewer3D {
-  renderer: THREE.WebGLRenderer;
-  scene: THREE.Scene;
-  camera: THREE.PerspectiveCamera;
-  controls: OrbitControls;
-  sun: THREE.DirectionalLight;
-  buildGroup = new THREE.Group();
-  itemGroup = new THREE.Group();
-  doors: DoorRef[] = [];
-  walk: Walk;
-  visible = false;
-  private dirty = true;
-  private raf = 0;
-  private clock = new THREE.Clock();
+  renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera;
+  controls: OrbitControls; sun: THREE.DirectionalLight; hemi: THREE.HemisphereLight; walk: Walk;
+  buildGroup = new THREE.Group(); itemGroup = new THREE.Group(); doors: DoorRef[] = [];
+  visible = false; private dirty = true; private raf = 0; private needsRender = true;
+  private shellSig = ''; private itemSig = '';
+  private renderState: RenderSettingsState = { renderSig: '', cameraSig: '' };
+  private timer = new THREE.Timer();
   private unsubs: (() => void)[] = [];
   private ro: ResizeObserver;
 
@@ -36,42 +32,72 @@ export class Viewer3D {
     this.camera = kit.camera;
     this.controls = kit.controls;
     this.sun = kit.sun;
+    this.hemi = kit.hemi;
     this.scene.add(this.buildGroup, this.itemGroup);
     this.walk = new Walk(this);
+    this.timer.connect(document);
+    const markDirty = () => { this.dirty = true; this.requestRender(); };
+    const controlChanged = () => this.requestRender();
     this.unsubs.push(
-      this.store.on('change', () => { this.dirty = true; }),
+      this.store.on('change', markDirty),
       this.store.on('project', () => { this.dirty = true; this.fitCamera(); }),
       bindInteract(this),
+      () => this.controls.removeEventListener('change', controlChanged),
     );
+    this.controls.addEventListener('change', controlChanged);
     this.ro = new ResizeObserver(() => this.resize());
     this.ro.observe(canvas.parentElement ?? canvas);
     this.resize();
     this.fitCamera();
-    const loop = () => {
-      this.raf = requestAnimationFrame(loop);
-      const dt = Math.min(0.05, this.clock.getDelta());
-      if (!this.visible) return;
-      if (this.dirty) { this.rebuild(); this.dirty = false; }
-      this.walk.step(dt);
-      if (this.controls.enabled) this.controls.update();
-      this.renderer.render(this.scene, this.camera);
-    };
-    loop();
   }
-
   dispose() {
     cancelAnimationFrame(this.raf);
     this.unsubs.forEach((u) => u());
     this.ro.disconnect();
+    disposeGroup(this.buildGroup);
+    disposeGroup(this.itemGroup);
+    this.timer.dispose();
     this.renderer.dispose();
   }
-
   setVisible(v: boolean) {
     this.visible = v;
-    if (v) { this.resize(); this.dirty = true; }
+    if (v) {
+      this.resize();
+      this.dirty = true;
+      this.timer.reset();
+      this.requestRender();
+    }
     else if (this.walk.active) this.walk.exit();
   }
-
+  private scheduleFrame() {
+    if (this.visible && !this.raf) this.raf = requestAnimationFrame(this.frame);
+  }
+  requestRender() {
+    this.needsRender = true;
+    this.scheduleFrame();
+  }
+  private frame = (timestamp?: number) => {
+    this.raf = 0;
+    if (!this.visible) return;
+    this.timer.update(timestamp);
+    const dt = Math.min(0.05, this.timer.getDelta());
+    let shouldRender = this.needsRender || applyRenderSettings(this, this.renderState);
+    if (this.dirty) {
+      this.rebuild();
+      this.dirty = false;
+      shouldRender = true;
+    }
+    const walkChanged = this.walk.step(dt);
+    const controlsChanged = this.controls.enabled && this.controls.update();
+    shouldRender ||= walkChanged || controlsChanged;
+    if (shouldRender) {
+      this.renderer.render(this.scene, this.camera);
+      this.needsRender = false;
+    }
+    if (this.dirty || this.needsRender || walkChanged || controlsChanged || this.walk.hasActiveInput()) {
+      this.scheduleFrame();
+    }
+  };
   resize() {
     const host = this.canvas.parentElement ?? this.canvas;
     const r = host.getBoundingClientRect();
@@ -79,35 +105,41 @@ export class Viewer3D {
     this.renderer.setSize(r.width, r.height, true);
     this.camera.aspect = r.width / r.height;
     this.camera.updateProjectionMatrix();
+    this.requestRender();
   }
-
   bounds(): Bounds { return sceneBounds(this.store.project.walls); }
-
   fitCamera() {
     const { center, radius } = this.bounds();
     this.camera.position.set(center.x + radius * 1.15, radius * 1.25, center.z + radius * 1.15);
     this.controls.target.set(center.x, 60, center.z);
     this.controls.update();
+    this.requestRender();
   }
-
   rebuild() {
-    disposeGroup(this.buildGroup);
-    disposeGroup(this.itemGroup);
-    this.doors = [];
+    const sig = sceneSignatures(this.store);
     const p = this.store.project;
-    for (const w of p.walls) {
-      if (wallLen(w) < 2) continue;
-      const built = buildWall(w, p.openings);
-      this.buildGroup.add(built.group);
-      this.doors.push(...built.doors);
+    if (sig.shell !== this.shellSig) {
+      disposeGroup(this.buildGroup);
+      this.doors = [];
+      for (const w of p.walls) {
+        if (wallLen(w) < 2) continue;
+        const built = buildWall(w, p.openings);
+        this.buildGroup.add(built.group);
+        this.doors.push(...built.doors);
+      }
+      buildFloors(this.store, this.buildGroup);
+      const { center, radius } = this.bounds();
+      layoutSun(this.sun, center, radius, { intensity: p.settings.sunIntensity, azimuth: p.settings.sunAzimuth, elevation: p.settings.sunElevation });
+      this.shellSig = sig.shell;
     }
-    buildFloors(this.store, this.buildGroup);
-    for (const it of p.items) this.itemGroup.add(buildItem(it));
-    const { center, radius } = this.bounds();
-    layoutSun(this.sun, center, radius);
+    if (sig.items !== this.itemSig) {
+      disposeGroup(this.itemGroup);
+      for (const it of p.items) this.itemGroup.add(buildItem(it));
+      this.itemSig = sig.items;
+    }
   }
-
   screenshot() {
+    if (this.dirty) { this.rebuild(); this.dirty = false; }
     this.renderer.render(this.scene, this.camera);
     const a = document.createElement('a');
     a.href = this.canvas.toDataURL('image/png');

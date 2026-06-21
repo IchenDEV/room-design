@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import type { Store } from '../core/store/store';
-import { roomFloor } from '../core/store/selectors';
-import { floorTexture } from './textures';
-import { ceilMat } from './mats';
+import { roomCeiling, roomFloor } from '../core/store/selectors';
+import { floorMat } from './mats';
+import { buildCeiling } from './build-ceilings';
 
 /** 房间地板（含程序纹理）与可选吊顶 */
 export function buildFloors(store: Store, group: THREE.Group) {
@@ -14,20 +14,11 @@ export function buildFloors(store: Store, group: THREE.Group) {
     const geo = new THREE.ShapeGeometry(shape);
     geo.rotateX(-Math.PI / 2);
 
-    const tex = floorTexture(roomFloor(store, r)).clone();
-    tex.needsUpdate = true;
-    tex.repeat.set(1 / 320, 1 / 320);
-    // ShapeGeometry 的 uv 为原始坐标，按 cm 缩放至纹理空间
-    const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.85, metalness: 0 });
-    const mesh = new THREE.Mesh(geo, mat);
+    const mesh = new THREE.Mesh(geo, floorMat(roomFloor(store, r)));
     mesh.position.y = 0.5;
     mesh.receiveShadow = true;
     group.add(mesh);
 
-    if (store.project.settings.showCeiling) {
-      const ceil = new THREE.Mesh(geo.clone(), ceilMat);
-      ceil.position.y = H - 0.5;
-      group.add(ceil);
-    }
+    if (store.project.settings.showCeiling) buildCeiling(group, r, H, roomCeiling(store, r));
   }
 }

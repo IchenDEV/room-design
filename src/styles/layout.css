@@ -4,14 +4,6 @@
   flex-direction: column;
 }
 
-.app-loading {
-  align-items: center;
-  justify-content: center;
-  color: var(--muted);
-  background: var(--bg);
-  font-size: 13px;
-}
-
 /* ---------- 顶部工具栏 ---------- */
 .toolbar {
   display: flex;

@@ -38,8 +38,11 @@ export function StatusBar() {
   }, []);
 
   const s = stats(store);
+  const baseWalk = store.project.settings.solidCollision
+    ? 'W/A/S/D 移动 · 实体碰撞开启 · 拖拽转视角 · Shift 加速 · Esc 退出漫游'
+    : 'W/A/S/D 移动 · 拖拽转视角 · Shift 加速 · Esc 退出漫游';
   const base = store.ui.walking
-    ? 'W/A/S/D 移动 · 拖拽转视角 · Shift 加速 · Esc 退出漫游'
+    ? baseWalk
     : HINTS[store.ui.tool.type] ?? '';
   const selItem3d = store.ui.mode === '3d' && !store.ui.walking && store.sel?.kind === 'item';
   const hint = selItem3d ? `${base} · Shift+拖拽 调高度` : base;

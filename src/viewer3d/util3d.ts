@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import type { Wall } from '../core/types';
+import { isSharedMaterial } from './mats';
 
 /** 释放组内全部几何与材质并清空 */
 export function disposeGroup(g: THREE.Group) {
@@ -8,8 +9,8 @@ export function disposeGroup(g: THREE.Group) {
     if (mesh.isMesh) {
       mesh.geometry?.dispose();
       const m = mesh.material;
-      if (Array.isArray(m)) m.forEach((x) => x.dispose());
-      else m?.dispose();
+      if (Array.isArray(m)) m.forEach((x) => { if (!isSharedMaterial(x)) x.dispose(); });
+      else if (m && !isSharedMaterial(m)) m.dispose();
     }
   });
   g.clear();

@@ -2,8 +2,8 @@ import { store } from '../../core/store/store';
 import { openingsOnWall, wallOf } from '../../core/store/selectors';
 import { deleteSelection, setWallLength } from '../../core/store/actions';
 import { wallLen } from '../../core/geometry/vec';
-import { WALL_COLORS } from '../../core/catalog/catalog';
-import { ActionBtn, KV, NumField, Section, SliderNum, Swatches, BtnRow } from './widgets';
+import { WALL_COLORS, WALL_TEXTURES } from '../../core/catalog/catalog';
+import { ActionBtn, KV, NumField, Section, SliderNum, Swatches, BtnRow, ChoiceGrid } from './widgets';
 import { Ic } from '../icons';
 import type { Wall } from '../../core/types';
 
@@ -27,6 +27,10 @@ export function WallProps({ id }: { id: string }) {
           onPreview={(v) => mut((x) => { x.thickness = v; }, false)} onCommit={(v) => mut((x) => { x.thickness = v; }, true)} />
         <SliderNum label="高度" min={120} max={400} value={w.height}
           onPreview={(v) => mut((x) => { x.height = v; }, false)} onCommit={(v) => mut((x) => { x.height = v; }, true)} />
+        {glass && (
+          <SliderNum label="玻璃间隔" min={40} max={260} step={5} value={w.glassGap ?? 120}
+            onPreview={(v) => mut((x) => { x.glassGap = v; }, false)} onCommit={(v) => mut((x) => { x.glassGap = v; }, true)} />
+        )}
         <KV k="门窗数量" v={`${openingsOnWall(store, id).length}`} />
       </Section>
       <Section title="材质">
@@ -41,8 +45,12 @@ export function WallProps({ id }: { id: string }) {
           </button>
         </div>
         {!glass && (
-          <Swatches colors={WALL_COLORS} value={w.color}
-            onPick={(c) => store.commit((p) => { const t = p.walls.find((x) => x.id === id); if (t) t.color = c; })} />
+          <>
+            <Swatches colors={WALL_COLORS} value={w.color}
+              onPick={(c) => store.commit((p) => { const t = p.walls.find((x) => x.id === id); if (t) t.color = c; })} />
+            <ChoiceGrid options={WALL_TEXTURES} value={w.texture ?? 'paint'}
+              onPick={(v) => store.commit((p) => { const t = p.walls.find((x) => x.id === id); if (t) t.texture = v; })} />
+          </>
         )}
       </Section>
       <BtnRow>

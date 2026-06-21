@@ -74,6 +74,7 @@ export function Swatches({ colors, value, onPick }: { colors: string[]; value?: 
     <div className="swatches">
       {colors.map((c) => (
         <button key={c} className={`swatch ${value === c ? 'on' : ''}`} style={{ background: c }}
+          aria-label={`选择颜色 ${c}`} aria-pressed={value === c}
           title={c} onClick={() => onPick(c)} />
       ))}
     </div>
@@ -95,7 +96,8 @@ export function ChoiceGrid<T extends string>({
   return (
     <div className="seg-row wrap">
       {options.map((o) => (
-        <button key={o.id} className={`seg-btn ${value === o.id ? 'on' : ''}`} onClick={() => onPick(o.id)}>
+        <button key={o.id} className={`seg-btn ${value === o.id ? 'on' : ''}`}
+          aria-pressed={value === o.id} onClick={() => onPick(o.id)}>
           {o.name}
         </button>
       ))}

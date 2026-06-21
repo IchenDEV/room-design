@@ -36,25 +36,40 @@
 }
 
 /* ---------- 分享 / 协作弹窗 ---------- */
-.share-modal { width: 440px; }
+.share-modal { width: min(440px, calc(100vw - 32px)); }
 .invite-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; }
 .invite-row {
   display: flex; align-items: center; gap: 8px;
-  padding: 7px 9px; border-radius: var(--r-sm);
+  min-width: 0; min-height: 44px; padding: 7px 9px; border-radius: var(--r-sm);
   background: var(--panel-2); border: 1px solid var(--line-soft);
   font-size: 12px;
 }
-.invite-role { padding: 2px 7px; border-radius: 4px; font-size: 10.5px; font-weight: 600; color: #fff; }
+.invite-role {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 auto; min-width: 42px; padding: 2px 7px; border-radius: 4px;
+  font-size: 10.5px; font-weight: 600; color: #fff; white-space: nowrap;
+}
 .invite-role.editor { background: var(--accent); }
 .invite-role.viewer { background: var(--muted); }
 .invite-role.owner { background: var(--ok); }
-.invite-uses { color: var(--muted); flex: 1; font-variant-numeric: tabular-nums; }
-.invite-uid { font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted); flex: 1; }
+.invite-uses {
+  color: var(--muted); flex: 1; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.invite-uid {
+  font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted);
+  flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 .role-select {
   background: var(--panel-3); border: 1px solid var(--line);
   border-radius: var(--r-sm); padding: 3px 6px; font-size: 11px; color: var(--text);
+  flex: 0 0 auto;
 }
-.invite-row .dd-item { padding: 4px 6px; }
+.invite-row .dd-item {
+  width: 28px; height: 28px; flex: 0 0 28px;
+  justify-content: center; padding: 0;
+}
 
 .account-btn { gap: 6px; padding: 0 6px 0 3px; }
 .account-signin { color: var(--text); border: 1px solid var(--accent); background: var(--accent-soft); }

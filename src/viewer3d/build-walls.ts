@@ -42,7 +42,7 @@ export function buildWall(wall: Wall, openings: Opening[]): WallBuild {
 
   const geo = new THREE.ExtrudeGeometry(shape, { depth: T, bevelEnabled: false });
   geo.translate(0, 0, -T / 2);
-  const mesh = new THREE.Mesh(geo, glass ? glassMat : wallMat(wall.color));
+  const mesh = new THREE.Mesh(geo, glass ? glassMat : wallMat(wall.color, wall.texture));
   mesh.castShadow = !glass;
   mesh.receiveShadow = true;
   mesh.userData.wallId = wall.id;
@@ -57,7 +57,8 @@ export function buildWall(wall: Wall, openings: Opening[]): WallBuild {
       rail.castShadow = true;
       group.add(rail);
     }
-    const n = Math.max(1, Math.round(L / 120));
+    const gap = Math.max(40, wall.glassGap ?? 120);
+    const n = Math.max(1, Math.round(L / gap));
     for (let i = 1; i < n; i++) {
       const mull = new THREE.Mesh(new THREE.BoxGeometry(3, H - 10, railT - 2), frameMat);
       mull.position.set((L / n) * i, H / 2, 0);

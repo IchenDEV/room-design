@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { floorOf } from '../core/catalog/catalog';
 import { shade } from '../core/geometry/vec';
+import type { WallTexture } from '../core/types';
 
 const cache = new Map<string, THREE.CanvasTexture>();
 
@@ -22,7 +23,7 @@ function paint(type: string, base: string): HTMLCanvasElement {
   x.fillStyle = base;
   x.fillRect(0, 0, 512, 512);
 
-  if (type === 'wood') {
+  if (type === 'wood' || type === 'woodPanel') {
     const rows = 8;
     for (let r = 0; r < rows; r++) {
       const y = (512 / rows) * r;
@@ -43,13 +44,43 @@ function paint(type: string, base: string): HTMLCanvasElement {
         }
       }
     }
-  } else if (type === 'tile') {
-    const n = 4;
+  } else if (type === 'tile' || type === 'brick') {
+    const n = type === 'brick' ? 8 : 4;
+    const h = type === 'brick' ? 64 : 128;
     for (let i = 0; i < n; i++) {
-      for (let j = 0; j < n; j++) {
+      for (let j = 0; j < 512 / h; j++) {
+        const off = type === 'brick' && j % 2 ? 32 : 0;
         x.fillStyle = shade(base, Math.floor(rnd() * 14 - 7));
-        x.fillRect(i * 128 + 2, j * 128 + 2, 124, 124);
+        x.fillRect(i * (512 / n) - off + 2, j * h + 2, 512 / n - 4, h - 4);
       }
+    }
+  } else if (type === 'plaster' || type === 'concrete') {
+    for (let i = 0; i < 11000; i++) {
+      const d = type === 'concrete' ? Math.floor(rnd() * 44 - 22) : Math.floor(rnd() * 24 - 12);
+      x.fillStyle = shade(base, d);
+      x.fillRect(rnd() * 512, rnd() * 512, 1.5 + rnd() * 2, 1.5 + rnd() * 2);
+    }
+  } else if (type === 'wallpaper') {
+    for (let i = 0; i < 512; i += 64) {
+      x.fillStyle = shade(base, i % 128 === 0 ? 12 : -5);
+      x.fillRect(i, 0, 30, 512);
+      x.strokeStyle = 'rgba(255,255,255,0.24)'; x.beginPath(); x.moveTo(i + 31, 0); x.lineTo(i + 31, 512); x.stroke();
+      x.strokeStyle = 'rgba(55,70,75,0.14)'; x.beginPath(); x.moveTo(i + 2, 0); x.lineTo(i + 2, 512); x.stroke();
+    }
+    for (let y = 44; y < 512; y += 92) {
+      for (let px = 34; px < 512; px += 96) {
+        const j = rnd() * 8 - 4;
+        x.strokeStyle = 'rgba(82,96,84,0.24)'; x.lineWidth = 1.2;
+        x.beginPath(); x.moveTo(px + j, y + 26);
+        x.bezierCurveTo(px + 18 + j, y - 10, px + 46 + j, y - 8, px + 58 + j, y + 26);
+        x.stroke();
+        x.beginPath(); x.ellipse(px + 20 + j, y + 10, 9, 16, -0.7, 0, Math.PI * 2);
+        x.ellipse(px + 42 + j, y + 10, 9, 16, 0.7, 0, Math.PI * 2);
+        x.stroke();
+      }
+    }
+    for (let i = 0; i < 2400; i++) {
+      x.fillStyle = `rgba(255,255,255,${0.025 + rnd() * 0.04})`; x.fillRect(rnd() * 512, rnd() * 512, 1, 1);
     }
   } else if (type === 'marble') {
     for (let v = 0; v < 14; v++) {
@@ -74,14 +105,26 @@ function paint(type: string, base: string): HTMLCanvasElement {
 }
 
 export function floorTexture(floorId: string): THREE.CanvasTexture {
-  const hit = cache.get(floorId);
-  if (hit) return hit;
+  const hit = cache.get(floorId); if (hit) return hit;
   const mat = floorOf(floorId);
   const tex = new THREE.CanvasTexture(paint(mat.type, mat.base));
   tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
   tex.colorSpace = THREE.SRGBColorSpace;
   tex.anisotropy = 4;
+  tex.repeat.set(1 / 320, 1 / 320);
   cache.set(floorId, tex);
+  return tex;
+}
+
+export function wallTexture(texture: WallTexture, base: string): THREE.CanvasTexture {
+  const key = `wall:${texture}:${base}`;
+  const hit = cache.get(key); if (hit) return hit;
+  const tex = new THREE.CanvasTexture(paint(texture, base));
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  const repeat = texture === 'wallpaper' ? 1 / 220 : 1 / 180; tex.repeat.set(repeat, repeat);
+  cache.set(key, tex);
   return tex;
 }
 

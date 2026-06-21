@@ -1,5 +1,6 @@
 import type { Store } from './store';
-import type { Item, Measure, Opening, RoomMeta, RoomPoly, Selection, Wall } from '../types';
+import type { Item, Measure, Opening, ResolvedCeiling, RoomMeta, RoomPoly, Selection, Wall } from '../types';
+import { normalizeCeiling } from '../types';
 import { wallLen } from '../geometry/vec';
 import { polygonPerimeter } from '../geometry/polygon';
 
@@ -18,6 +19,9 @@ export const roomName = (s: Store, r: RoomPoly): string =>
 
 export const roomFloor = (s: Store, r: RoomPoly): string =>
   (r.metaId && metaOf(s, r.metaId)?.floor) || 'woodLight';
+
+export const roomCeiling = (s: Store, r: RoomPoly): ResolvedCeiling =>
+  normalizeCeiling(r.metaId ? metaOf(s, r.metaId)?.ceiling : undefined);
 
 export interface Stats { walls: number; rooms: number; items: number; area: number; wallLen: number }
 

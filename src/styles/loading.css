@@ -1,0 +1,149 @@
+.app-loading {
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  color: var(--muted);
+  background:
+    linear-gradient(color-mix(in srgb, var(--accent) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 6%, transparent) 1px, transparent 1px),
+    var(--bg);
+  background-size: 34px 34px;
+  font-size: 13px;
+  overflow: hidden;
+  padding: 24px;
+}
+
+.loading-blueprint {
+  position: relative;
+  inline-size: min(68vw, 190px);
+  aspect-ratio: 1.28;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  border-radius: var(--r-md);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 42%),
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px),
+    var(--panel);
+  background-size: auto, 24px 24px, 24px 24px, auto;
+  box-shadow: var(--shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.loading-room, .loading-wall, .loading-door, .loading-furniture, .loading-pencil {
+  position: absolute;
+  display: block;
+}
+
+.loading-room {
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  opacity: 0;
+  animation: loading-room-pop 2.8s ease-in-out infinite;
+}
+
+.loading-room-living { inset: 18px 74px 58px 18px; animation-delay: 0.35s; }
+.loading-room-bed { inset: 18px 18px 76px 112px; animation-delay: 0.55s; }
+.loading-room-bath { inset: 92px 18px 18px 112px; animation-delay: 0.75s; }
+.loading-wall { background: var(--text); border-radius: 999px; opacity: 0.82; }
+.loading-wall-x {
+  block-size: 3px;
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: loading-draw-x 2.8s ease-in-out infinite;
+}
+.loading-wall-y {
+  inline-size: 3px;
+  transform: scaleY(0);
+  transform-origin: center top;
+  animation: loading-draw-y 2.8s ease-in-out infinite;
+}
+
+.loading-wall-top { inset-block-start: 16px; inset-inline: 16px; animation-delay: 0s; }
+.loading-wall-mid { inset-block-start: 86px; inset-inline-start: 16px; inline-size: 112px; animation-delay: 0.16s; }
+.loading-wall-bottom { inset-block-end: 16px; inset-inline: 16px; animation-delay: 0.3s; }
+.loading-wall-left { inset-block: 16px; inset-inline-start: 16px; animation-delay: 0.46s; }
+.loading-wall-right { inset-block: 16px; inset-inline-end: 16px; animation-delay: 0.58s; }
+.loading-wall-inner { inset-block: 16px; inset-inline-start: 109px; animation-delay: 0.72s; }
+
+.loading-door {
+  inline-size: 24px;
+  block-size: 24px;
+  inset-block-start: 74px;
+  inset-inline-start: 86px;
+  border-block-end: 2px solid var(--ok);
+  border-inline-start: 2px solid var(--ok);
+  border-end-start-radius: 24px;
+  opacity: 0;
+  transform: rotate(-18deg) scale(0.78);
+  transform-origin: left bottom;
+  animation: loading-door-swing 2.8s ease-in-out infinite;
+}
+
+.loading-furniture {
+  background: color-mix(in srgb, var(--ok) 76%, var(--panel));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ok) 15%, transparent);
+  opacity: 0;
+  animation: loading-furniture-drop 2.8s ease-in-out infinite;
+}
+
+.loading-furniture-sofa { inline-size: 34px; block-size: 13px; inset-block-start: 42px; inset-inline-start: 42px; border-radius: 4px; animation-delay: 1s; }
+.loading-furniture-table { inline-size: 18px; block-size: 18px; inset-block-start: 104px; inset-inline-start: 138px; border-radius: 50%; animation-delay: 1.16s; }
+.loading-pencil {
+  inline-size: 16px;
+  block-size: 16px;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  border-radius: 3px 9px 9px 3px;
+  background: linear-gradient(90deg, var(--ok) 0 34%, #f2c063 34% 78%, var(--text) 78%);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 24%, transparent);
+  animation: loading-pencil-path 2.8s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+
+.loading-copy { display: flex; align-items: center; flex-direction: column; gap: 5px; text-align: center; }
+.loading-title { color: var(--text); font-weight: 600; }
+.loading-subtitle { color: var(--muted); font-size: 12px; }
+
+@keyframes loading-draw-x {
+  0%, 8% { opacity: 0; transform: scaleX(0); }
+  34%, 82% { opacity: 0.84; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1); }
+}
+@keyframes loading-draw-y {
+  0%, 12% { opacity: 0; transform: scaleY(0); }
+  38%, 82% { opacity: 0.84; transform: scaleY(1); }
+  100% { opacity: 0; transform: scaleY(1); }
+}
+@keyframes loading-room-pop {
+  0%, 24% { opacity: 0; transform: scale(0.96); }
+  44%, 80% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+@keyframes loading-door-swing {
+  0%, 42% { opacity: 0; transform: rotate(-18deg) scale(0.78); }
+  55%, 82% { opacity: 1; transform: rotate(0deg) scale(1); }
+  100% { opacity: 0; transform: rotate(0deg) scale(1); }
+}
+@keyframes loading-furniture-drop {
+  0%, 48% { opacity: 0; transform: translateY(-8px) scale(0.85); }
+  62%, 82% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(0) scale(1); }
+}
+@keyframes loading-pencil-path {
+  0% { opacity: 0; transform: translate(14px, 12px) rotate(24deg); }
+  12% { opacity: 1; transform: translate(150px, 12px) rotate(24deg); }
+  28% { transform: translate(150px, 116px) rotate(104deg); }
+  46% { transform: translate(18px, 116px) rotate(196deg); }
+  64% { opacity: 1; transform: translate(108px, 82px) rotate(18deg); }
+  82% { opacity: 1; transform: translate(136px, 102px) rotate(30deg); }
+  100% { opacity: 0; transform: translate(156px, 122px) rotate(30deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-loading *, .app-loading *::before, .app-loading *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .loading-room, .loading-wall, .loading-door, .loading-furniture, .loading-pencil { opacity: 1; }
+  .loading-wall-x { transform: scaleX(1); }
+  .loading-wall-y { transform: scaleY(1); }
+  .loading-room, .loading-door, .loading-furniture { transform: none; }
+  .loading-pencil { transform: translate(136px, 102px) rotate(30deg); }
+}
