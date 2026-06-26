@@ -6,6 +6,7 @@ import './styles/layout.css';
 import './styles/loading.css';
 import './styles/stage.css';
 import './styles/panels.css';
+import './styles/count-animations.css';
 import './styles/widgets.css';
 import './styles/actions.css';
 import './styles/files.css';

@@ -29,7 +29,10 @@ export function StatusBar() {
   useTick();
   const coordRef = useRef<HTMLSpanElement>(null);
   const zoomRef = useRef<HTMLSpanElement>(null);
+  const prevItems = useRef<number | null>(null);
   const [savedAt, setSavedAt] = useState('');
+  const [itemPulse, setItemPulse] = useState<{ id: number; delta: number } | null>(null);
+  const s = stats(store);
 
   useEffect(() => {
     bindStatus(coordRef.current, zoomRef.current);
@@ -37,7 +40,15 @@ export function StatusBar() {
     return () => { bindStatus(null, null); off(); };
   }, []);
 
-  const s = stats(store);
+  useEffect(() => {
+    const prev = prevItems.current;
+    prevItems.current = s.items;
+    if (prev === null || prev === s.items) return;
+    setItemPulse({ id: Date.now(), delta: s.items - prev });
+    const t = window.setTimeout(() => setItemPulse(null), 850);
+    return () => window.clearTimeout(t);
+  }, [s.items]);
+
   const baseWalk = store.project.settings.solidCollision
     ? 'W/A/S/D 移动 · 实体碰撞开启 · 拖拽转视角 · Shift 加速 · Esc 退出漫游'
     : 'W/A/S/D 移动 · 拖拽转视角 · Shift 加速 · Esc 退出漫游';
@@ -57,7 +68,17 @@ export function StatusBar() {
       <span ref={zoomRef} className="sb-mono">100%</span>
       <span className="sb-stat">房间<b>{s.rooms}</b></span>
       <span className="sb-stat">面积<b>{s.area.toFixed(1)}㎡</b></span>
-      <span className="sb-stat">家具<b>{s.items}</b></span>
+      <span className={`sb-stat sb-count${itemPulse ? ' pop' : ''}`} aria-live="polite">
+        家具
+        <span className="sb-count-wrap">
+          <b key={s.items}>{s.items}</b>
+          {itemPulse && (
+            <i key={itemPulse.id} className={`sb-delta ${itemPulse.delta < 0 ? 'down' : ''}`} aria-hidden="true">
+              {itemPulse.delta > 0 ? `+${itemPulse.delta}` : itemPulse.delta}
+            </i>
+          )}
+        </span>
+      </span>
       <span className={syncCls} title={sync.message || SYNC_TEXT[sync.status]}>
         <i className="sb-dot" />
         {isCloudActive()
