@@ -1,20 +1,9 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useState } from 'react';
-import { store } from './core/store/store';
-import { useTick } from './core/store/react';
-import { useShortcuts } from './hooks/useShortcuts';
 import { LandingPage } from './ui/LandingPage';
-import { Toolbar } from './ui/Toolbar';
-import { CatalogPanel } from './ui/CatalogPanel';
-import { Stage } from './ui/Stage';
-import { PropsPanel } from './ui/PropsPanel';
-import { StatusBar } from './ui/StatusBar';
-import { ContextMenu } from './ui/ContextMenu';
-import { HelpModal } from './ui/HelpModal';
 import { Toaster } from './ui/Toaster';
-import { AuthModal } from './ui/AuthModal';
-import { AccountModal } from './ui/AccountModal';
-import { ShareModal } from './ui/ShareModal';
+
+const StudioApp = lazy(() => import('./ui/StudioApp').then((m) => ({ default: m.StudioApp })));
 
 const isStudioHash = () => location.hash.startsWith('#/studio') || location.hash.startsWith('#/i/');
 
@@ -35,45 +24,17 @@ export default function App() {
 
   return (
     <>
-      {studio ? <StudioApp /> : <LandingPage />}
+      {studio ? (
+        <Suspense fallback={<StudioLoading />}>
+          <StudioApp />
+        </Suspense>
+      ) : <LandingPage />}
       <Toaster />
-      <AuthModal />
-      <AccountModal />
-      <ShareModal />
     </>
   );
 }
 
-function StudioApp() {
-  useTick();
-  useShortcuts();
-
-  // 深浅主题同步到 DOM 与本地偏好
-  useEffect(() => {
-    document.documentElement.dataset.theme = store.ui.theme;
-    localStorage.setItem('qiju-theme', store.ui.theme);
-  }, [store.ui.theme]);
-
-  if (!store.ui.hydrated) {
-    return <LoadingScreen />;
-  }
-
-  return (
-    <div className="app">
-      <Toolbar />
-      <div className="main">
-        <CatalogPanel />
-        <Stage />
-        <PropsPanel />
-      </div>
-      <StatusBar />
-      <ContextMenu />
-      <HelpModal />
-    </div>
-  );
-}
-
-function LoadingScreen() {
+function StudioLoading() {
   return (
     <div className="app app-loading" aria-busy="true">
       <div className="loading-blueprint" aria-hidden="true">

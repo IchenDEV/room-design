@@ -1,16 +1,16 @@
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import { store } from './core/store/store';
-import { initPersist } from './core/store/persist';
-import { initAuth } from './core/store/store-user';
 import './styles/theme.css';
 import './styles/layout.css';
 import './styles/loading.css';
+import './styles/stage.css';
 import './styles/panels.css';
 import './styles/widgets.css';
 import './styles/actions.css';
 import './styles/files.css';
 import './styles/collab.css';
+import './styles/studio-responsive.css';
 import './styles/landing.css';
 import './styles/landing-responsive.css';
 
@@ -32,6 +32,4 @@ declare global {
 window.__errs = errs;
 window.__studio = { store, editors };
 
-initPersist(store);
-initAuth(store);
 createRoot(document.getElementById('root')!).render(<App />);

@@ -9,6 +9,7 @@ import {
 import { isCloudActive } from '../core/collab/sync-status';
 import { toastErr, toastOk } from './toast';
 import { Ic } from './icons';
+import { ModalShell } from './ModalShell';
 
 const inviteUrl = (token: string) => `${location.origin}/#/i/${encodeURIComponent(token)}`;
 
@@ -73,69 +74,61 @@ function ShareBody({ projectId, ownerId }: { projectId: string; ownerId?: string
   };
 
   return (
-    <div className="modal-backdrop" onClick={close}>
-      <div className="modal share-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-head">
-          <b>分享与协作</b>
-          <button className="tb-btn" title="关闭" onClick={close}><Ic n="close" /></button>
-        </div>
-        <div className="modal-body">
-          <label className="prop-label">生成邀请链接</label>
-          <div className="btn-row">
-            <button className="btn auth-primary" disabled={busy} onClick={() => makeInvite('editor')}>
-              <Ic n="edit" size={14} />可编辑链接
-            </button>
-            <button className="btn" disabled={busy} onClick={() => makeInvite('viewer')}>
-              <Ic n="cube" size={14} />只读链接
-            </button>
-          </div>
+    <ModalShell className="share-modal" onClose={close} title="分享与协作">
+      <label className="prop-label">生成邀请链接</label>
+      <div className="btn-row">
+        <button className="btn auth-primary" disabled={busy} onClick={() => makeInvite('editor')}>
+          <Ic n="edit" size={14} />可编辑链接
+        </button>
+        <button className="btn" disabled={busy} onClick={() => makeInvite('viewer')}>
+          <Ic n="cube" size={14} />只读链接
+        </button>
+      </div>
 
-          {invites.length > 0 && (
-            <>
-              <label className="prop-label">活跃邀请</label>
-              <div className="invite-list">
-                {invites.map((iv) => (
-                  <div key={iv.id} className="invite-row">
-                    <span className={`invite-role ${iv.role}`}>{iv.role === 'editor' ? '可编辑' : '只读'}</span>
-                    <span className="invite-uses">已用 {iv.uses}{iv.maxUses ? `/${iv.maxUses}` : ''} 次</span>
-                    <button className="dd-item" onClick={() => copyInvite(iv.token)} title="复制链接" aria-label="复制链接">
-                      <Ic n="copy" size={13} />
-                    </button>
-                    <button className="dd-item danger" onClick={() => revoke(iv.id)} title="撤销链接" aria-label="撤销链接">
-                      <Ic n="trash" size={13} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
-          <label className="prop-label">协作成员（{members.length}）</label>
+      {invites.length > 0 && (
+        <>
+          <label className="prop-label">活跃邀请</label>
           <div className="invite-list">
-            {members.map((m) => (
-              <div key={m.userId} className="invite-row">
-                <span className="invite-uid">{m.userId.slice(0, 8)}</span>
-                {m.role === 'owner' ? (
-                  <span className="invite-role owner">所有者</span>
-                ) : (
-                  <>
-                    <select className="role-select" value={m.role}
-                      onChange={(e) => setRole(m.userId, e.target.value as 'editor' | 'viewer')}>
-                      <option value="editor">可编辑</option>
-                      <option value="viewer">只读</option>
-                    </select>
-                    <button className="dd-item danger" onClick={() => kick(m.userId)} title="移除成员" aria-label="移除成员">
-                      <Ic n="trash" size={13} />
-                    </button>
-                  </>
-                )}
+            {invites.map((iv) => (
+              <div key={iv.id} className="invite-row">
+                <span className={`invite-role ${iv.role}`}>{iv.role === 'editor' ? '可编辑' : '只读'}</span>
+                <span className="invite-uses">已用 {iv.uses}{iv.maxUses ? `/${iv.maxUses}` : ''} 次</span>
+                <button className="dd-item" onClick={() => copyInvite(iv.token)} title="复制链接" aria-label="复制链接">
+                  <Ic n="copy" size={13} />
+                </button>
+                <button className="dd-item danger" onClick={() => revoke(iv.id)} title="撤销链接" aria-label="撤销链接">
+                  <Ic n="trash" size={13} />
+                </button>
               </div>
             ))}
           </div>
-          <p className="auth-note">受邀者打开链接后将自动加入项目，可实时协同编辑。</p>
-        </div>
+        </>
+      )}
+
+      <label className="prop-label">协作成员（{members.length}）</label>
+      <div className="invite-list">
+        {members.map((m) => (
+          <div key={m.userId} className="invite-row">
+            <span className="invite-uid">{m.userId.slice(0, 8)}</span>
+            {m.role === 'owner' ? (
+              <span className="invite-role owner">所有者</span>
+            ) : (
+              <>
+                <select className="role-select" value={m.role}
+                  onChange={(e) => setRole(m.userId, e.target.value as 'editor' | 'viewer')}>
+                  <option value="editor">可编辑</option>
+                  <option value="viewer">只读</option>
+                </select>
+                <button className="dd-item danger" onClick={() => kick(m.userId)} title="移除成员" aria-label="移除成员">
+                  <Ic n="trash" size={13} />
+                </button>
+              </>
+            )}
+          </div>
+        ))}
       </div>
-    </div>
+      <p className="auth-note">受邀者打开链接后将自动加入项目，可实时协同编辑。</p>
+    </ModalShell>
   );
 }
 

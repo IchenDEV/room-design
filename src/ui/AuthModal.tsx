@@ -4,7 +4,7 @@ import { useTick } from '../core/store/react';
 import { signInOAuth, signInPassword, signUpPassword, validateUsername } from '../core/auth/auth';
 import { isSupabaseConfigured } from '../core/supabase/client';
 import { toastErr, toastOk } from './toast';
-import { Ic } from './icons';
+import { ModalShell } from './ModalShell';
 
 type Tab = 'signin' | 'signup';
 
@@ -49,44 +49,46 @@ function AuthBody() {
   };
 
   return (
-    <div className="modal-backdrop" onClick={close}>
-      <div className="modal auth-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-head">
-          <b>{tab === 'signin' ? '登录栖居' : '注册账号'}</b>
-          <button className="tb-btn" title="关闭" onClick={close}><Ic n="close" /></button>
-        </div>
-        <div className="modal-body">
-          <div className="auth-tabs">
-            <button className={`seg-btn ${tab === 'signin' ? 'on' : ''}`} onClick={() => setTab('signin')}>登录</button>
-            <button className={`seg-btn ${tab === 'signup' ? 'on' : ''}`} onClick={() => setTab('signup')}>注册</button>
-          </div>
-          {tab === 'signin' ? (
-            <input className="text-input" placeholder="用户名或邮箱" value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)} autoFocus />
-          ) : (
-            <>
-              <input className="text-input" placeholder="用户名" value={username}
-                onChange={(e) => setUsername(e.target.value.toLowerCase())} autoFocus />
-              <input className="text-input" type="email" placeholder="邮箱" value={email}
-                onChange={(e) => setEmail(e.target.value)} />
-            </>
-          )}
-          <input className="text-input" type="password" placeholder="密码（至少 6 位）" value={pwd}
-            onChange={(e) => setPwd(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') submit(); }} />
-          <button className="btn auth-primary" disabled={busy} onClick={submit}>
-            {busy ? '处理中…' : tab === 'signin' ? '登录' : '注册'}
-          </button>
-          <div className="auth-or"><span>或</span></div>
-          <button className="btn auth-oauth" onClick={() => oauth('google')}>
-            <OAuthMark kind="g" />使用 Google 继续
-          </button>
-          <button className="btn auth-oauth" onClick={() => oauth('github')}>
-            <OAuthMark kind="gh" />使用 GitHub 继续
-          </button>
-          <p className="auth-note">登录后可云端同步方案、跨设备编辑与多人协作。</p>
-        </div>
+    <ModalShell className="auth-modal" onClose={close} title={tab === 'signin' ? '登录栖居' : '注册账号'}>
+      <div className="auth-tabs">
+        <button className={`seg-btn ${tab === 'signin' ? 'on' : ''}`} onClick={() => setTab('signin')}>登录</button>
+        <button className={`seg-btn ${tab === 'signup' ? 'on' : ''}`} onClick={() => setTab('signup')}>注册</button>
       </div>
-    </div>
+      {tab === 'signin' ? (
+        <>
+          <label className="sr-only" htmlFor="auth-identifier">用户名或邮箱</label>
+          <input autoComplete="username" className="text-input" id="auth-identifier"
+            placeholder="用户名或邮箱" value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)} autoFocus />
+        </>
+      ) : (
+        <>
+          <label className="sr-only" htmlFor="auth-username">用户名</label>
+          <input autoComplete="username" className="text-input" id="auth-username"
+            placeholder="用户名" value={username}
+            onChange={(e) => setUsername(e.target.value.toLowerCase())} autoFocus />
+          <label className="sr-only" htmlFor="auth-email">邮箱</label>
+          <input autoComplete="email" className="text-input" id="auth-email" type="email"
+            placeholder="邮箱" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </>
+      )}
+      <label className="sr-only" htmlFor="auth-password">密码</label>
+      <input autoComplete={tab === 'signin' ? 'current-password' : 'new-password'}
+        className="text-input" id="auth-password" type="password" placeholder="密码（至少 6 位）"
+        value={pwd} onChange={(e) => setPwd(e.target.value)}
+        onKeyDown={(e) => { if (e.key === 'Enter') submit(); }} />
+      <button aria-busy={busy} className="btn auth-primary" disabled={busy} onClick={submit}>
+        {busy ? '处理中…' : tab === 'signin' ? '登录' : '注册'}
+      </button>
+      <div className="auth-or"><span>或</span></div>
+      <button className="btn auth-oauth" onClick={() => oauth('google')}>
+        <OAuthMark kind="g" />使用 Google 继续
+      </button>
+      <button className="btn auth-oauth" onClick={() => oauth('github')}>
+        <OAuthMark kind="gh" />使用 GitHub 继续
+      </button>
+      <p className="auth-note">登录后可云端同步方案、跨设备编辑与多人协作。</p>
+    </ModalShell>
   );
 }
 

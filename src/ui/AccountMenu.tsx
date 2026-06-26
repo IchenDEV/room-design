@@ -5,6 +5,7 @@ import { signOut } from '../core/auth/auth';
 import { isSupabaseConfigured } from '../core/supabase/client';
 import { toastOk } from './toast';
 import { Ic } from './icons';
+import { Dropdown } from './Dropdown';
 
 export function AccountMenu() {
   useTick();
@@ -32,33 +33,30 @@ export function AccountMenu() {
   };
 
   return (
-    <div className="dropdown">
-      <button className="tb-btn account-btn" title={handle} onClick={() => setOpen(!open)}>
+    <Dropdown
+      menuClassName="account-menu"
+      onClose={close}
+      open={open}
+      trigger={<button className="tb-btn account-btn" title={handle} onClick={() => setOpen(!open)}>
         <span className="account-avatar" style={{ background: u.color }}>{initial}</span>
         <span className="account-name">{u.displayName}</span>
         <Ic n="chev" size={13} />
+      </button>}
+    >
+      <div className="account-card">
+        <span className="account-avatar lg" style={{ background: u.color }}>{initial}</span>
+        <div className="account-meta">
+          <b>{u.displayName}</b>
+          <span className="account-email">{handle}</span>
+        </div>
+      </div>
+      <div className="dd-sep" />
+      <button className="dd-item" onClick={() => { close(); store.patchUI({ modal: 'account' }); }}>
+        <Ic n="settings" size={15} /><span>账号设置</span>
       </button>
-      {open && (
-        <>
-          <div className="dd-backdrop" onClick={close} />
-          <div className="dd-menu account-menu">
-            <div className="account-card">
-              <span className="account-avatar lg" style={{ background: u.color }}>{initial}</span>
-              <div className="account-meta">
-                <b>{u.displayName}</b>
-                <span className="account-email">{handle}</span>
-              </div>
-            </div>
-            <div className="dd-sep" />
-            <button className="dd-item" onClick={() => { close(); store.patchUI({ modal: 'account' }); }}>
-              <Ic n="settings" size={15} /><span>账号设置</span>
-            </button>
-            <button className="dd-item danger" onClick={out}>
-              <Ic n="logout" size={15} /><span>退出登录</span>
-            </button>
-          </div>
-        </>
-      )}
-    </div>
+      <button className="dd-item danger" onClick={out}>
+        <Ic n="logout" size={15} /><span>退出登录</span>
+      </button>
+    </Dropdown>
   );
 }

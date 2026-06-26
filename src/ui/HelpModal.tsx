@@ -1,6 +1,6 @@
 import { store } from '../core/store/store';
 import { useTick } from '../core/store/react';
-import { Ic } from './icons';
+import { ModalShell } from './ModalShell';
 
 const ROWS: [string, string][] = [
   ['V / K / W / T / D / N / L / B', '选择 / 框选 / 画墙 / 矩形房间 / 门 / 窗 / 尺子 / 距离标注'],
@@ -22,21 +22,13 @@ export function HelpModal() {
   if (!store.ui.help) return null;
   const close = () => store.patchUI({ help: false });
   return (
-    <div className="modal-backdrop" onClick={close}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-head">
-          <b>快捷键</b>
-          <button className="tb-btn" title="关闭" onClick={close}><Ic n="close" /></button>
+    <ModalShell onClose={close} title="快捷键">
+      {ROWS.map(([k, v]) => (
+        <div className="hk-row" key={k}>
+          <span className="hk-key">{k}</span>
+          <span>{v}</span>
         </div>
-        <div className="modal-body">
-          {ROWS.map(([k, v]) => (
-            <div className="hk-row" key={k}>
-              <span className="hk-key">{k}</span>
-              <span>{v}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+      ))}
+    </ModalShell>
   );
 }

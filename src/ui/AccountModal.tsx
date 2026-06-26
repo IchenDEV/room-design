@@ -4,7 +4,7 @@ import { useTick } from '../core/store/react';
 import { fetchProfile, updateProfile } from '../core/auth/auth';
 import { setUser } from '../core/store/store-user';
 import { toastErr, toastOk } from './toast';
-import { Ic } from './icons';
+import { ModalShell } from './ModalShell';
 
 const PALETTE = ['#4f8cff', '#4ecf8a', '#f5a623', '#e36a6a', '#a259ff', '#22b8cf', '#f56684'];
 
@@ -36,37 +36,30 @@ function AccountBody() {
   const initial = (name || u.username || u.email || '?').trim().charAt(0).toUpperCase();
 
   return (
-    <div className="modal-backdrop" onClick={close}>
-      <div className="modal account-modal-box" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-head">
-          <b>账号设置</b>
-          <button className="tb-btn" title="关闭" onClick={close}><Ic n="close" /></button>
-        </div>
-        <div className="modal-body">
-          <div className="account-preview">
-            <span className="account-avatar xl" style={{ background: color }}>{initial}</span>
-            <div>
-              <b>{name || u.displayName}</b>
-              <span className="account-email">{handle}</span>
-            </div>
-          </div>
-          <label className="prop-label">昵称</label>
-          <input className="text-input" value={name} onChange={(e) => setName(e.target.value)} autoFocus />
-          <label className="prop-label">协作光标颜色</label>
-          <div className="swatches">
-            {PALETTE.map((c) => (
-              <button key={c} className={`swatch ${c === color ? 'on' : ''}`}
-                style={{ background: c }} onClick={() => setColor(c)} aria-label={c} />
-            ))}
-          </div>
-          <div className="btn-row">
-            <button className="btn" onClick={close}>取消</button>
-            <button className="btn auth-primary" disabled={busy} onClick={save}>
-              {busy ? '保存中…' : '保存'}
-            </button>
-          </div>
+    <ModalShell className="account-modal-box" onClose={close} title="账号设置">
+      <div className="account-preview">
+        <span className="account-avatar xl" style={{ background: color }}>{initial}</span>
+        <div>
+          <b>{name || u.displayName}</b>
+          <span className="account-email">{handle}</span>
         </div>
       </div>
-    </div>
+      <label className="prop-label" htmlFor="account-display-name">昵称</label>
+      <input autoComplete="name" className="text-input" id="account-display-name"
+        value={name} onChange={(e) => setName(e.target.value)} autoFocus />
+      <div className="prop-label" id="account-color-label">协作光标颜色</div>
+      <div aria-labelledby="account-color-label" className="swatches" role="group">
+        {PALETTE.map((c) => (
+          <button key={c} className={`swatch ${c === color ? 'on' : ''}`}
+            style={{ background: c }} onClick={() => setColor(c)} aria-label={`选择协作光标颜色 ${c}`} />
+        ))}
+      </div>
+      <div className="btn-row">
+        <button className="btn" onClick={close}>取消</button>
+        <button aria-busy={busy} className="btn auth-primary" disabled={busy} onClick={save}>
+          {busy ? '保存中…' : '保存'}
+        </button>
+      </div>
+    </ModalShell>
   );
 }

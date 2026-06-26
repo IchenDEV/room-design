@@ -13,7 +13,7 @@ export function applyRenderSettings(v: Viewer3D, state: RenderSettingsState): bo
   let changed = false;
   if (renderSig !== state.renderSig) {
     const size = ray ? 2048 : 1024;
-    v.renderer.shadowMap.type = ray ? THREE.VSMShadowMap : THREE.PCFSoftShadowMap;
+    v.renderer.shadowMap.type = ray ? THREE.VSMShadowMap : THREE.PCFShadowMap;
     v.renderer.toneMappingExposure = ray ? 1.12 : 1.0;
     v.scene.environmentIntensity = ray ? 0.78 : 0.5;
     v.hemi.intensity = ray ? 0.55 : 0.75;

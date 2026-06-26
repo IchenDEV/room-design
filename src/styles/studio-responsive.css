@@ -1,0 +1,32 @@
+@media (max-width: 760px) {
+  body.studio-mode .brand-name,
+  body.studio-mode .tb-btn.wide span,
+  body.studio-mode .file-btn span,
+  body.studio-mode .account-name {
+    display: none;
+  }
+
+  body.studio-mode .toolbar {
+    gap: 6px;
+    padding-inline: 8px;
+  }
+
+  body.studio-mode .tb-group.right {
+    flex-shrink: 0;
+  }
+
+  body.studio-mode .statusbar {
+    gap: 8px;
+    padding-inline: 8px;
+  }
+
+  body.studio-mode .sb-hint {
+    display: none;
+  }
+
+  body.studio-mode .walk-hint {
+    max-width: calc(100vw - 24px);
+    text-align: center;
+    white-space: normal;
+  }
+}

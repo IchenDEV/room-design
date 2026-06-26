@@ -14,13 +14,18 @@ import { isCloudActive } from '../core/collab/sync-status';
 import { isSupabaseConfigured } from '../core/supabase/client';
 import { restartCollab } from '../core/collab/sync';
 import { toastErr, toastOk } from './toast';
+import { Dropdown } from './Dropdown';
 
 function useToggle() {
   const [open, setOpen] = useState(false);
   return { open, on: () => setOpen(true), off: () => setOpen(false), flip: () => setOpen((v) => !v) };
 }
 
-const shot = () => (store.ui.mode === '2d' ? editors.e2?.screenshot() : editors.v3?.screenshot());
+const shot = () => {
+  if (store.ui.mode === '2d') { editors.e2?.screenshot(); return; }
+  if (editors.v3) editors.v3.screenshot();
+  else toastErr('3D 视图正在加载，请稍候');
+};
 
 export function ToolbarRight() {
   useTick();
@@ -69,74 +74,68 @@ export function ToolbarRight() {
         </>
       )}
       <FileMenu />
-      <div className="dropdown">
-        <button className="tb-btn wide" title="示例方案" onClick={sample.flip}>
+      <Dropdown
+        onClose={sample.off}
+        open={sample.open}
+        trigger={<button className="tb-btn wide" title="示例方案" onClick={sample.flip}>
           <Ic n="sample" size={15} /><span>示例</span><Ic n="chev" size={13} />
-        </button>
-        {sample.open && (<>
-          <div className="dd-backdrop" onClick={sample.off} />
-          <div className="dd-menu">
-            <div className="dd-head">载入示例方案</div>
-            {SAMPLES.map((s) => (
-              <button key={s.id} className="dd-item" onClick={() => { loadSample(store, s.id); sample.off(); }}>
-                <Ic n="sample" size={15} /><span>{s.name}</span>
-              </button>
-            ))}
-          </div>
-        </>)}
-      </div>
+        </button>}
+      >
+        <div className="dd-head">载入示例方案</div>
+        {SAMPLES.map((s) => (
+          <button key={s.id} className="dd-item" onClick={() => { loadSample(store, s.id); sample.off(); }}>
+            <Ic n="sample" size={15} /><span>{s.name}</span>
+          </button>
+        ))}
+      </Dropdown>
 
       <span className="tb-divider" />
 
-      <div className="dropdown">
-        <button className="tb-btn wide" title="导入 / 导出 / 分享 / 截图" onClick={exp.flip}>
+      <Dropdown
+        onClose={exp.off}
+        open={exp.open}
+        trigger={<button className="tb-btn wide" title="导入 / 导出 / 分享 / 截图" onClick={exp.flip}>
           <Ic n="download" size={15} /><span>导出</span><Ic n="chev" size={13} />
+        </button>}
+      >
+        <div className="dd-head">导入与导出</div>
+        <button className="dd-item" onClick={() => { exportProject(store); exp.off(); }}>
+          <Ic n="download" size={15} /><span>导出方案 (JSON)</span>
         </button>
-        {exp.open && (<>
-          <div className="dd-backdrop" onClick={exp.off} />
-          <div className="dd-menu">
-            <div className="dd-head">导入与导出</div>
-            <button className="dd-item" onClick={() => { exportProject(store); exp.off(); }}>
-              <Ic n="download" size={15} /><span>导出方案 (JSON)</span>
-            </button>
-            <button className="dd-item" onClick={() => { fileRef.current?.click(); exp.off(); }}>
-              <Ic n="upload" size={15} /><span>导入方案 (JSON)</span>
-            </button>
-            <div className="dd-sep" />
-            <button className="dd-item" disabled={sharing} onClick={() => { onShare(); exp.off(); }}>
-              <Ic n="share" size={15} /><span>{sharing ? '分享中…' : '分享方案链接'}</span>
-            </button>
-            <button className="dd-item" onClick={() => { shot(); exp.off(); }}>
-              <Ic n="camera" size={15} /><span>导出截图 (PNG)</span>
-            </button>
-          </div>
-        </>)}
-      </div>
+        <button className="dd-item" onClick={() => { fileRef.current?.click(); exp.off(); }}>
+          <Ic n="upload" size={15} /><span>导入方案 (JSON)</span>
+        </button>
+        <div className="dd-sep" />
+        <button className="dd-item" disabled={sharing} onClick={() => { onShare(); exp.off(); }}>
+          <Ic n="share" size={15} /><span>{sharing ? '分享中…' : '分享方案链接'}</span>
+        </button>
+        <button className="dd-item" onClick={() => { shot(); exp.off(); }}>
+          <Ic n="camera" size={15} /><span>导出截图 (PNG)</span>
+        </button>
+      </Dropdown>
       <input ref={fileRef} type="file" accept=".json,application/json" hidden
         onChange={(e) => { onImport(e.target.files?.[0]); e.target.value = ''; }} />
 
       <span className="tb-divider" />
 
-      <div className="dropdown">
-        <button className="tb-btn" title="更多" onClick={more.flip}><Ic n="more" /></button>
-        {more.open && (<>
-          <div className="dd-backdrop" onClick={more.off} />
-          <div className="dd-menu">
-            <button className="dd-item" onClick={() => { flipTheme(); more.off(); }}>
-              <Ic n={theme === 'dark' ? 'sun' : 'moon'} size={15} /><span>{theme === 'dark' ? '浅色模式' : '深色模式'}</span>
-            </button>
-            <button className="dd-item" onClick={() => { store.patchUI({ help: !store.ui.help }); more.off(); }}>
-              <Ic n="help" size={15} /><span>快捷键说明</span>
-            </button>
-            <div className="dd-sep" />
-            <button className="dd-item danger" onClick={() => {
-              if (confirm('确定清空当前方案？（可撤销）')) { clearAll(store); more.off(); }
-            }}>
-              <Ic n="clear" size={15} /><span>清空画布</span>
-            </button>
-          </div>
-        </>)}
-      </div>
+      <Dropdown
+        onClose={more.off}
+        open={more.open}
+        trigger={<button className="tb-btn" title="更多" onClick={more.flip}><Ic n="more" /></button>}
+      >
+        <button className="dd-item" onClick={() => { flipTheme(); more.off(); }}>
+          <Ic n={theme === 'dark' ? 'sun' : 'moon'} size={15} /><span>{theme === 'dark' ? '浅色模式' : '深色模式'}</span>
+        </button>
+        <button className="dd-item" onClick={() => { store.patchUI({ help: !store.ui.help }); more.off(); }}>
+          <Ic n="help" size={15} /><span>快捷键说明</span>
+        </button>
+        <div className="dd-sep" />
+        <button className="dd-item danger" onClick={() => {
+          if (confirm('确定清空当前方案？（可撤销）')) { clearAll(store); more.off(); }
+        }}>
+          <Ic n="clear" size={15} /><span>清空画布</span>
+        </button>
+      </Dropdown>
     </div>
   );
 }

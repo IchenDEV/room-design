@@ -10,6 +10,7 @@ import { restartCollab } from '../core/collab/sync';
 import { createSnapshot } from '../core/cloud/snapshots';
 import { Ic } from './icons';
 import { toastErr, toastOk } from './toast';
+import { Dropdown } from './Dropdown';
 
 const fmtTime = (t: number) => new Date(t).toLocaleString('zh-CN', {
   month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false,
@@ -44,42 +45,39 @@ export function FileMenu() {
   };
 
   return (
-    <div className="dropdown">
-      <button className="tb-btn wide file-btn" title={cloud ? '云端方案文件' : '本地方案文件'} onClick={() => setOpen(!open)}>
+    <Dropdown
+      menuClassName="file-menu"
+      onClose={close}
+      open={open}
+      trigger={<button className="tb-btn wide file-btn" title={cloud ? '云端方案文件' : '本地方案文件'} onClick={() => setOpen(!open)}>
         <Ic n={cloud ? 'cloud' : 'sample'} size={15} />
         <span>{active?.name ?? store.project.name}</span>
         <Ic n="chev" size={14} />
+      </button>}
+    >
+      <div className="file-menu-title">{cloud ? '云端方案' : '本地方案'}</div>
+      <div className="file-list">
+        {files.map((f) => (
+          <button key={f.id} className={`file-item ${f.id === active?.id ? 'on' : ''}`}
+            onClick={() => runFileAction(() => switchProjectFile(store, f.id)).then(close)}>
+            <span className="file-name">{f.name}</span>
+            <span className="file-time">{fmtTime(f.updatedAt)}</span>
+          </button>
+        ))}
+      </div>
+      <div className="dd-sep" />
+      <button className="dd-item" onClick={() => runFileAction(() => createProjectFile(store)).then(close)}>
+        <Ic n="sample" size={15} /><span>新建空白方案</span>
       </button>
-      {open && (
-        <>
-          <div className="dd-backdrop" onClick={close} />
-          <div className="dd-menu file-menu">
-            <div className="file-menu-title">{cloud ? '云端方案' : '本地方案'}</div>
-            <div className="file-list">
-              {files.map((f) => (
-                <button key={f.id} className={`file-item ${f.id === active?.id ? 'on' : ''}`}
-                  onClick={() => runFileAction(() => switchProjectFile(store, f.id)).then(close)}>
-                  <span className="file-name">{f.name}</span>
-                  <span className="file-time">{fmtTime(f.updatedAt)}</span>
-                </button>
-              ))}
-            </div>
-            <div className="dd-sep" />
-            <button className="dd-item" onClick={() => runFileAction(() => createProjectFile(store)).then(close)}>
-              <Ic n="sample" size={15} /><span>新建空白方案</span>
-            </button>
-            <button className="dd-item" onClick={() => runFileAction(() => duplicateProjectFile(store)).then(close)}>
-              <Ic n="copy" size={15} /><span>复制当前方案</span>
-            </button>
-            {cloud && <button className="dd-item" onClick={saveVer}>
-              <Ic n="sync" size={15} /><span>保存版本快照</span>
-            </button>}
-            <button className="dd-item danger" onClick={del}>
-              <Ic n="trash" size={15} /><span>删除当前方案</span>
-            </button>
-          </div>
-        </>
-      )}
-    </div>
+      <button className="dd-item" onClick={() => runFileAction(() => duplicateProjectFile(store)).then(close)}>
+        <Ic n="copy" size={15} /><span>复制当前方案</span>
+      </button>
+      {cloud && <button className="dd-item" onClick={saveVer}>
+        <Ic n="sync" size={15} /><span>保存版本快照</span>
+      </button>}
+      <button className="dd-item danger" onClick={del}>
+        <Ic n="trash" size={15} /><span>删除当前方案</span>
+      </button>
+    </Dropdown>
   );
 }
