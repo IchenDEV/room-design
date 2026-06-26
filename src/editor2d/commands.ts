@@ -69,6 +69,7 @@ export function placeOpening(ed: Editor2D, kind: 'door' | 'window') {
       height: kind === 'door' ? 210 : 140,
       sill: kind === 'door' ? 0 : 90, flip: false,
       swing: kind === 'door' ? 'single' : undefined,
+      openDir: kind === 'door' ? 'in' : undefined,
     });
   });
   ed.store.setSel({ kind: 'opening', id });
@@ -90,7 +91,7 @@ export function ghostValid(ed: Editor2D, wallId: string, t: number, width: numbe
 export function placeItem(ed: Editor2D, defId: string, p: Pt) {
   const def = defOf(defId);
   const id = uid('i');
-  const item = { id, defId, x: p.x, y: p.y, rot: 0, w: def.w, d: def.d, h: def.h, texture: defaultTexture(def) };
+  const item = { id, defId, x: p.x, y: p.y, rot: 0, w: def.w, d: def.d, h: def.h, texture: defaultTexture(def), z: def.surfaceZ };
   const snap = snapItemPos(ed, p, item);
   ed.store.commit((proj) => {
     proj.items.push({ ...item, x: snap.pt.x, y: snap.pt.y, rot: snap.rot ?? 0 });

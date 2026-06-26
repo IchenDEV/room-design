@@ -33,7 +33,7 @@ export function WallProps({ id }: { id: string }) {
         )}
         <KV k="门窗数量" v={`${openingsOnWall(store, id).length}`} />
       </Section>
-      <Section title="材质">
+      <Section title="墙纸 / 墙面材质">
         <div className="seg-row">
           <button className={`seg-btn ${!glass ? 'on' : ''}`}
             onClick={() => store.commit((p) => { const t = p.walls.find((x) => x.id === id); if (t) t.material = 'solid'; })}>
@@ -48,6 +48,11 @@ export function WallProps({ id }: { id: string }) {
           <>
             <Swatches colors={WALL_COLORS} value={w.color}
               onPick={(c) => store.commit((p) => { const t = p.walls.find((x) => x.id === id); if (t) t.color = c; })} />
+            <label className="check-row">
+              <input className="swatch" type="color" value={w.color}
+                onChange={(e) => store.commit((p) => { const t = p.walls.find((x) => x.id === id); if (t) t.color = e.target.value; })} />
+              <span>自定义色</span>
+            </label>
             <ChoiceGrid options={WALL_TEXTURES} value={w.texture ?? 'paint'}
               onPick={(v) => store.commit((p) => { const t = p.walls.find((x) => x.id === id); if (t) t.texture = v; })} />
           </>

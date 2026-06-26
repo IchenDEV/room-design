@@ -13,7 +13,7 @@ export function sceneSignatures(store: Store): SceneSignatures {
   ]);
   const openings = p.openings.map((o) => [
     o.id, o.wallId, o.kind, n(o.t), n(o.width), n(o.height), n(o.sill),
-    o.flip ? 1 : 0, o.style ?? '', o.swing ?? '',
+    o.flip ? 1 : 0, o.style ?? '', o.swing ?? '', o.openDir ?? '',
   ]);
   const rooms = store.rooms.map((r) => {
     const c = roomCeiling(store, r);

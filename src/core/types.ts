@@ -21,6 +21,7 @@ export interface Wall {
 export type OpeningKind = 'door' | 'window';
 export type DoorStyle = 'wood' | 'glass';
 export type DoorSwing = 'single' | 'double';
+export type DoorOpenDir = 'in' | 'out';
 export type FurnTexture =
   | 'fabric' | 'leather' | 'wood' | 'darkWood' | 'metal' | 'glass'
   | 'stone' | 'ceramic' | 'rattan' | 'felt' | 'plastic' | 'plant';
@@ -36,6 +37,7 @@ export interface Opening {
   flip: boolean;       // 沿墙左右翻转
   style?: DoorStyle;   // 门：木门/玻璃门
   swing?: DoorSwing;   // 门：单开/双开
+  openDir?: DoorOpenDir; // 门：向内/向外开启
 }
 
 export interface Item {

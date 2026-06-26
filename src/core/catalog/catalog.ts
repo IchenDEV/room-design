@@ -1,5 +1,5 @@
 import {
-  BATH_DEFS, BEDROOM_DEFS, DINING_DEFS, EXTRA_DEFS, HOME_DEFS,
+  BATH_DEFS, BEDROOM_DEFS, DECOR_DEFS, DINING_DEFS, EXTRA_DEFS, HOME_DEFS,
   LIVING_DEFS, OFFICE_DEFS, SEAT_DEFS,
 } from './defs';
 import type { CatId, FurnDef, FurnKind, FurnTexture } from './defs';
@@ -9,7 +9,7 @@ export type { CatId, FurnDef, FurnKind, FurnTexture } from './defs';
 
 export const CATALOG: FurnDef[] = [
   ...HOME_DEFS, ...LIVING_DEFS, ...BEDROOM_DEFS, ...DINING_DEFS,
-  ...BATH_DEFS, ...EXTRA_DEFS, ...SEAT_DEFS, ...OFFICE_DEFS,
+  ...BATH_DEFS, ...EXTRA_DEFS, ...SEAT_DEFS, ...OFFICE_DEFS, ...DECOR_DEFS,
 ];
 
 export const CATS: { id: CatId; name: string }[] = [
@@ -20,6 +20,7 @@ export const CATS: { id: CatId; name: string }[] = [
   { id: 'electric', name: '电气' },
   { id: 'seat', name: '桌椅' },
   { id: 'office', name: '办公' },
+  { id: 'decor', name: '摆件' },
 ];
 
 const defMap = new Map(CATALOG.map((d) => [d.id, d]));
@@ -47,15 +48,19 @@ const byKind: Partial<Record<FurnKind, FurnTexture>> = {
 
 export const defaultTexture = (def: FurnDef): FurnTexture => def.texture ?? byKind[def.kind] ?? 'wood';
 
-export type FloorType = 'wood' | 'tile' | 'marble' | 'carpet';
+export type FloorType = 'wood' | 'tile' | 'marble' | 'carpet' | 'concrete';
 export interface FloorMat { id: string; name: string; type: FloorType; base: string; plan: string }
 
 export const FLOORS: FloorMat[] = [
   { id: 'woodLight', name: '浅色木地板', type: 'wood', base: '#c8a87e', plan: '#ead9bf' },
   { id: 'woodDark', name: '深色木地板', type: 'wood', base: '#8d6845', plan: '#d4b896' },
+  { id: 'woodHerringbone', name: '人字拼木地板', type: 'wood', base: '#b98f63', plan: '#e2c49b' },
   { id: 'tileGray', name: '灰色瓷砖', type: 'tile', base: '#aeb4b9', plan: '#dde0e3' },
   { id: 'tileBeige', name: '米色瓷砖', type: 'tile', base: '#cfc4ae', plan: '#ece5d4' },
+  { id: 'tileTerrazzo', name: '水磨石瓷砖', type: 'tile', base: '#d2d0c7', plan: '#e8e5dd' },
+  { id: 'tileSlate', name: '深灰石纹砖', type: 'tile', base: '#747b82', plan: '#c5c9cc' },
   { id: 'marble', name: '大理石', type: 'marble', base: '#dcdcd8', plan: '#eff0ec' },
+  { id: 'concreteMicro', name: '微水泥地坪', type: 'concrete', base: '#aaa7a0', plan: '#d6d3cc' },
   { id: 'carpetGray', name: '灰色地毯', type: 'carpet', base: '#9aa0a8', plan: '#d6dade' },
   { id: 'carpetBlue', name: '蓝灰地毯', type: 'carpet', base: '#7e8ca0', plan: '#ccd5e0' },
 ];
@@ -64,7 +69,7 @@ const floorMap = new Map(FLOORS.map((f) => [f.id, f]));
 export const floorOf = (id: string): FloorMat => floorMap.get(id) ?? FLOORS[0];
 
 export const CEILING_STYLES: { id: CeilingStyle; name: string }[] = [
-  { id: 'none', name: '无吊顶' }, { id: 'flat', name: '平面' },
+  { id: 'none', name: '无吊顶' }, { id: 'flat', name: '普通吊顶' },
   { id: 'tray', name: '回形' }, { id: 'cove', name: '灯槽' },
   { id: 'grid', name: '格栅' },
 ];

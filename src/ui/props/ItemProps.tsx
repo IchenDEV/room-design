@@ -1,6 +1,6 @@
 import { store } from '../../core/store/store';
 import { itemOf } from '../../core/store/selectors';
-import { deleteSelection, duplicateItem, rotateItem } from '../../core/store/actions';
+import { deleteSelection, duplicateItem, resetItemZ, rotateItem } from '../../core/store/actions';
 import { defaultTexture, defOf, ITEM_COLORS, TEXTURES } from '../../core/catalog/catalog';
 import { ActionBtn, BtnRow, Check, ChoiceGrid, NumField, Section, SliderNum, Swatches } from './widgets';
 import type { Item } from '../../core/types';
@@ -47,6 +47,12 @@ export function ItemProps({ id }: { id: string }) {
           onChange={(v) => store.commit((p) => { const t = p.items.find((x) => x.id === id); if (t) t.flipX = v; })} />
       </Section>
       <BtnRow>
+        {def.surfaceZ !== undefined && (
+          <ActionBtn icon="cube" onClick={() => store.commit((p) => { const t = p.items.find((x) => x.id === id); if (t) t.z = def.surfaceZ; })}>
+            放到桌面
+          </ActionBtn>
+        )}
+        <ActionBtn icon="fit" onClick={() => resetItemZ(store, id)}>贴地</ActionBtn>
         <ActionBtn icon="rotate" onClick={() => rotateItem(store, id)}>旋转 90°</ActionBtn>
         <ActionBtn icon="copy" onClick={() => duplicateItem(store, id)}>复制</ActionBtn>
         <ActionBtn icon="trash" danger onClick={() => deleteSelection(store)}>删除</ActionBtn>

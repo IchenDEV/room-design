@@ -14,6 +14,7 @@ const CAT_ICONS: Record<CatId, string> = {
   electric: 'outlet',
   seat: 'chair',
   office: 'office',
+  decor: 'sample',
 };
 
 const CAT_COUNTS = Object.fromEntries(

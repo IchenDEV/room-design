@@ -10,6 +10,7 @@ const bar = (w: number, h: number, d: number, m: THREE.Material, x: number, y: n
   mesh.castShadow = true;
   return mesh;
 };
+const doorOpenSide = (o: Opening) => o.openDir ? (o.openDir === 'out' ? -1 : 1) : (o.flip ? -1 : 1);
 
 function doorPanel(pw: number, h: number, style: Opening['style'], sign: number): THREE.Group {
   const panel = new THREE.Group();
@@ -56,12 +57,12 @@ export function addDoor(g: THREE.Group, o: Opening, L: number, T: number, H: num
   };
   if (o.swing === 'double') {
     const pw = w / 2 - 5;
-    const side = o.flip ? -1 : 1;
+    const side = doorOpenSide(o);
     addLeaf(x0 + 2, 1, pw, side);
     addLeaf(x1 - 2, -1, pw, -side);
   } else {
     const sign = o.flip ? -1 : 1;
-    addLeaf(o.flip ? x1 - 2 : x0 + 2, sign, w - 6);
+    addLeaf(o.flip ? x1 - 2 : x0 + 2, sign, w - 6, doorOpenSide(o) * sign);
   }
   return refs;
 }

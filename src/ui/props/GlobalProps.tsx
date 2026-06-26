@@ -71,7 +71,7 @@ export function GlobalProps() {
         <SliderNum label="相机 Z" min={-3000} max={3000} step={10} value={camZ}
           onPreview={(v) => patchSetting('cameraZ', v, false)} onCommit={(v) => patchSetting('cameraZ', v)} />
       </Section>
-      <Section title="墙面材质">
+      <Section title="全局墙纸 / 墙面材质">
         <div className="swatches">
           {WALL_COLORS.map((c) => (
             <button key={c} className="swatch" style={{ background: c }}
@@ -79,6 +79,11 @@ export function GlobalProps() {
               onClick={() => store.commit((p) => p.walls.forEach((w) => { w.color = c; }))} />
           ))}
         </div>
+        <label className="check-row">
+          <input className="swatch" type="color" value={store.project.walls[0]?.color ?? WALL_COLORS[0]}
+            onChange={(e) => store.commit((p) => p.walls.forEach((w) => { w.color = e.target.value; }))} />
+          <span>自定义墙纸色</span>
+        </label>
         <ChoiceGrid options={WALL_TEXTURES} value={wallTexture}
           onPick={(v) => store.commit((p) => p.walls.forEach((w) => {
             if (w.material !== 'glass') w.texture = v;

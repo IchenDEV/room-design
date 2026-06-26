@@ -6,6 +6,8 @@ import { ActionBtn, BtnRow, Check, ChoiceGrid, KV, Section, SliderNum } from './
 import type { Opening } from '../../core/types';
 
 const DOOR_SWINGS = [{ id: 'single', name: '单开' }, { id: 'double', name: '双开' }] as const;
+const DOOR_HINGES = [{ id: 'left', name: '左铰链' }, { id: 'right', name: '右铰链' }] as const;
+const DOOR_OPEN_DIRS = [{ id: 'in', name: '向内开' }, { id: 'out', name: '向外开' }] as const;
 
 export function OpeningProps({ id }: { id: string }) {
   const o = openingOf(store, id);
@@ -41,10 +43,19 @@ export function OpeningProps({ id }: { id: string }) {
             onChange={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.style = v ? 'glass' : 'wood'; })} />
         </Section>
       )}
-      <Section title={isDoor ? '门方向' : '窗方向'}>
-        <Check label={isDoor ? '左右翻转门扇' : '左右翻转窗扇'} checked={o.flip}
-          onChange={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.flip = v; })} />
-      </Section>
+      {isDoor ? (
+        <Section title="开门方向">
+          <ChoiceGrid options={DOOR_HINGES} value={o.flip ? 'right' : 'left'}
+            onPick={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.flip = v === 'right'; })} />
+          <ChoiceGrid options={DOOR_OPEN_DIRS} value={o.openDir ?? (o.flip ? 'out' : 'in')}
+            onPick={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.openDir = v; })} />
+        </Section>
+      ) : (
+        <Section title="窗方向">
+          <Check label="左右翻转窗扇" checked={o.flip}
+            onChange={(v) => store.commit((p) => { const t = p.openings.find((x) => x.id === id); if (t) t.flip = v; })} />
+        </Section>
+      )}
       <BtnRow>
         <ActionBtn icon="trash" danger onClick={() => deleteSelection(store)}>删除{isDoor ? '门' : '窗'}</ActionBtn>
       </BtnRow>

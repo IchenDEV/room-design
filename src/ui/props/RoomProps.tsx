@@ -31,7 +31,7 @@ export function RoomProps({ metaId }: { metaId: string }) {
         {room && <KV k="面积" v={`${(room.area / 10000).toFixed(2)} ㎡`} />}
         {room && <KV k="周长" v={`${roomPerimeter(room).toFixed(1)} m`} />}
       </Section>
-      <Section title="地面材质">
+      <Section title="地板材质">
         <div className="floor-grid">
           {FLOORS.map((f) => (
             <button key={f.id} className={`floor-card ${meta.floor === f.id ? 'on' : ''}`}
@@ -42,7 +42,7 @@ export function RoomProps({ metaId }: { metaId: string }) {
           ))}
         </div>
       </Section>
-      <Section title="吊顶配置">
+      <Section title="吊顶类型">
         {!store.project.settings.showCeiling && <KV k="3D 状态" v="全局关闭" />}
         <ChoiceGrid options={CEILING_STYLES} value={ceiling.style}
           onPick={(style) => patchCeiling({ style })} />

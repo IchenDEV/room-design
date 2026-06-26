@@ -6,7 +6,7 @@ export type FurnKind =
   | 'officedesk' | 'officechair' | 'filecabinet' | 'whiteboard' | 'printer' | 'partition'
   | 'outlet' | 'weakbox' | 'accesspanel';
 
-export type CatId = 'living' | 'bedroom' | 'dining' | 'bath' | 'electric' | 'seat' | 'office';
+export type CatId = 'living' | 'bedroom' | 'dining' | 'bath' | 'electric' | 'seat' | 'office' | 'decor';
 export type FurnTexture =
   | 'fabric' | 'leather' | 'wood' | 'darkWood' | 'metal' | 'glass'
   | 'stone' | 'ceramic' | 'rattan' | 'felt' | 'plastic' | 'plant';
@@ -14,10 +14,11 @@ export type FurnTexture =
 export interface FurnDef {
   id: string; name: string; cat: CatId; kind: FurnKind;
   w: number; d: number; h: number; color: string;
-  texture?: FurnTexture;
+  texture?: FurnTexture; surfaceZ?: number;
 }
 
 export const D = (
   id: string, name: string, cat: CatId, kind: FurnKind,
   w: number, d: number, h: number, color: string, texture?: FurnTexture,
-): FurnDef => ({ id, name, cat, kind, w, d, h, color, texture });
+  surfaceZ?: number,
+): FurnDef => ({ id, name, cat, kind, w, d, h, color, texture, surfaceZ });

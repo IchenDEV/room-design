@@ -26,7 +26,7 @@ function drawDoor(ed: Editor2D, w: Wall, o: Opening, ghost = false) {
   ctx.fill();
   ctx.strokeStyle = col;
   ctx.lineWidth = 1.4;
-  const side = o.flip ? -1 : 1;
+  const side = o.openDir ? (o.openDir === 'out' ? -1 : 1) : (o.flip ? -1 : 1);
   const drawLeaf = (hingeU: number, closedU: number, width: number) => {
     const hinge = L(hingeU, 0);
     const tip = L(hingeU + Math.sign(closedU - hingeU) * width * 0.04, side * width);
@@ -107,6 +107,7 @@ export function drawOpenings(ed: Editor2D) {
       const tmp: Opening = {
         id: '_g', wallId: g.wallId, kind: tool, t: g.t,
         width: tool === 'door' ? 90 : 150, height: 0, sill: 0, flip: false,
+        openDir: tool === 'door' ? 'in' : undefined,
       };
       if (tool === 'door') drawDoor(ed, w, tmp, true); else drawWindow(ed, w, tmp, true);
       const c = ed.w2s(lerp(w.a, w.b, g.t));
