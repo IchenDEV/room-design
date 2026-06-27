@@ -43,6 +43,10 @@ export function Toolbar() {
         <button className="tb-btn" title="删除选中 (Del)" disabled={!store.sel} onClick={() => deleteSelection(store)}><Ic n="trash" /></button>
         <button className="tb-btn" title="适配视图 (F)"
           onClick={() => (ui.mode === '2d' ? editors.e2?.fit() : editors.v3?.fitCamera())}><Ic n="fit" /></button>
+        <button className={`tb-btn ${ui.panelView === 'templates' ? 'on' : ''}`} title="模板方案" aria-label="模板方案"
+          onClick={() => store.patchUI({ panelView: ui.panelView === 'templates' ? 'props' : 'templates', panelR: true })}><Ic n="template" /></button>
+        <button className={`tb-btn ${ui.panelView === 'ai' ? 'on' : ''}`} title="AI 辅助设计" aria-label="AI 辅助设计"
+          onClick={() => store.patchUI({ panelView: ui.panelView === 'ai' ? 'props' : 'ai', panelR: true })}><Ic n="sparkle" /></button>
       </div>
       <div className="tb-group seg">
         <button className={`tb-btn ${ui.mode === '2d' ? 'on' : ''}`} title="2D 平面图"

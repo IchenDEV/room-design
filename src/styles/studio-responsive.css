@@ -18,10 +18,21 @@
   body.studio-mode .statusbar {
     gap: 8px;
     padding-inline: 8px;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   body.studio-mode .sb-hint {
     display: none;
+  }
+
+  body.studio-mode .sb-mono {
+    display: none;
+  }
+
+  body.studio-mode .sb-stat,
+  body.studio-mode .sb-sync {
+    flex-shrink: 0;
   }
 
   body.studio-mode .walk-hint {

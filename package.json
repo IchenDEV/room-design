@@ -12,11 +12,14 @@
     "lint:lines": "node scripts/check-lines.mjs"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.0",
     "@supabase/supabase-js": "^2.45.4",
+    "ai": "^7.0.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "three": "^0.184.0",
-    "yjs": "^13.6.18"
+    "yjs": "^13.6.18",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",

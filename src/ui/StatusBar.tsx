@@ -50,8 +50,8 @@ export function StatusBar() {
   }, [s.items]);
 
   const baseWalk = store.project.settings.solidCollision
-    ? 'W/A/S/D 移动 · 实体碰撞开启 · 拖拽转视角 · Shift 加速 · Esc 退出漫游'
-    : 'W/A/S/D 移动 · 拖拽转视角 · Shift 加速 · Esc 退出漫游';
+    ? 'W/A/S/D 移动 · 单击/E 互动 · 实体碰撞开启 · 拖拽转视角 · Shift 加速 · Esc 退出漫游'
+    : 'W/A/S/D 移动 · 单击/E 互动 · 拖拽转视角 · Shift 加速 · Esc 退出漫游';
   const base = store.ui.walking
     ? baseWalk
     : HINTS[store.ui.tool.type] ?? '';

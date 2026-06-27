@@ -4,8 +4,11 @@ import { moveWithCollision } from './collision';
 
 const EYE = 150;
 const TMP = new THREE.Vector3();
+const FWD = new THREE.Vector3();
+const RIGHT = new THREE.Vector3();
+const NEXT = new THREE.Vector3();
 const MOVE_KEYS = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-const USED_KEYS = [...MOVE_KEYS, 'ShiftLeft', 'ShiftRight'];
+const USED_KEYS = [...MOVE_KEYS, 'ShiftLeft', 'ShiftRight', 'KeyE'];
 
 /** 第一人称漫游 + 临近门自动开启动画 */
 export class Walk {
@@ -19,7 +22,12 @@ export class Walk {
 
   constructor(private v: Viewer3D) {
     const c = v.canvas;
-    c.addEventListener('pointerdown', (e) => { if (this.active && e.button === 0) { this.looking = true; c.setPointerCapture(e.pointerId); } });
+    c.addEventListener('pointerdown', (e) => {
+      if (!this.active || e.button !== 0) return;
+      if (this.v.actions.pointer(e)) { e.preventDefault(); return; }
+      this.looking = true;
+      c.setPointerCapture(e.pointerId);
+    });
     c.addEventListener('pointermove', (e) => {
       if (!this.active || !this.looking) return;
       this.yaw -= e.movementX * 0.0032;
@@ -27,7 +35,13 @@ export class Walk {
       this.poseDirty = true;
       this.v.requestRender();
     });
-    c.addEventListener('pointerup', () => { this.looking = false; });
+    const stopLook = () => {
+      if (!this.looking) return;
+      this.looking = false;
+      this.v.requestRender();
+    };
+    c.addEventListener('pointerup', stopLook);
+    c.addEventListener('pointercancel', stopLook);
   }
 
   toggle() { this.active ? this.exit() : this.enter(); }
@@ -48,7 +62,7 @@ export class Walk {
     this.active = false;
     this.keys.clear();
     this.v.controls.enabled = true;
-    const f = this.forward();
+    const f = this.forward(FWD);
     this.v.controls.target.copy(this.pos).addScaledVector(f, 260);
     this.v.controls.update();
     this.v.store.patchUI({ walking: false });
@@ -58,13 +72,19 @@ export class Walk {
   onKey(code: string, down: boolean) {
     if (!this.active) return false;
     if (!USED_KEYS.includes(code)) return false;
+    if (code === 'KeyE') {
+      const hadUse = this.keys.has(code);
+      if (down) this.keys.add(code); else this.keys.delete(code);
+      if (down && !hadUse) this.v.actions.useFocused();
+      return true;
+    }
     const had = this.keys.has(code);
     if (down) this.keys.add(code); else this.keys.delete(code);
     if (had !== down) this.v.requestRender();
     return true;
   }
 
-  private forward() { return new THREE.Vector3(-Math.sin(this.yaw), 0, -Math.cos(this.yaw)); }
+  private forward(out = new THREE.Vector3()) { return out.set(-Math.sin(this.yaw), 0, -Math.cos(this.yaw)); }
   private hasMoveKey() { return MOVE_KEYS.some((key) => this.keys.has(key)); }
   hasActiveInput() { return this.active && (this.looking || this.hasMoveKey()); }
 
@@ -74,7 +94,7 @@ export class Walk {
     for (const d of this.v.doors) {
       d.pivot.getWorldPosition(TMP);
       const near = this.active && Math.hypot(TMP.x - this.pos.x, TMP.z - this.pos.z) < 170;
-      const target = near ? d.openAngle : 0;
+      const target = near || d.manualOpen ? d.openAngle : 0;
       const delta = target - d.pivot.rotation.y;
       if (Math.abs(delta) > 0.001) {
         d.pivot.rotation.y += delta * Math.min(1, dt * 4.2);
@@ -84,9 +104,9 @@ export class Walk {
     if (!this.active) return changed;
     const k = this.keys;
     const sp = (k.has('ShiftLeft') || k.has('ShiftRight') ? 420 : 230) * dt;
-    const f = this.forward();
-    const r = new THREE.Vector3(-f.z, 0, f.x);
-    const next = this.pos.clone();
+    const f = this.forward(FWD);
+    const r = RIGHT.set(-f.z, 0, f.x);
+    const next = NEXT.copy(this.pos);
     let moved = false;
     if (k.has('KeyW') || k.has('ArrowUp')) { next.addScaledVector(f, sp); moved = true; }
     if (k.has('KeyS') || k.has('ArrowDown')) { next.addScaledVector(f, -sp); moved = true; }

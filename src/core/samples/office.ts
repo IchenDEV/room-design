@@ -32,23 +32,23 @@ export function makeOffice(): Project {
     ...desks,
     mkItem('partition', 925, 425, 90),
     // 前台接待
-    mkItem('sofa3', 225, 95, 0), mkItem('coffee', 225, 185, 0), mkItem('rug', 225, 150, 0),
-    mkItem('plant', 58, 62), mkItem('whiteboard', 1062, 152, 270),
+    mkItem('sofa-reception-3', 225, 88, 0), mkItem('round-cafe', 225, 190, 0), mkItem('rug-lounge', 225, 145, 0),
+    mkItem('plant-office-l', 58, 62), mkItem('whiteboard-small', 1062, 152, 270),
     // 会议室
     mkItem('mtable', 1190, 655, 0),
-    mkItem('ochair', 1110, 582, 180), mkItem('ochair', 1190, 582, 180), mkItem('ochair', 1270, 582, 180),
-    mkItem('ochair', 1110, 728, 0), mkItem('ochair', 1190, 728, 0), mkItem('ochair', 1270, 728, 0),
+    mkItem('ochair', 1110, 548, 180), mkItem('ochair', 1190, 548, 180), mkItem('ochair', 1270, 548, 180),
+    mkItem('ochair', 1110, 762, 0), mkItem('ochair', 1190, 762, 0), mkItem('ochair', 1270, 762, 0),
     mkItem('wboard', 1382, 655, 270), mkItem('plant', 1005, 772),
     // 经理室
     mkItem('odesk', 1240, 195, 0), mkItem('ochair', 1240, 258, 180),
-    mkItem('fcab', 1368, 85, 270), mkItem('sofa1', 1135, 65, 90), mkItem('plant', 1368, 262),
+    mkItem('fcab', 1368, 85, 270), mkItem('sofa-reception-1', 1135, 65, 90), mkItem('plant-office-m', 1368, 262),
     // 茶水间
-    mkItem('counter', 160, 762, 180), mkItem('fridge', 278, 648, 270),
-    mkItem('rtable', 150, 645), mkItem('stool', 95, 645, 90), mkItem('stool', 205, 645, 270),
-    mkItem('stool', 150, 588, 180),
+    mkItem('pantry-counter', 160, 762, 180), mkItem('office-fridge', 278, 648, 270),
+    mkItem('round-cafe', 150, 645), mkItem('stool-mobile', 92, 645, 90), mkItem('stool-mobile', 208, 645, 270),
+    mkItem('water-dispenser', 52, 645, 90),
     // 公共区
     mkItem('fcab', 42, 300, 90), mkItem('fcab', 42, 392, 90), mkItem('printer', 45, 478, 90),
-    mkItem('plant', 360, 760), mkItem('plant', 945, 62),
+    mkItem('plant-office-m', 360, 760), mkItem('plant-office-l', 945, 62),
   ];
   const metas = [
     mkMeta('开放办公区', 650, 400, 'carpetGray'), mkMeta('会议室', 1190, 650, 'carpetBlue'),

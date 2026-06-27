@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { skyTexture } from './textures';
 import { groundMat } from './mats';
+import { rendererAntialias, syncPixelRatio } from './render-quality';
 
 export interface SceneKit {
   renderer: THREE.WebGLRenderer;
@@ -14,12 +15,16 @@ export interface SceneKit {
 }
 
 export function initScene(canvas: HTMLCanvasElement): SceneKit {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: rendererAntialias(),
+    powerPreference: 'high-performance',
+  });
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+  syncPixelRatio(canvas, renderer);
 
   const scene = new THREE.Scene();
   scene.background = skyTexture();

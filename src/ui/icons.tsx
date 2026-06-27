@@ -49,6 +49,8 @@ export const ICONS: Record<string, string> = {
   cloud: 'M7 18a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1.3A4 4 0 0 1 17 18H7z',
   sync: 'M4 4v6h6M20 20v-6h-6M5 14a7 7 0 0 0 12 2M19 10A7 7 0 0 0 7 8',
   settings: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8M3 12h3M18 12h3M12 3v3M12 18v3',
+  template: 'M5 4h14v16H5zM8 8h8M8 12h5M8 16h8M16 12h.01',
+  sparkle: 'M12 3l1.8 5.1L19 10l-5.2 1.9L12 18l-1.8-5.1L5 10l5.2-1.9zM5 15l.9 2.4L8 18.3l-2.1.8L5 21.5l-.9-2.4L2 18.3l2.1-.9zM18 3l.8 2.2L21 6l-2.2.8L18 9l-.8-2.2L15 6l2.2-.8z',
 };
 
 export function Ic({ n, size = 17 }: { n: string; size?: number }) {

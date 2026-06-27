@@ -28,11 +28,11 @@ export function makeHomeA(): Project {
   ];
   const items = [
     // 主卧
-    mkItem('bedD', 180, 560, 180), mkItem('nstand', 60, 660), mkItem('nstand', 300, 660),
-    mkItem('wardrobe', 170, 455, 0), mkItem('dresser', 335, 600, 90),
+    mkItem('bedD', 145, 585, 180), mkItem('nstand', 28, 665), mkItem('nstand', 262, 665),
+    mkItem('wardrobe', 344, 560, 90), mkItem('dresser', 250, 445, 0),
     // 次卧
-    mkItem('bedS', 90, 150, 90), mkItem('wardrobe', 265, 50, 0),
-    mkItem('sqtable', 320, 190, 0), mkItem('dchair', 320, 135, 0), mkItem('plant', 35, 230),
+    mkItem('bedS', 105, 150, 90), mkItem('wardrobe', 265, 50, 0),
+    mkItem('dresser', 310, 205, 0), mkItem('vanity-stool', 235, 205, 0), mkItem('plant', 35, 35),
     // 卫生间
     mkItem('toilet', 52, 378, 180), mkItem('bsink', 140, 292, 0), mkItem('shower', 150, 368),
     // 走廊
@@ -41,9 +41,9 @@ export function makeHomeA(): Project {
     mkItem('counter', 520, 662, 180), mkItem('fridge', 655, 575, 90),
     // 客厅·餐厅
     mkItem('tvstand', 1022, 180, 270), mkItem('sofa3', 790, 180, 90), mkItem('coffee', 905, 180, 90),
-    mkItem('rug', 900, 180, 90), mkItem('lamp', 790, 62), mkItem('shelf', 398, 105, 90),
-    mkItem('dtable', 560, 310, 90), mkItem('dchair', 505, 270, 90), mkItem('dchair', 505, 350, 90),
-    mkItem('dchair', 615, 270, 270), mkItem('dchair', 615, 350, 270),
+    mkItem('rug', 900, 180, 90), mkItem('lamp', 720, 82), mkItem('shelf', 398, 105, 90),
+    mkItem('dtable', 560, 310, 90), mkItem('dchair', 455, 270, 90), mkItem('dchair', 455, 350, 90),
+    mkItem('dchair', 665, 270, 270), mkItem('dchair', 665, 350, 270),
     mkItem('rtable', 895, 605), mkItem('armchair', 805, 605, 90), mkItem('stool', 975, 605, 270),
     mkItem('plant', 1028, 470), mkItem('plant', 1028, 660),
   ];

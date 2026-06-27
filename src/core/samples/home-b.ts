@@ -22,7 +22,7 @@ export function makeHomeB(): Project {
   ];
   const items = [
     // 卧室（玻璃隔断内）
-    mkItem('bedD', 575, 430, 0), mkItem('nstand', 475, 525), mkItem('nstand', 678, 525),
+    mkItem('bedD', 565, 430, 0), mkItem('nstand', 455, 525), mkItem('nstand', 682, 525),
     mkItem('wardrobe', 688, 380, 270),
     // 卫生间
     mkItem('toilet', 52, 518, 180), mkItem('bsink', 165, 525, 180),
@@ -31,8 +31,8 @@ export function makeHomeB(): Project {
     mkItem('counter', 170, 58, 180), mkItem('fridge', 350, 62, 180),
     mkItem('barstool', 120, 145), mkItem('barstool', 225, 145),
     mkItem('sofa1', 330, 452, 90), mkItem('tvstand', 245, 460, 90), mkItem('rug', 320, 455, 90),
-    mkItem('rtable', 565, 130), mkItem('dchair', 505, 130, 90), mkItem('dchair', 628, 130, 270),
-    mkItem('bench', 565, 42, 0), mkItem('lamp', 688, 48), mkItem('plant', 688, 212),
+    mkItem('dtable-round-4', 570, 145), mkItem('dchair', 465, 145, 90), mkItem('dchair', 675, 145, 270),
+    mkItem('bench', 570, 58, 0), mkItem('lamp', 688, 48), mkItem('plant', 688, 212),
     mkItem('shelf', 60, 250, 90), mkItem('plant', 395, 530),
   ];
   const metas = [

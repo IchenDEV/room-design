@@ -20,15 +20,6 @@
 .catalog .panel-collapse svg { transform: rotate(90deg); }
 .props .panel-collapse svg { transform: rotate(-90deg); }
 
-/* 收起态窄边条 */
-.catalog.collapsed, .props.collapsed {
-  width: 28px; background: var(--panel); border-right: 1px solid var(--line);
-  display: flex; align-items: flex-start; justify-content: center; padding-top: 10px; flex-shrink: 0;
-}
-.props.collapsed { border-right: none; border-left: 1px solid var(--line); }
-.catalog.collapsed .panel-edge svg { transform: rotate(-90deg); }
-.props.collapsed .panel-edge svg { transform: rotate(90deg); }
-
 .cat-tabs {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

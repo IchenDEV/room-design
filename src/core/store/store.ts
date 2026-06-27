@@ -11,6 +11,7 @@ export type { EventName, ChangeInfo } from './store-events';
 export interface UIState {
   mode: ViewMode; tool: Tool; walking: boolean; theme: Theme;
   ctx: CtxMenu | null; hydrated: boolean; help: boolean; panelL: boolean; panelR: boolean;
+  panelView: 'props' | 'templates' | 'ai';
   modal: null | 'auth' | 'account' | 'share';
 }
 
@@ -22,7 +23,7 @@ export class Store extends Emitter {
   sel: Selection | null = null;
   user: UserProfile | null = null;
   authLoading = true;
-  ui: UIState = { mode: '2d', tool: { type: 'select' }, walking: false, theme: 'dark', ctx: null, hydrated: false, help: false, panelL: true, panelR: true, modal: null };
+  ui: UIState = { mode: '2d', tool: { type: 'select' }, walking: false, theme: 'dark', ctx: null, hydrated: false, help: false, panelL: true, panelR: true, panelView: 'props', modal: null };
   version = 0;
   private undoStack: string[] = [];
   private redoStack: string[] = [];

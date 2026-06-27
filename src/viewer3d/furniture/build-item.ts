@@ -9,6 +9,7 @@ import { wardrobe, nightstand, dresser, fridge, waterdispenser, washer, counter 
 import { bed, toilet, bathsink, bathtub, shower } from './bedbath3d';
 import { officedesk, officechair, filecabinet, whiteboard, printer, partition } from './office3d';
 import { rug, lamp, plant, outlet, weakbox, accesspanel } from './decor3d';
+import { decorateItem } from './details';
 
 const REG: Record<FurnKind, Builder> = {
   sofa, chair, stool, barstool, bench,
@@ -23,7 +24,10 @@ const REG: Record<FurnKind, Builder> = {
 export function buildItem(it: Item): THREE.Group {
   const def = defOf(it.defId);
   const builder = REG[def.kind] ?? table;
-  const g = builder(it.w, it.d, it.h, it.color ?? def.color, it.texture ?? defaultTexture(def));
+  const texture = it.texture ?? defaultTexture(def);
+  const color = it.color ?? def.color;
+  const g = builder(it.w, it.d, it.h, color, texture);
+  decorateItem(g, def.kind, it.w, it.d, it.h, color, texture);
   g.position.set(it.x, it.z ?? 0, -it.y);
   g.rotation.y = (it.rot * Math.PI) / 180;
   if (it.flipX) g.scale.x = -1;

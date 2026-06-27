@@ -13,10 +13,11 @@ import { wallLen } from '../core/geometry/vec';
 import { Walk } from './walk';
 import { sceneSignatures } from './signatures';
 import { applyRenderSettings, type RenderSettingsState } from './render-settings';
-
+import { RoomActions } from './room-actions';
+import { syncPixelRatio } from './render-quality';
 export class Viewer3D {
   renderer: THREE.WebGLRenderer; scene: THREE.Scene; camera: THREE.PerspectiveCamera;
-  controls: OrbitControls; sun: THREE.DirectionalLight; hemi: THREE.HemisphereLight; walk: Walk;
+  controls: OrbitControls; sun: THREE.DirectionalLight; hemi: THREE.HemisphereLight; walk: Walk; actions: RoomActions;
   buildGroup = new THREE.Group(); itemGroup = new THREE.Group(); doors: DoorRef[] = [];
   visible = false; private dirty = true; private raf = 0; private needsRender = true;
   private shellSig = ''; private itemSig = '';
@@ -24,7 +25,6 @@ export class Viewer3D {
   private timer = new THREE.Timer();
   private unsubs: (() => void)[] = [];
   private ro: ResizeObserver;
-
   constructor(public canvas: HTMLCanvasElement, public store: Store) {
     const kit = initScene(canvas);
     this.renderer = kit.renderer;
@@ -35,6 +35,7 @@ export class Viewer3D {
     this.hemi = kit.hemi;
     this.scene.add(this.buildGroup, this.itemGroup);
     this.walk = new Walk(this);
+    this.actions = new RoomActions(this);
     this.timer.connect(document);
     const markDirty = () => { this.dirty = true; this.requestRender(); };
     const controlChanged = () => this.requestRender();
@@ -69,9 +70,7 @@ export class Viewer3D {
     }
     else if (this.walk.active) this.walk.exit();
   }
-  private scheduleFrame() {
-    if (this.visible && !this.raf) this.raf = requestAnimationFrame(this.frame);
-  }
+  private scheduleFrame() { if (this.visible && !this.raf) this.raf = requestAnimationFrame(this.frame); }
   requestRender() {
     this.needsRender = true;
     this.scheduleFrame();
@@ -88,15 +87,13 @@ export class Viewer3D {
       shouldRender = true;
     }
     const walkChanged = this.walk.step(dt);
+    const actionChanged = this.actions.step(dt, this.walk.active);
     const controlsChanged = this.controls.enabled && this.controls.update();
-    shouldRender ||= walkChanged || controlsChanged;
-    if (shouldRender) {
-      this.renderer.render(this.scene, this.camera);
-      this.needsRender = false;
-    }
-    if (this.dirty || this.needsRender || walkChanged || controlsChanged || this.walk.hasActiveInput()) {
-      this.scheduleFrame();
-    }
+    const activeMotion = walkChanged || actionChanged || controlsChanged || this.walk.hasActiveInput() || this.actions.hasActive();
+    shouldRender = syncPixelRatio(this.canvas, this.renderer, activeMotion) || shouldRender;
+    shouldRender ||= walkChanged || actionChanged || controlsChanged;
+    if (shouldRender) { this.renderer.render(this.scene, this.camera); this.needsRender = false; }
+    if (this.dirty || this.needsRender || activeMotion) this.scheduleFrame();
   };
   resize() {
     const host = this.canvas.parentElement ?? this.canvas;
@@ -137,6 +134,7 @@ export class Viewer3D {
       for (const it of p.items) this.itemGroup.add(buildItem(it));
       this.itemSig = sig.items;
     }
+    this.actions.refresh();
   }
   screenshot() {
     if (this.dirty) { this.rebuild(); this.dirty = false; }

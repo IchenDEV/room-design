@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import type { Opening } from '../core/types';
 import { glassMat, frameMat, darkFrameMat, woodDoorMat, handleMat } from './mats';
 
-export interface DoorRef { pivot: THREE.Group; openAngle: number }
+export interface DoorRef { pivot: THREE.Group; openAngle: number; manualOpen?: boolean }
 
 const bar = (w: number, h: number, d: number, m: THREE.Material, x: number, y: number, z: number) => {
   const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
@@ -52,8 +52,11 @@ export function addDoor(g: THREE.Group, o: Opening, L: number, T: number, H: num
     const panel = doorPanel(pw, h, o.style, sign);
     panel.position.set(sign * pw / 2, h / 2, 0);
     pivot.add(panel);
+    const ref: DoorRef = { pivot, openAngle: openSign * Math.PI * 0.52, manualOpen: false };
+    pivot.userData.doorRef = ref;
+    pivot.traverse((obj) => { obj.userData.doorRef = ref; });
     g.add(pivot);
-    refs.push({ pivot, openAngle: openSign * Math.PI * 0.52 });
+    refs.push(ref);
   };
   if (o.swing === 'double') {
     const pw = w / 2 - 5;
