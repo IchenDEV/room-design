@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
-import { Ic } from '../icons';
+import { Ic, sectionIcon } from '../icons';
 
-export const Section = ({ title, children }: { title: string; children: ReactNode }) => (
+export const Section = ({ title, icon, children }: { title: string; icon?: string; children: ReactNode }) => (
   <div className="prop-section">
-    <div className="prop-title">{title}</div>
+    <div className="prop-title"><Ic n={icon ?? sectionIcon(title)} size={14} />{title}</div>
     {children}
   </div>
 );

@@ -12,8 +12,10 @@ import { toastErr, toastOk } from '../toast';
 import { AiComposer } from './AiComposer';
 import { AiHistory } from './AiHistory';
 import { AiMessages } from './AiMessages';
+import { Ic } from '../icons';
 
 const DEFAULT_PROMPT = '把当前方案改成适合两人居住的温馨小家，补齐收纳和灯光';
+const METRIC_ICONS: Record<string, string> = { 房间: 'room', 面积: 'area', 家具: 'package' };
 
 export function AiPanel() {
   useTick();
@@ -93,5 +95,5 @@ export function AiPanel() {
 }
 
 function Metric({ k, v }: { k: string; v: string }) {
-  return <div className="ai-metric"><span>{k}</span><b>{v}</b></div>;
+  return <div className="ai-metric"><span><Ic n={METRIC_ICONS[k] ?? 'sample'} size={13} />{k}</span><b>{v}</b></div>;
 }

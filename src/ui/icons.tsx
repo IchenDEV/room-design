@@ -1,4 +1,19 @@
 export const ICONS: Record<string, string> = {
+  search: 'M10.5 18a7.5 7.5 0 1 1 5.3-2.2L21 21',
+  save: 'M5 4h12l2 2v14H5zM8 4v6h7V4M8 20v-6h8v6',
+  file: 'M6 3h9l3 3v15H6zM15 3v5h5M9 13h6M9 17h6',
+  check: 'M5 12.5l4.2 4.2L19 7',
+  home: 'M3 11l9-8 9 8M5 10v10h14V10M9 20v-6h6v6',
+  area: 'M4 4h16v16H4zM8 8h8v8H8z',
+  package: 'M4 7l8-4 8 4-8 4zM4 7v10l8 4 8-4V7M12 11v10',
+  height: 'M12 3v18M8 7l4-4 4 4M8 17l4 4 4-4M4 4h4M4 20h4M16 4h4M16 20h4',
+  palette: 'M12 4a8 8 0 0 0 0 16h1.5a2 2 0 0 0 0-4H12a2 2 0 0 1 0-4h1a7 7 0 0 0 7-7 8 8 0 0 0-8-1zM7.5 11h.01M9 7.5h.01M14 7.5h.01',
+  texture: 'M4 6h16M4 12h16M4 18h16M8 4v4M14 10v4M10 16v4M18 4v4',
+  floor: 'M4 15l8-4 8 4-8 4zM4 11l8-4 8 4M4 7l8-4 8 4',
+  ceiling: 'M4 5h16M6 9h12M8 13h8M10 17h4',
+  ray: 'M4 20L20 4M8 4h12v12M5 10h5M4 15h7',
+  collision: 'M7 4h10l4 7-9 9-9-9zM12 8v5M12 16h.01',
+  target: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2',
   select: 'M5 3l5.5 15 2.2-6.3L19 9.5z',
   boxSelect: 'M5 5h4M15 5h4M5 5v4M19 5v4M5 15v4M5 19h4M15 19h4M19 15v4M9 9h6v6H9z',
   wall: 'M3 16l18-9M3 20l18-9',
@@ -51,7 +66,72 @@ export const ICONS: Record<string, string> = {
   settings: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8M3 12h3M18 12h3M12 3v3M12 18v3',
   template: 'M5 4h14v16H5zM8 8h8M8 12h5M8 16h8M16 12h.01',
   sparkle: 'M12 3l1.8 5.1L19 10l-5.2 1.9L12 18l-1.8-5.1L5 10l5.2-1.9zM5 15l.9 2.4L8 18.3l-2.1.8L5 21.5l-.9-2.4L2 18.3l2.1-.9zM18 3l.8 2.2L21 6l-2.2.8L18 9l-.8-2.2L15 6l2.2-.8z',
+  table: 'M4 8h16v3H4zM7 11v9M17 11v9M8 15h8',
+  roundtable: 'M5 8a7 3.5 0 1 0 14 0 7 3.5 0 0 0-14 0M12 11.5V20M8 20h8',
+  tvstand: 'M5 6h14v8H5zM9 18h6M12 14v4M4 20h16',
+  shelf: 'M5 4h14v16H5zM5 10h14M5 16h14M9 4v16',
+  wardrobe: 'M5 4h14v16H5zM12 4v16M9 12h.01M15 12h.01',
+  nightstand: 'M6 7h12v13H6zM8 10h8M8 14h8M12 10v4',
+  dresser: 'M5 5h14v15H5zM7 9h10M7 13h10M7 17h10M12 9v8',
+  counter: 'M4 9h16v11H4zM4 6h16v3M8 12v8M14 12v8',
+  fridge: 'M7 3h10v18H7zM7 11h10M14.5 7v2M14.5 15v2',
+  water: 'M12 3c3 3.4 5 6.2 5 9a5 5 0 0 1-10 0c0-2.8 2-5.6 5-9zM9 14a3 3 0 0 0 5 2',
+  washer: 'M5 4h14v16H5zM8 7h.01M11 7h5M12 18a4 4 0 1 0 0-8 4 4 0 0 0 0 8',
+  toilet: 'M8 4h8v6a4 4 0 0 1-4 4H9v3h6v3H7v-9h5a2 2 0 0 0 2-2V6H8z',
+  sink: 'M5 12h14v2a5 5 0 0 1-5 5h-4a5 5 0 0 1-5-5zM12 12V6a2 2 0 0 1 2-2h2M10 19l-1 2M14 19l1 2',
+  bathtub: 'M4 11h17v3a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM7 11V6a3 3 0 0 1 3-3M7 19l-1 2M17 19l1 2',
+  shower: 'M7 20V7a4 4 0 0 1 4-4h3M14 6h5M15 9l-1 1M18 9l1 1M16.5 12v1M13 13l-1 1M20 13l1 1',
+  stool: 'M7 8h10v3H7zM9 11v9M15 11v9M8 16h8',
+  barstool: 'M8 5h8v3H8zM12 8v12M8 20h8M9 14h6',
+  bench: 'M5 8h14v4H5zM7 12v8M17 12v8M6 16h12',
+  decor: 'M12 4l2 5h5l-4 3.2 1.6 5.8L12 14.7 7.4 18 9 12.2 5 9h5z',
+  filecabinet: 'M5 4h14v16H5zM8 8h8M8 12h8M8 16h8M10 8v2M10 12v2M10 16v2',
+  whiteboard: 'M4 5h16v12H4zM9 21h6M12 17v4M8 9h8M8 13h5',
+  printer: 'M6 8V4h12v4M6 17H4v-6h16v6h-2M7 14h10v7H7zM17 12h.01',
+  partition: 'M5 4h14v16H5zM12 4v16M5 12h14',
+  weakbox: 'M6 5h12v14H6zM9 9h6M9 13h6M12 8v7M8 18l8-12',
+  accesspanel: 'M7 4h10v16H7zM10 8h4M10 12h4M10 16h.01M14 16h.01',
 };
+
+export const CAT_ICON: Record<string, string> = {
+  living: 'sofa', bedroom: 'bed', dining: 'dining', bath: 'bath',
+  electric: 'outlet', seat: 'chair', office: 'office', decor: 'decor',
+};
+
+export const KIND_ICON: Record<string, string> = {
+  sofa: 'sofa', chair: 'chair', table: 'table', roundtable: 'roundtable', bed: 'bed',
+  wardrobe: 'wardrobe', nightstand: 'nightstand', dresser: 'dresser', shelf: 'shelf',
+  tvstand: 'tvstand', counter: 'counter', fridge: 'fridge', waterdispenser: 'water',
+  washer: 'washer', toilet: 'toilet', bathsink: 'sink', bathtub: 'bathtub', shower: 'shower',
+  rug: 'rug', lamp: 'lamp', plant: 'plant', stool: 'stool', barstool: 'barstool',
+  bench: 'bench', officedesk: 'office', officechair: 'chair', filecabinet: 'filecabinet',
+  whiteboard: 'whiteboard', printer: 'printer', partition: 'partition',
+  outlet: 'outlet', weakbox: 'weakbox', accesspanel: 'accesspanel',
+};
+
+export const catIcon = (cat: string) => CAT_ICON[cat] ?? 'package';
+export const kindIcon = (kind: string) => KIND_ICON[kind] ?? 'package';
+
+export function sectionIcon(title: string): string {
+  if (title.includes('方案') || title.includes('项目')) return 'home';
+  if (title.includes('全局设置')) return 'settings';
+  if (title.includes('3D') || title.includes('渲染')) return 'cube';
+  if (title.includes('相机')) return 'camera';
+  if (title.includes('墙')) return title.includes('玻璃') ? 'glass' : 'wall';
+  if (title.includes('门')) return 'door';
+  if (title.includes('窗')) return 'window';
+  if (title.includes('房间')) return 'room';
+  if (title.includes('距离') || title.includes('端点')) return 'measure';
+  if (title.includes('尺寸')) return 'height';
+  if (title.includes('配色')) return 'palette';
+  if (title.includes('材质') || title.includes('地板')) return 'texture';
+  if (title.includes('吊顶')) return 'ceiling';
+  if (title.includes('样式')) return 'template';
+  if (title.includes('方向')) return 'flip';
+  if (title.includes('组合') || title.includes('多选')) return 'group';
+  if (title.includes('提示')) return 'help';
+  return 'edit';
+}
 
 export function Ic({ n, size = 17 }: { n: string; size?: number }) {
   return (

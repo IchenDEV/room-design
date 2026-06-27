@@ -4,6 +4,7 @@ import { useTick } from '../core/store/react';
 import { stats } from '../core/store/selectors';
 import { bindStatus } from './statusBus';
 import { getSyncState, isCloudActive, type SyncStatus } from '../core/collab/sync-status';
+import { Ic } from './icons';
 
 const SYNC_TEXT: Record<SyncStatus, string> = {
   local: '本地已保存',
@@ -59,6 +60,7 @@ export function StatusBar() {
   const hint = selItem3d ? `${base} · Shift+拖拽 调高度` : base;
   const sync = getSyncState();
   const syncCls = isCloudActive() ? `sb-sync sb-sync-${sync.status}` : 'sb-sync sb-sync-local';
+  const syncIcon = isCloudActive() ? (sync.status === 'syncing' ? 'sync' : 'cloud') : 'save';
 
   return (
     <footer className="statusbar">
@@ -66,9 +68,10 @@ export function StatusBar() {
       <span className="sb-spacer" />
       <span ref={coordRef} className="sb-mono">—</span>
       <span ref={zoomRef} className="sb-mono">100%</span>
-      <span className="sb-stat">房间<b>{s.rooms}</b></span>
-      <span className="sb-stat">面积<b>{s.area.toFixed(1)}㎡</b></span>
+      <span className="sb-stat"><Ic n="room" size={13} />房间<b>{s.rooms}</b></span>
+      <span className="sb-stat"><Ic n="area" size={13} />面积<b>{s.area.toFixed(1)}㎡</b></span>
       <span className={`sb-stat sb-count${itemPulse ? ' pop' : ''}`} aria-live="polite">
+        <Ic n="package" size={13} />
         家具
         <span className="sb-count-wrap">
           <b key={s.items}>{s.items}</b>
@@ -80,6 +83,7 @@ export function StatusBar() {
         </span>
       </span>
       <span className={syncCls} title={sync.message || SYNC_TEXT[sync.status]}>
+        <Ic n={syncIcon} size={13} />
         <i className="sb-dot" />
         {isCloudActive()
           ? (sync.status === 'syncing' ? '同步中…' : sync.status === 'synced' ? '已同步' : sync.status === 'error' ? '同步失败' : '已同步')

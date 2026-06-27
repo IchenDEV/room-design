@@ -29,8 +29,8 @@
 .file-item {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px;
   align-items: center;
   padding: 8px 10px;
   border-radius: var(--r-sm);

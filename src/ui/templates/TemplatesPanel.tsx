@@ -6,6 +6,8 @@ import type { TemplateStyle } from '../../core/templates/analysis';
 import { toastOk, toastWarn } from '../toast';
 import { Ic } from '../icons';
 
+const METRIC_ICONS: Record<string, string> = { 目标: 'target', 面积: 'area', 家具: 'package' };
+
 function PlanCard({ plan }: { plan: TemplatePlan }) {
   const run = () => {
     if (plan.disabled) { toastWarn(plan.disabled); return; }
@@ -58,5 +60,5 @@ export function TemplatesPanel() {
 }
 
 function Metric({ k, v }: { k: string; v: string }) {
-  return <div className="template-metric"><span>{k}</span><b>{v}</b></div>;
+  return <div className="template-metric"><span><Ic n={METRIC_ICONS[k] ?? 'sample'} size={13} />{k}</span><b>{v}</b></div>;
 }

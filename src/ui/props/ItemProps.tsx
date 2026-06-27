@@ -4,6 +4,7 @@ import { deleteSelection, duplicateItem, resetItemZ, rotateItem } from '../../co
 import { defaultTexture, defOf, ITEM_COLORS, TEXTURES } from '../../core/catalog/catalog';
 import { ActionBtn, BtnRow, Check, ChoiceGrid, NumField, Section, SliderNum, Swatches } from './widgets';
 import type { Item } from '../../core/types';
+import { kindIcon } from '../icons';
 
 export function ItemProps({ id }: { id: string }) {
   const it = itemOf(store, id);
@@ -20,7 +21,7 @@ export function ItemProps({ id }: { id: string }) {
 
   return (
     <>
-      <Section title={`${def.name}`}>
+      <Section title={`${def.name}`} icon={kindIcon(def.kind)}>
         <NumField label="位置 X" value={it.x} onCommit={setNum('x')} />
         <NumField label="位置 Y" value={it.y} onCommit={setNum('y')} />
         <SliderNum label="离地高" min={0} max={store.project.settings.wallHeight} value={it.z ?? 0}

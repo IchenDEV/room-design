@@ -60,6 +60,7 @@ export function FileMenu() {
         {files.map((f) => (
           <button key={f.id} className={`file-item ${f.id === active?.id ? 'on' : ''}`}
             onClick={() => runFileAction(() => switchProjectFile(store, f.id)).then(close)}>
+            <Ic n={f.id === active?.id ? 'check' : 'file'} size={14} />
             <span className="file-name">{f.name}</span>
             <span className="file-time">{fmtTime(f.updatedAt)}</span>
           </button>

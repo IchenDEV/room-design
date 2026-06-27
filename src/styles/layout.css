@@ -122,7 +122,12 @@
   user-select: none;
 }
 .sb-spacer { flex: 1; }
-.sb-stat { display: inline-flex; align-items: baseline; gap: 5px; }
+.sb-stat { display: inline-flex; align-items: center; gap: 5px; }
+.sb-stat svg,
+.sb-sync svg {
+  flex: 0 0 auto;
+  opacity: 0.82;
+}
 .sb-stat b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
 .sb-mono {
   font-variant-numeric: tabular-nums;

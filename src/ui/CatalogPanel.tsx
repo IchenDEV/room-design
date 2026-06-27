@@ -4,18 +4,7 @@ import type { CatId, FurnDef } from '../core/catalog/catalog';
 import { store } from '../core/store/store';
 import { useTick } from '../core/store/react';
 import { drawThumb } from '../editor2d/glyphs/glyphs';
-import { Ic } from './icons';
-
-const CAT_ICONS: Record<CatId, string> = {
-  living: 'sofa',
-  bedroom: 'bed',
-  dining: 'dining',
-  bath: 'bath',
-  electric: 'outlet',
-  seat: 'chair',
-  office: 'office',
-  decor: 'sample',
-};
+import { Ic, catIcon, kindIcon } from './icons';
 
 const CAT_COUNTS = Object.fromEntries(
   CATS.map((c) => [c.id, CATALOG.filter((d) => d.cat === c.id).length]),
@@ -68,14 +57,17 @@ export function CatalogPanel() {
             title={`${c.name} · ${CAT_COUNTS[c.id]} 件素材`}
             onClick={() => { setCat(c.id); setQ(''); }}>
             <span className="cat-tab-main">
-              <Ic n={CAT_ICONS[c.id]} size={13} /><span>{c.name}</span>
+              <Ic n={catIcon(c.id)} size={13} /><span>{c.name}</span>
             </span>
             <span className="cat-count" aria-hidden="true">{CAT_COUNTS[c.id]}</span>
           </button>
         ))}
       </div>
-      <input className="cat-search" value={q} placeholder="搜索素材"
-        onChange={(e) => setQ(e.target.value)} />
+      <label className="cat-search-wrap">
+        <Ic n="search" size={14} />
+        <input className="cat-search" value={q} placeholder="搜索素材"
+          onChange={(e) => setQ(e.target.value)} />
+      </label>
       <div className="cat-grid">
         {items.map((d, index) => {
           const active = tool.type === 'place' && tool.defId === d.id;
@@ -86,7 +78,7 @@ export function CatalogPanel() {
               onClick={() => store.setTool(active ? { type: 'select' } : { type: 'place', defId: d.id })}>
               <Thumb def={d} />
               <div className="cat-name">{d.name}</div>
-              <div className="cat-dims">{d.w}×{d.d} cm</div>
+              <div className="cat-meta"><Ic n={kindIcon(d.kind)} size={13} /><span>{d.w}×{d.d} cm</span></div>
             </button>
           );
         })}
