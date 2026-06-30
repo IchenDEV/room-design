@@ -1,0 +1,38 @@
+.plan-room.large { inset: 62px 52px 46px 46%; background: #f2ddc0; }
+.plan-room.bed { left: 11%; top: 52px; width: 36%; height: 112px; background: #d9e4f1; }
+.plan-room.bath { left: 11%; top: 164px; width: 20%; height: 92px; background: #e7edf2; }
+.plan-room.hall { left: 31%; top: 164px; width: 15%; height: 92px; background: #f6e7cf; }
+.plan-line.x.top { left: 10%; right: 8%; top: 48px; height: 5px; border: 0; background: #354152; }
+.plan-line.x.mid { left: 10%; right: 54%; top: 164px; height: 5px; border: 0; background: #354152; }
+.plan-line.y.left { left: 10%; top: 48px; bottom: 42px; width: 5px; border: 0; background: #354152; }
+.plan-line.y.right { right: 8%; top: 48px; bottom: 42px; width: 5px; border: 0; background: #354152; }
+
+.workflow-list {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.workflow-list li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  color: var(--site-green);
+}
+
+.workflow-list b {
+  display: block;
+  color: var(--site-text);
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.workflow-list p {
+  margin: 0;
+  color: var(--site-muted);
+  font-size: 14px;
+  line-height: 1.62;
+}

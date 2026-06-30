@@ -1,4 +1,5 @@
 import { Ic } from './icons';
+import { capabilities, proof, workflow } from './landingContent';
 
 const base = import.meta.env.BASE_URL;
 const logoMark = `${base}qiju-logo-mark.svg`;
@@ -6,34 +7,7 @@ const preview = `${base}editor-preview.png`;
 const preview3d = `${base}editor-preview-3d.png`;
 const studio = '#/studio';
 
-const flow = [
-  ['plan', '画户型', '墙体、门窗、房间和尺寸标注都在一张图上完成。'],
-  ['cube', '看效果', '随时切换 3D，确认家具比例和空间关系。'],
-  ['rotate', '同步更新', '平面改动会实时反映到 3D。'],
-];
-
-const electric = [
-  ['outlet', '电源插座', '常规墙插点位。'],
-  ['solid', '地插', '餐桌、办公桌等点位。'],
-  ['sample', '弱电箱', '弱电与网络归位。'],
-  ['door', '门禁', '出入口控制点位。'],
-];
-
-const files = [
-  ['sample', '新建 / 打开', '多个方案文件保存在本地。'],
-  ['copy', '复制 / 对比', '快速生成备选布局。'],
-  ['upload', '导入 / 导出', 'JSON 格式，便于迁移。'],
-  ['trash', '清理', '删除草稿。'],
-];
-
-const cloud = [
-  ['cloud', '云端同步', '登录后方案自动上云，跨设备打开继续编辑。'],
-  ['user', '账号管理', '邮箱、Google、GitHub 多种登录方式。'],
-  ['share', '协作分享', '生成邀请链接，邀请他人实时协同编辑。'],
-  ['sync', '自动保存', '改动即时同步，离线也能继续，联网自动合并。'],
-];
-
-function FeatureRow({ items }: { items: string[][] }) {
+function FeatureGrid({ items }: { items: string[][] }) {
   return (
     <div className="landing-grid">
       {items.map(([icon, title, text]) => (
@@ -57,9 +31,9 @@ export function LandingPage() {
         </a>
         <nav aria-label="官网导航">
           <a href="#top">产品</a>
-          <a href="#features">功能</a>
+          <a href="#workflow">流程</a>
           <a href="#collab">协作</a>
-          <a href="#examples">示例</a>
+          <a href="#capabilities">能力</a>
         </nav>
         <a className="nav-cta" href={studio}>开始设计</a>
       </header>
@@ -70,7 +44,7 @@ export function LandingPage() {
           <p>从墙体、门窗到家具摆放，在 2D 平面图上完成设计，随时切换 3D 预览。</p>
           <div className="hero-actions">
             <a className="primary" href={studio}>开始设计</a>
-            <a className="secondary" href="#examples">查看示例</a>
+            <a className="secondary" href="#workflow">查看示例</a>
           </div>
           <div className="hero-notes">
             <span>云端自动保存</span><span>厘米级尺寸</span><span>实时多人协作</span>
@@ -82,39 +56,74 @@ export function LandingPage() {
         </figure>
       </section>
 
-      <section className="landing-band" id="features">
-        <div>
-          <h2>从平面到 3D</h2>
-          <p>画完户型即可切换立体效果，确认家具比例与动线。</p>
-        </div>
-        <FeatureRow items={flow} />
+      <section className="landing-proof" aria-label="产品能力概览">
+        {proof.map(([icon, title, text]) => (
+          <article key={title}>
+            <span><Ic n={icon} size={24} /></span>
+            <div>
+              <h2>{title}</h2>
+              <p>{text}</p>
+            </div>
+          </article>
+        ))}
       </section>
 
-      <section className="landing-split" id="examples">
-        <div className="device-line" aria-hidden>
-          {electric.map(([icon, title]) => <span key={title}><Ic n={icon} size={22} />{title}</span>)}
+      <section className="landing-workflow" id="workflow">
+        <div className="section-copy">
+          <h2>为室内设计全流程提供高效工具</h2>
+          <p>从空白户型、家具尺度、电源点位到 3D 检查，都在同一个工作台里完成。</p>
         </div>
-        <div>
-          <h2>电源与弱电点位</h2>
-          <p>插座、地插、弱电箱和门禁可以像家具一样放置到墙面。</p>
-          <FeatureRow items={electric} />
+        <div className="workflow-shell">
+          <div className="workflow-tabs" aria-label="设计流程">
+            {workflow.map(([icon, title]) => (
+              <span key={title}><Ic n={icon} size={18} />{title}</span>
+            ))}
+          </div>
+          <div className="workflow-preview">
+            <div className="workflow-plan" aria-hidden="true">
+              <span className="plan-room large">客厅 / 餐厅</span>
+              <span className="plan-room bed">主卧</span>
+              <span className="plan-room bath">卫浴</span>
+              <span className="plan-room hall">走廊</span>
+              <i className="plan-line x top" />
+              <i className="plan-line x mid" />
+              <i className="plan-line y left" />
+              <i className="plan-line y right" />
+            </div>
+            <ul className="workflow-list">
+              {workflow.map(([icon, title, text]) => (
+                <li key={title}>
+                  <Ic n={icon} size={17} />
+                  <div>
+                    <b>{title}</b>
+                    <p>{text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
       <section className="landing-band compact" id="collab">
-        <div>
+        <div className="section-copy">
           <h2>云端协作</h2>
-          <p>登录账号，方案自动上云；生成邀请链接，多人实时协同编辑同一户型。</p>
+          <p>登录账号，方案自动上云；生成邀请链接，团队可以围绕同一个户型快速沟通。</p>
         </div>
-        <FeatureRow items={cloud} />
+        <div className="collab-panel">
+          <span><Ic n="cloud" size={22} />云端同步</span>
+          <span><Ic n="user" size={22} />账号管理</span>
+          <span><Ic n="share" size={22} />协作分享</span>
+          <span><Ic n="sync" size={22} />自动保存</span>
+        </div>
       </section>
 
-      <section className="landing-band compact">
-        <div>
-          <h2>多方案管理</h2>
-          <p>同一个浏览器里保留多份方案，可随时复制、切换、导入和导出。</p>
+      <section className="landing-capabilities" id="capabilities">
+        <div className="section-copy">
+          <h2>专业设计工作台需要的细节</h2>
+          <p>不是简单白板，而是围绕户型、家具、点位、协作和交付组织的工具链。</p>
         </div>
-        <FeatureRow items={files} />
+        <FeatureGrid items={capabilities} />
       </section>
 
       <section className="landing-cta">

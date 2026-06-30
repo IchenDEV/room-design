@@ -1,8 +1,10 @@
 @media (max-width: 760px) {
   body.studio-mode .brand-name,
   body.studio-mode .tb-btn.wide span,
+  body.studio-mode .mode-btn span,
   body.studio-mode .file-btn span,
-  body.studio-mode .account-name {
+  body.studio-mode .account-name,
+  body.studio-mode .toolbar-stats {
     display: none;
   }
 
@@ -13,6 +15,23 @@
 
   body.studio-mode .tb-group.right {
     flex-shrink: 0;
+  }
+
+  body.studio-mode .toolbar-left {
+    flex: 0 0 auto;
+  }
+
+  body.studio-mode .tb-btn.mode-btn {
+    min-width: 30px;
+    padding-inline: 7px;
+  }
+
+  body.studio-mode .catalog {
+    width: min(244px, 78vw);
+  }
+
+  body.studio-mode .props {
+    width: min(288px, 84vw);
   }
 
   body.studio-mode .statusbar {

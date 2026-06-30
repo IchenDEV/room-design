@@ -3,9 +3,11 @@ import App from './App';
 import { store } from './core/store/store';
 import './styles/theme.css';
 import './styles/layout.css';
+import './styles/toolbar.css';
 import './styles/loading.css';
 import './styles/stage.css';
 import './styles/panels.css';
+import './styles/panel-tabs.css';
 import './styles/panel-collapse.css';
 import './styles/count-animations.css';
 import './styles/widgets.css';
@@ -18,6 +20,10 @@ import './styles/files.css';
 import './styles/collab.css';
 import './styles/studio-responsive.css';
 import './styles/landing.css';
+import './styles/landing-hero.css';
+import './styles/landing-workflow.css';
+import './styles/landing-plan.css';
+import './styles/landing-sections.css';
 import './styles/landing-responsive.css';
 
 // 主题初始化：本地偏好 > 系统偏好

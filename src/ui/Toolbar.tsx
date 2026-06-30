@@ -1,8 +1,10 @@
 import { store } from '../core/store/store';
 import { useTick } from '../core/store/react';
 import { deleteSelection } from '../core/store/actions';
+import { stats } from '../core/store/selectors';
 import { editors } from './editors';
 import { Ic } from './icons';
+import { FileMenu } from './FileMenu';
 import { ToolbarRight } from './ToolbarRight';
 import { PresenceBar } from './PresenceBar';
 import type { Tool } from '../core/types';
@@ -23,11 +25,21 @@ const logoMark = `${import.meta.env.BASE_URL}qiju-logo-mark.svg`;
 export function Toolbar() {
   useTick();
   const ui = store.ui;
+  const s = stats(store);
   return (
     <header className="toolbar">
-      <div className="brand">
-        <img className="brand-mark" src={logoMark} alt="" aria-hidden="true" />
-        <span className="brand-name">栖居设计</span>
+      <div className="toolbar-left">
+        <a className="brand" href="#top" title="返回官网">
+          <img className="brand-mark" src={logoMark} alt="" aria-hidden="true" />
+          <span className="brand-name">栖居设计</span>
+        </a>
+        <span className="tb-divider" />
+        <FileMenu />
+        <div className="toolbar-stats" aria-label="当前方案概览">
+          <span><Ic n="room" size={13} />{s.rooms} 房间</span>
+          <span><Ic n="area" size={13} />{s.area.toFixed(1)}㎡</span>
+          <span><Ic n="package" size={13} />{s.items} 家具</span>
+        </div>
       </div>
       <div className="tb-group">
         {TOOLS.map((t) => (
@@ -49,12 +61,12 @@ export function Toolbar() {
           onClick={() => store.patchUI({ panelView: ui.panelView === 'ai' ? 'props' : 'ai', panelR: true })}><Ic n="sparkle" /></button>
       </div>
       <div className="tb-group seg">
-        <button className={`tb-btn ${ui.mode === '2d' ? 'on' : ''}`} title="2D 平面图"
-          onClick={() => store.setMode('2d')}><Ic n="plan" /></button>
-        <button className={`tb-btn ${ui.mode === '3d' ? 'on' : ''}`} title="3D 效果"
-          onClick={() => store.setMode('3d')}><Ic n="cube" /></button>
-        <button className={`tb-btn ${ui.walking ? 'on' : ''}`} title="第一人称漫游 (G)" disabled={ui.mode !== '3d'}
-          onClick={() => editors.v3?.walk.toggle()}><Ic n="walk" /></button>
+        <button className={`tb-btn mode-btn ${ui.mode === '2d' ? 'on' : ''}`} title="2D 平面图"
+          onClick={() => store.setMode('2d')}><Ic n="plan" /><span>2D 平面</span></button>
+        <button className={`tb-btn mode-btn ${ui.mode === '3d' ? 'on' : ''}`} title="3D 视图"
+          onClick={() => store.setMode('3d')}><Ic n="cube" /><span>3D 视图</span></button>
+        <button className={`tb-btn mode-btn ${ui.walking ? 'on' : ''}`} title="第一人称漫游 (G)" disabled={ui.mode !== '3d'}
+          onClick={() => editors.v3?.walk.toggle()}><Ic n="walk" /><span>漫游</span></button>
       </div>
       <div className="tb-spacer" />
       <PresenceBar />

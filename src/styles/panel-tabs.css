@@ -1,0 +1,36 @@
+.panel-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.panel-view-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--panel-2);
+}
+
+.panel-view-tabs button {
+  height: 26px;
+  border-radius: var(--r-sm);
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 650;
+  transition: background 0.13s, color 0.13s, box-shadow 0.13s;
+}
+
+.panel-view-tabs button:hover {
+  color: var(--text);
+}
+
+.panel-view-tabs button.on {
+  background: var(--panel);
+  color: var(--accent);
+  box-shadow: var(--shadow-sm);
+}

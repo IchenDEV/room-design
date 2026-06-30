@@ -23,24 +23,24 @@
 }
 
 :root[data-theme='light'] {
-  --bg: #f5f6f8;
+  --bg: #f7f9fc;
   --panel: #ffffff;
-  --panel-2: #f3f5f8;
-  --panel-3: #ebedf2;
-  --line: #e2e5eb;
-  --line-soft: #eef0f3;
-  --text: #1f2733;
-  --muted: #6b7585;
-  --accent: #2f6fe4;
-  --accent-soft: rgba(47, 111, 228, 0.10);
+  --panel-2: #f4f7fb;
+  --panel-3: #edf3fb;
+  --line: #dce3ec;
+  --line-soft: #edf1f6;
+  --text: #17202e;
+  --muted: #637083;
+  --accent: #0b73e8;
+  --accent-soft: rgba(11, 115, 232, 0.10);
   --accent-ring: rgba(47, 111, 228, 0.28);
   --danger: #d4514f;
   --ok: #2ea368;
-  --shadow-sm: 0 2px 8px rgba(35, 45, 65, 0.08);
-  --shadow: 0 10px 30px rgba(35, 45, 65, 0.14);
+  --shadow-sm: 0 3px 10px rgba(22, 34, 51, 0.08);
+  --shadow: 0 18px 42px rgba(22, 34, 51, 0.16);
   --r-sm: 6px;
   --r-md: 8px;
-  --r-lg: 11px;
+  --r-lg: 10px;
   color-scheme: light;
 }
 
@@ -52,7 +52,7 @@ html, body, #root {
 }
 
 body {
-  font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
   background: var(--bg);
   color: var(--text);
   overflow: hidden;

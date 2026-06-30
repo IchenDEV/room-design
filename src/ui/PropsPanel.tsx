@@ -29,21 +29,24 @@ export function PropsPanel() {
 
   const showProps = () => store.patchUI({ panelView: 'props' });
   const showTemplates = () => store.patchUI({ panelView: 'templates', panelR: true });
-  const title = view === 'ai' ? 'AI 设计' : view === 'templates' ? '模板' : sel ? '属性' : '项目';
+  const showAi = () => store.patchUI({ panelView: 'ai', panelR: true });
 
   return (
     <aside className={`props ${view === 'ai' ? 'ai-props' : view === 'templates' ? 'template-props' : ''}`}
       key={view === 'props' ? selKey(sel) : view}>
       <div className="panel-head">
-        <span className="panel-title">{title}</span>
+        <div className="panel-view-tabs" role="tablist" aria-label="右侧面板">
+          <button className={view === 'props' ? 'on' : ''} role="tab" aria-selected={view === 'props'} onClick={showProps}>
+            属性
+          </button>
+          <button className={view === 'templates' ? 'on' : ''} role="tab" aria-selected={view === 'templates'} onClick={showTemplates}>
+            模板
+          </button>
+          <button className={view === 'ai' ? 'on' : ''} role="tab" aria-selected={view === 'ai'} onClick={showAi}>
+            AI
+          </button>
+        </div>
         <div className="panel-actions">
-          {view !== 'props' ? (
-            <button className="panel-link" onClick={showProps}>属性</button>
-          ) : (
-            <button className="panel-icon-btn" title="模板方案" aria-label="模板方案" onClick={showTemplates}>
-              <Ic n="template" size={14} />
-            </button>
-          )}
           <button className="panel-collapse" title="收起属性面板" onClick={toggle}>
             <Ic n="chev" size={14} />
           </button>

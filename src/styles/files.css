@@ -1,12 +1,18 @@
 .file-btn span {
-  max-width: 150px;
+  max-width: 168px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.toolbar-left .file-btn {
+  max-width: 230px;
+  color: var(--text);
+  font-weight: 650;
+}
+
 .file-menu {
-  width: 264px;
+  width: 286px;
 }
 
 .file-menu-title {
@@ -32,7 +38,7 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 8px;
   align-items: center;
-  padding: 8px 10px;
+  padding: 9px 10px;
   border-radius: var(--r-sm);
   text-align: left;
   transition: background 0.12s;

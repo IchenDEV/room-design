@@ -8,7 +8,6 @@ import { shareProject } from '../core/share';
 import { SAMPLES } from '../core/samples';
 import { editors } from './editors';
 import { Ic } from './icons';
-import { FileMenu } from './FileMenu';
 import { AccountMenu } from './AccountMenu';
 import { isCloudActive } from '../core/collab/sync-status';
 import { isSupabaseConfigured } from '../core/supabase/client';
@@ -73,7 +72,6 @@ export function ToolbarRight() {
           <span className="tb-divider" />
         </>
       )}
-      <FileMenu />
       <Dropdown
         onClose={sample.off}
         open={sample.open}
