@@ -62,17 +62,16 @@ export type CeilingStyle = 'none' | 'flat' | 'tray' | 'cove' | 'grid';
 export interface CeilingConfig { style?: CeilingStyle; drop?: number; inset?: number; color?: string }
 export interface ResolvedCeiling { style: CeilingStyle; drop: number; inset: number; color: string }
 
-export interface RoomMeta {
-  id: string; anchor: Pt; name: string; floor: string;
-  ceiling?: CeilingConfig;
-}
+export interface RoomMeta { id: string; anchor: Pt; name: string; floor: string; ceiling?: CeilingConfig }
 export interface Measure { id: string; a: Pt; b: Pt }
+
+export type RenderQuality = 'speed' | 'balanced' | 'high' | 'ultra';
 
 export interface Settings {
   wallHeight: number; wallThickness: number; showCeiling: boolean;
   rayTracing?: boolean; solidCollision?: boolean;
   sunIntensity?: number; sunAzimuth?: number; sunElevation?: number;
-  cameraX?: number; cameraY?: number; cameraZ?: number;
+  renderQuality?: RenderQuality; cameraX?: number; cameraY?: number; cameraZ?: number;
 }
 
 export interface Project {
@@ -121,6 +120,7 @@ export const uid = (p: string) =>
 export const defaultSettings = (): Settings => ({
   wallHeight: 280, wallThickness: 20, showCeiling: false,
   rayTracing: false, solidCollision: false, sunIntensity: 2.2, sunAzimuth: 35, sunElevation: 52,
+  renderQuality: 'balanced',
 });
 
 const ceilingStyles: CeilingStyle[] = ['none', 'flat', 'tray', 'cove', 'grid'];

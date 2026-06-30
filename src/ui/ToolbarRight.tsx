@@ -14,6 +14,7 @@ import { isSupabaseConfigured } from '../core/supabase/client';
 import { restartCollab } from '../core/collab/sync';
 import { toastErr, toastOk } from './toast';
 import { Dropdown } from './Dropdown';
+import { RenderQualityMenu } from './RenderQualityMenu';
 
 function useToggle() {
   const [open, setOpen] = useState(false);
@@ -121,6 +122,8 @@ export function ToolbarRight() {
         open={more.open}
         trigger={<button className="tb-btn" title="更多" onClick={more.flip}><Ic n="more" /></button>}
       >
+        <RenderQualityMenu onPick={more.off} />
+        <div className="dd-sep" />
         <button className="dd-item" onClick={() => { flipTheme(); more.off(); }}>
           <Ic n={theme === 'dark' ? 'sun' : 'moon'} size={15} /><span>{theme === 'dark' ? '浅色模式' : '深色模式'}</span>
         </button>

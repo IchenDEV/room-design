@@ -34,6 +34,11 @@
     width: min(288px, 84vw);
   }
 
+  body.studio-mode .catalog.collapsed,
+  body.studio-mode .props.collapsed {
+    width: 10px;
+  }
+
   body.studio-mode .statusbar {
     gap: 8px;
     padding-inline: 8px;

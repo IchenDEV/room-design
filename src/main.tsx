@@ -11,6 +11,7 @@ import './styles/panel-tabs.css';
 import './styles/panel-collapse.css';
 import './styles/count-animations.css';
 import './styles/widgets.css';
+import './styles/render-quality.css';
 import './styles/actions.css';
 import './styles/templates.css';
 import './styles/ai.css';

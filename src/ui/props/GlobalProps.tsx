@@ -3,6 +3,8 @@ import { stats } from '../../core/store/selectors';
 import { WALL_COLORS, WALL_TEXTURES } from '../../core/catalog/catalog';
 import { Check, ChoiceGrid, KV, Section, SliderNum } from './widgets';
 import { editors } from '../editors';
+import { normalizeRenderQuality } from '../../core/renderQuality';
+import { RENDER_QUALITY_OPTIONS } from '../RenderQualityMenu';
 import type { Settings } from '../../core/types';
 
 export function GlobalProps() {
@@ -52,6 +54,8 @@ export function GlobalProps() {
           onChange={(v) => store.commit((p) => { p.settings.showCeiling = v; })} />
       </Section>
       <Section title="3D 渲染">
+        <ChoiceGrid options={RENDER_QUALITY_OPTIONS} value={normalizeRenderQuality(set.renderQuality)}
+          onPick={(v) => patchSetting('renderQuality', v)} />
         <Check label="开启光追预览" checked={!!set.rayTracing}
           onChange={(v) => patchSetting('rayTracing', v)} />
         <Check label="漫游实体碰撞" checked={!!set.solidCollision}

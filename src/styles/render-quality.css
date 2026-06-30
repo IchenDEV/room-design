@@ -1,0 +1,36 @@
+.quality-item {
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.quality-item > svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: var(--muted);
+}
+
+.quality-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.quality-copy b {
+  color: var(--text);
+  font-size: 12.5px;
+}
+
+.quality-copy span {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.quality-item.on {
+  background: var(--accent-soft);
+}
+
+.quality-item.on > svg,
+.quality-item.on .quality-copy b {
+  color: var(--accent);
+}

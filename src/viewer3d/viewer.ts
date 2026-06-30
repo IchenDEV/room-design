@@ -26,7 +26,7 @@ export class Viewer3D {
   private unsubs: (() => void)[] = [];
   private ro: ResizeObserver;
   constructor(public canvas: HTMLCanvasElement, public store: Store) {
-    const kit = initScene(canvas);
+    const kit = initScene(canvas, store.project.settings.renderQuality);
     this.renderer = kit.renderer;
     this.scene = kit.scene;
     this.camera = kit.camera;
@@ -80,7 +80,8 @@ export class Viewer3D {
     if (!this.visible) return;
     this.timer.update(timestamp);
     const dt = Math.min(0.05, this.timer.getDelta());
-    let shouldRender = this.needsRender || applyRenderSettings(this, this.renderState);
+    const settingsChanged = applyRenderSettings(this, this.renderState);
+    let shouldRender = this.needsRender || settingsChanged;
     if (this.dirty) {
       this.rebuild();
       this.dirty = false;
@@ -90,7 +91,8 @@ export class Viewer3D {
     const actionChanged = this.actions.step(dt, this.walk.active);
     const controlsChanged = this.controls.enabled && this.controls.update();
     const activeMotion = walkChanged || actionChanged || controlsChanged || this.walk.hasActiveInput() || this.actions.hasActive();
-    shouldRender = syncPixelRatio(this.canvas, this.renderer, activeMotion) || shouldRender;
+    const q = this.store.project.settings.renderQuality;
+    shouldRender = syncPixelRatio(this.canvas, this.renderer, activeMotion, q) || shouldRender;
     shouldRender ||= walkChanged || actionChanged || controlsChanged;
     if (shouldRender) { this.renderer.render(this.scene, this.camera); this.needsRender = false; }
     if (this.dirty || this.needsRender || activeMotion) this.scheduleFrame();

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import type { Viewer3D } from './viewer';
 import { layoutSun } from './scene-env';
+import { renderQualityProfile } from './render-quality';
 
 export interface RenderSettingsState { renderSig: string; cameraSig: string }
 
@@ -9,16 +10,19 @@ const num = (v: number | undefined, fallback: number) => Number.isFinite(v) ? v 
 export function applyRenderSettings(v: Viewer3D, state: RenderSettingsState): boolean {
   const s = v.store.project.settings;
   const ray = !!s.rayTracing;
-  const renderSig = JSON.stringify([ray, s.sunIntensity, s.sunAzimuth, s.sunElevation]);
+  const q = renderQualityProfile(s.renderQuality);
+  const renderSig = JSON.stringify([ray, s.renderQuality, s.sunIntensity, s.sunAzimuth, s.sunElevation]);
   let changed = false;
   if (renderSig !== state.renderSig) {
-    const size = ray ? 2048 : 1024;
-    v.renderer.shadowMap.type = ray ? THREE.VSMShadowMap : THREE.PCFShadowMap;
-    v.renderer.toneMappingExposure = ray ? 1.12 : 1.0;
-    v.scene.environmentIntensity = ray ? 0.78 : 0.5;
-    v.hemi.intensity = ray ? 0.55 : 0.75;
-    v.sun.shadow.radius = ray ? 4 : 1;
-    if (v.sun.shadow.mapSize.x !== size) {
+    const size = ray ? Math.max(q.shadowSize, 2048) : q.shadowSize;
+    const type = ray ? THREE.VSMShadowMap : q.shadowType;
+    const shadowChanged = v.renderer.shadowMap.type !== type || v.sun.shadow.mapSize.x !== size;
+    v.renderer.shadowMap.type = type;
+    v.renderer.toneMappingExposure = ray ? Math.max(q.exposure, 1.12) : q.exposure;
+    v.scene.environmentIntensity = ray ? Math.max(q.environment, 0.78) : q.environment;
+    v.hemi.intensity = ray ? Math.min(q.hemi, 0.55) : q.hemi;
+    v.sun.shadow.radius = ray ? Math.max(q.shadowRadius, 4) : q.shadowRadius;
+    if (shadowChanged) {
       v.sun.shadow.mapSize.set(size, size);
       v.sun.shadow.map?.dispose();
       v.sun.shadow.map = null;

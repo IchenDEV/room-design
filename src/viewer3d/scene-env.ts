@@ -4,6 +4,7 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { skyTexture } from './textures';
 import { groundMat } from './mats';
 import { rendererAntialias, syncPixelRatio } from './render-quality';
+import type { RenderQuality } from '../core/types';
 
 export interface SceneKit {
   renderer: THREE.WebGLRenderer;
@@ -14,17 +15,17 @@ export interface SceneKit {
   hemi: THREE.HemisphereLight;
 }
 
-export function initScene(canvas: HTMLCanvasElement): SceneKit {
+export function initScene(canvas: HTMLCanvasElement, quality?: RenderQuality): SceneKit {
   const renderer = new THREE.WebGLRenderer({
     canvas,
-    antialias: rendererAntialias(),
+    antialias: rendererAntialias(quality),
     powerPreference: 'high-performance',
   });
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.0;
-  syncPixelRatio(canvas, renderer);
+  syncPixelRatio(canvas, renderer, false, quality);
 
   const scene = new THREE.Scene();
   scene.background = skyTexture();
