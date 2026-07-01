@@ -26,12 +26,14 @@ import './styles/landing-workflow.css';
 import './styles/landing-plan.css';
 import './styles/landing-sections.css';
 import './styles/landing-responsive.css';
+import './styles/pro-ui.css';
+import './styles/pro-landing.css';
 
 // 主题初始化：本地偏好 > 系统偏好
 const savedTheme = localStorage.getItem('qiju-theme');
 store.ui.theme = savedTheme === 'light' || savedTheme === 'dark'
   ? savedTheme
-  : window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  : 'light';
 document.documentElement.dataset.theme = store.ui.theme;
 
 // 调试辅助：错误收集 + 全局句柄

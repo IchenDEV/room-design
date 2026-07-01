@@ -31,7 +31,7 @@ export function Toolbar() {
       <div className="toolbar-left">
         <a className="brand" href="#top" title="返回官网">
           <img className="brand-mark" src={logoMark} alt="" aria-hidden="true" />
-          <span className="brand-name">栖居设计</span>
+          <span className="brand-name">Rooms</span>
         </a>
         <span className="tb-divider" />
         <FileMenu />

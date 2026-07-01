@@ -3,8 +3,8 @@ import { capabilities, proof, workflow } from './landingContent';
 
 const base = import.meta.env.BASE_URL;
 const logoMark = `${base}qiju-logo-mark.svg`;
-const preview = `${base}editor-preview.png`;
-const preview3d = `${base}editor-preview-3d.png`;
+const preview = `${base}editor-preview-pro.png`;
+const preview3d = `${base}editor-preview-3d-pro.png`;
 const studio = '#/studio';
 
 function FeatureGrid({ items }: { items: string[][] }) {
@@ -27,7 +27,7 @@ export function LandingPage() {
       <header className="landing-nav">
         <a className="landing-brand" href="#top">
           <img className="landing-brand-mark" src={logoMark} alt="" aria-hidden="true" />
-          <b>栖居 Rooms</b>
+          <b>Rooms Studio</b>
         </a>
         <nav aria-label="官网导航">
           <a href="#top">产品</a>
@@ -40,8 +40,8 @@ export function LandingPage() {
 
       <section className="landing-hero">
         <div className="hero-copy">
-          <h1>在线画户型<span>看装修效果</span></h1>
-          <p>从墙体、门窗到家具摆放，在 2D 平面图上完成设计，随时切换 3D 预览。</p>
+          <h1>专业室内设计<span>从平面图开始</span></h1>
+          <p>用接近海外产品的清晰工作台完成户型、家具、尺寸、3D 预览和协作。</p>
           <div className="hero-actions">
             <a className="primary" href={studio}>开始设计</a>
             <a className="secondary" href="#workflow">查看示例</a>
